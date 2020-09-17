@@ -86,7 +86,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
             balanceAfterWithdraw
         );
 
-        ClientRecord clientRecord = _updateClientRecordAfterWithdrawal(
+        ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
             recipient,
             amountOfUnderlyingAssetWithdrawn,
             derivativeAmount
@@ -158,7 +158,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
         uint256 balanceAfterDeposit = lendingService.userShares();
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
-        ClientRecord clientRecord = _updateClientRecordAfterDeposit(
+        ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
             depositorAddress,
             email,
             amountTransferrable,
