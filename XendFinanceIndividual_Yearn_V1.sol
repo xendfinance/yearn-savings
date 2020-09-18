@@ -165,8 +165,8 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
             amountOfyDai
         );
 
-        emit DerivativeAssetWithdrawn(
-            recipient,
+        emit UnderlyingAssetDeposited(
+            depositorAddress,
             amountTransferrable,
             amountOfyDai,
             clientRecord.derivativeBalance
