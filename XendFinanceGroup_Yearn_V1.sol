@@ -40,20 +40,54 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     
      // list of group records
     Member[] Members;
+  
     
     //Mapping that enables ease of traversal of the member records. key is the member address
     mapping(address => RecordIndex) public MemberIndexer;
     
+    GroupMember[] GroupMembers;
     
     //Mapping of a groups members. Key is the group id, 
-    mapping(uint => GroupMember[])public GroupMembers;
+    mapping(uint => RecordIndex[])public GroupMembersIndexer;
+    
+    mapping(address => RecordIndex[])public GroupMembersIndexerByDepositor;
+
+    
+    //Mapping that enables easy traversal of cycle members in a group. outer key is the group id, inner key is the member address
+    mapping(uint => mapping(address => RecordIndex)) GroupMembersDeepIndexer;
+
+    
+    CycleMember[] CycleMembers;
     
     //Mapping of a cycle members. key is the cycle id
-    mapping(uint => CycleMember[])public CycleMembers;
+    mapping(uint => RecordIndex[])public CycleMembersIndexer;
+    
+    mapping(address => RecordIndex[])public CycleMembersIndexerByDepositor;
+
+    
+    //Mapping that enables easy traversal of cycle members in a group. outer key is the cycle id, inner key is the member address
+    mapping(uint => mapping(address => RecordIndex))public CycleMembersDeepIndexer;
+
+
+    MemberCycleTransaction[] MemberCycleTransactions;
+
+    mapping(uint => RecordIndex[])public MemberCycleTransactionsIndexer;
+    mapping(address => RecordIndex[])public MemberCycleTransactionsIndexerByDepositor;
+
+
+    mapping(uint => mapping(address => RecordIndex)) MemberCycleTransactionsDeepIndexer;
+    
+    
+    
+
+    
     
     
     uint lastGroupId;
     uint lastCycleId;
+    //uint lastGroupMemberId;
+    //uint lastCycleMemberId;
+
 
     address LendingServiceAddress;
     
@@ -105,24 +139,22 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     }
     
     struct GroupMember{
-        uint id;
         bool exists;
-        address payable memberAddress;
+        address payable _address;
         uint groupId;
     }
     
     struct CycleMember{
         bool exist;
-        uint id;
         uint cycleId;
-        uint groupMemerId;
+        uint groupId;
+        address payable _address;
     }
     
     
     struct MemberCycleTransaction{
         bool exists;
-        uint id;
-        uint cycleMemberId;
+        uint cycleId;
         address payable _address;
         uint256 TotalLiquidityAsPenalty;
         uint256 underlyingTotalDeposits;
@@ -130,13 +162,23 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         uint256 derivativeBalance;
         uint256 derivativeTotalDeposits;
         uint256 derivativeTotalWithdrawn;
-  
     }
 
     struct RecordIndex {
         bool exists;
         uint256 index;
     }
+    
+    
+     
+    struct CycleDepositResult{
+        Group group;
+        Member member;
+        GroupMember groupMember;
+        CycleMember cycleMember;
+        MemberCycleTransaction memberCycleTransaction;
+        uint256 underlyingAmountDeposited;
+    }   
 
 
     enum CycleStatus {NOT_STARTED, ONGOING, ENDED}
@@ -144,10 +186,8 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     event UnderlyingAssetDeposited(
         uint cycleId,
         address payable memberAddress,
-        uint cycleMemberId,
-        uint256 underlyingAmount,
-        uint256 derivativeAmount,
-        uint256 balance
+        uint groupId,
+        uint256 underlyingAmount
     );
 
     event DerivativeAssetWithdrawn(
@@ -167,7 +207,6 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     
      event CycleCreated(
         uint cycleId,
-        uint numberOfDepositors,
         uint maximumSlots,
         bool hasMaximumSlots,
         uint256 minimumCycleDeposit,
@@ -187,6 +226,11 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         uint groupId
        
     );
+    
+    event CycleStartedEvent{
+        uint cycleId,
+        
+    }
 
 
 
@@ -203,17 +247,106 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         LendingServiceAddress = lendingServiceAddress;
     }
     
+     function activateCycle(uint cycleId) onlyCycleCreator(cycleId) external{
+       Cycle memory cycle = _getCycle(cycleId);
+       require(cycle.cycleStatus==CycleStatus.NOT_STARTED, "Cannot activate a cycle not in the 'NOT_STARTED' state");
+       
+       //todo: call lending contract
+       
+       _startCycle(cycle);
+       
+    }
+    
+     function createGroup(string calldata name, string calldata symbol) external{
+        lastGroupId +=1;
+        Group memory group = Group(true,lastGroupId,name,symbol, msg.sender,0,0,0,0,0,0,0,0);
+       
+        uint index = Groups.length;
+        RecordIndex memory recordIndex = RecordIndex(true,index);
+
+
+        Groups.push(group);
+        GroupIndexer[lastGroupId] =  recordIndex;
+        GroupIndexerByName[name] = recordIndex;
+        
+        emit GroupCreated(group.id,msg.sender);
+    }
+    
+    function createCycle(uint groupId,  uint startTimeStamp, uint duration, uint maximumSlots, bool hasMaximumSlots, uint minimumCycleDeposit) onlyGroupCreator(groupId) external {
+        
+      _validateCycleCreationActionValid(groupId,maximumSlots,hasMaximumSlots);
+        
+      lastCycleId +=1;
+      Cycle memory cycle  = Cycle(true,lastCycleId,groupId,0,startTimeStamp,duration,maximumSlots,hasMaximumSlots,minimumCycleDeposit,0,0,0,0,0, CycleStatus.NOT_STARTED);
+      
+      uint index = Cycles.length;
+      
+      RecordIndex memory recordIndex = RecordIndex(true,index);
+      
+      Cycles.push(cycle); 
+      CycleIndexer[lastCycleId] =  recordIndex;
+      
+      emit CycleCreated(cycle.id,maximumSlots,hasMaximumSlots,minimumCycleDeposit,startTimeStamp,duration);
+    }
     
     function joinCycle(uint cycleId) external{
+         address payable depositorAddress = msg.sender;
+        _joinCycle(cycleId,depositorAddress);
         
+        
+
     }
     
     function joinCycleDelegate(uint cycleId, address payable depositorAddress) external{
-        
+        _joinCycle(cycleId,depositorAddress);
     }
     
     
-    function _joinCycle(uint cycleId, address payable depositorAddress){
+    
+    
+    function _joinCycle(uint cycleId, address payable depositorAddress) internal{
+       Group memory group =  _getCycleGroup(cycleId);
+
+       bool didCycleMemberExistBeforeNow = CycleMembersDeepIndexer[cycleId][depositorAddress].exists;
+       bool didGroupMemberExistBeforeNow = GroupMembersDeepIndexer[group.id][depositorAddress].exists;
+
+        
+       Cycle memory cycle  = _getCycle(cycleId);
+        
+       CycleDepositResult memory result = _addDepositorToCycle(cycleId,depositorAddress);
+       
+       emit UnderlyingAssetDeposited(cycle.id,depositorAddress, result.group.id, result.underlyingAmountDeposited);
+       
+       if(!didCycleMemberExistBeforeNow)
+       {
+           emit MemberJoinedCycle(cycleId,depositorAddress,result.group.id);
+       }
+       
+       if(!didGroupMemberExistBeforeNow)
+       {
+          emit MemberJoinedGroup(depositorAddress,result.group.id);
+       }
+       
+    }
+    
+    function _addDepositorToCycle(uint cycleId, address payable depositorAddress) internal returns (CycleDepositResult memory) {
+    
+        
+       Group memory group =  _getCycleGroup(cycleId);
+       Member memory  member = _createMemberIfNotExist(depositorAddress);
+       GroupMember memory groupMember = _createGroupMemberIfNotExist(depositorAddress, group.id);
+       CycleMember memory cycleMember = _createCycleMemberIfNotExist(depositorAddress,cycleId,group.id);
+       
+       uint underlyingAmount = _processMemberDeposit(depositorAddress);
+       
+       MemberCycleTransaction memory memberCycleTransaction = _saveMemberDeposit(depositorAddress,cycleId,underlyingAmount);
+       
+       CycleDepositResult memory result = CycleDepositResult (group,member,groupMember,cycleMember,memberCycleTransaction,underlyingAmount);
+       return result;
+       
+    }
+    
+    function _processMemberDeposit(address payable depositorAddress) internal returns (uint underlyingAmount){
         address recipient = address(this);
         uint256 amountTransferrable = daiToken.allowance(
             depositorAddress,
@@ -233,74 +366,166 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
             isSuccessful == true,
             "Could not complete deposit process from token contract"
         );
+        
+        return amountTransferrable;
+    }
+   
+    
+   
+    
+    
+    function _createMemberIfNotExist(address payable depositor) internal returns (Member memory) {
+        Member memory member = _getMember(depositor,false);
+        return member;
+
     }
     
-    function _addDepositorToCycle(uint cycleId, address payable depositorAddress){
+     function _createGroupMemberIfNotExist(address payable depositor, uint groupId) internal returns (GroupMember memory) {
+        GroupMember memory groupMember = _getGroupMember(depositor,groupId,false);
+        return groupMember;
+    }
+    
+     function _createCycleMemberIfNotExist(address payable depositor, uint cycleId, uint groupId) internal returns (CycleMember memory) {
+        CycleMember memory cycleMember = _getCycleMember(depositor,cycleId,groupId,false);
+         return cycleMember;
+    }
+    
+    
+
+    
+     function _saveMemberDeposit(address payable depositor, uint cycleId, uint underlyingAmount) internal returns(MemberCycleTransaction memory) {
+        
+        bool transactionExist = MemberCycleTransactionsDeepIndexer[cycleId][depositor].exists;
+        
+        if(!transactionExist){
+            MemberCycleTransaction memory cycleTransaction = MemberCycleTransaction(true,cycleId,depositor,0,0,0,0,0,0);
+            cycleTransaction = _updateCycleMemberDeposit(cycleTransaction,underlyingAmount);
+            
+            uint index = MemberCycleTransactions.length;
+            
+            RecordIndex memory recordIndex = RecordIndex(true,index);
+            
+            MemberCycleTransactionsIndexer[cycleId].push(recordIndex);
+            MemberCycleTransactionsIndexerByDepositor[depositor].push(recordIndex);
+            MemberCycleTransactionsDeepIndexer[cycleId][depositor] = recordIndex;
+            
+            return cycleTransaction;
+        }
+        else{
+             uint index = MemberCycleTransactionsDeepIndexer[cycleId][depositor].index;
+             MemberCycleTransaction memory cycleTransaction  = MemberCycleTransactions[index];
+             cycleTransaction = _updateCycleMemberDeposit(cycleTransaction,underlyingAmount);
+            MemberCycleTransactions[index] = cycleTransaction;
+            return cycleTransaction;
+
+        }
+        
+        
+        
         
     }
     
     
-    
-    function _createCycleMemberIfNotExist(){
-        
+    function _updateCycleMemberDeposit(MemberCycleTransaction memory cycleTransaction, uint underlyingAmount) internal returns (MemberCycleTransaction memory) {
+        cycleTransaction.underlyingTotalDeposits += underlyingAmount;
+        return cycleTransaction;
     }
     
-    function _getMember(address payable depositor, bool throwOnNotFound) returns (Member){
+     function _updateCycleLendingDeposit(MemberCycleTransaction memory cycleTransaction) internal returns (MemberCycleTransaction memory) {
+        cycleTransaction.derivativeTotalDeposits += cycleTransaction.underlyingTotalDeposits;
+        return cycleTransaction;
+
+    }
+   
+    
+    
+    function _getMember(address payable depositor, bool throwOnNotFound) internal returns (Member memory){
         bool memberExists = MemberIndexer[depositor].exists;
         if(throwOnNotFound)
           require(memberExists==true,"Member not found");
           
         if(!memberExists){
+            Member memory member = Member(true,depositor);
+            uint index = Members.length;
             
+            RecordIndex memory recordIndex = RecordIndex(true,index);
+            
+            MemberIndexer[depositor] = recordIndex;
+            Members.push(member);
+            return member;
         }
+        else{
+             uint index = MemberIndexer[depositor].index;
+             return Members[index];
+        }
+    }
+    
+     function _getCycleMember(address payable depositor,uint cycleId, uint groupId, bool throwOnNotFound) internal returns (CycleMember memory){
+        bool cycleMemberExists = CycleMembersDeepIndexer[cycleId][depositor].exists;
         
-         
+        if(throwOnNotFound)
+          require(cycleMemberExists==true,"Member not found");
           
+        if(!cycleMemberExists){
+            
+            CycleMember memory cycleMember = CycleMember(true, cycleId, groupId, depositor);
+            uint index = CycleMembers.length;
+            
+            RecordIndex memory recordIndex = RecordIndex(true,index);
+            
+            CycleMembersDeepIndexer[cycleId][depositor] = recordIndex;
+            CycleMembersIndexer[cycleId].push(recordIndex);
+            CycleMembersIndexerByDepositor[depositor].push(recordIndex);
+
+            
+            CycleMembers.push(cycleMember);
+            return cycleMember;
+        }
+        else{
+             uint index = CycleMembersDeepIndexer[cycleId][depositor].index;
+             CycleMember memory cycleMember = CycleMembers[index];
+             return cycleMember;
+        }
+    }
+    
+     function _getGroupMember(address payable depositor,uint groupId, bool throwOnNotFound) internal returns (GroupMember memory){
+        bool groupMemberExists = GroupMembersDeepIndexer[groupId][depositor].exists;
+        
+        if(throwOnNotFound)
+          require(groupMemberExists==true,"Member not found");
+          
+        if(!groupMemberExists){
+            
+
+            GroupMember memory groupMember = GroupMember(true,depositor, groupId);
+            uint index = GroupMembers.length;
+            
+            RecordIndex memory recordIndex = RecordIndex(true,index);
+            
+            GroupMembersDeepIndexer[groupId][depositor] = recordIndex;
+            GroupMembersIndexer[groupId].push( recordIndex);
+            GroupMembersIndexerByDepositor[depositor].push(recordIndex);
+
+
+            GroupMembers.push(groupMember);
+            return groupMember;
+        }
+        else{
+             uint index = GroupMembersDeepIndexer[groupId][depositor].index;
+             GroupMember memory groupMember = GroupMembers[index];
+             return groupMember;
+        }
     }
     
     
-    function activateCycle(uint cycleId) onlyCycleCreator(cycleId) external{
-       Cycle memory cycle = _getCycle(cycleId);
-       require(cycle.cycleStatus==CycleStatus.NOT_STARTED, "Cannot activate a cycle not in the 'NOT_STARTED' state");
-       
-       //todo: call lending contract
-       
-       _startCycle(cycle);
-       
-    }
+   
     
     function _startCycle(Cycle memory cycle) internal {
         cycle.cycleStatus = CycleStatus.ONGOING;
        _updateCycle(cycle);
     }
     
-    function createGroup(string calldata name, string calldata symbol) external{
-        lastGroupId +=1;
-        Group memory group = Group(true,lastGroupId,name,symbol, msg.sender,0,0,0,0,0,0,0,0);
-       
-        uint index = Groups.length;
-        RecordIndex memory recordIndex = RecordIndex(true,index);
-
-
-        Groups.push(group);
-        GroupIndexer[lastGroupId] =  recordIndex;
-        GroupIndexerByName[name] = recordIndex;
-    }
-    
-    function createCycle(uint groupId,  uint startTimeStamp, uint duration, uint maximumSlots, bool hasMaximumSlots, uint minimumCycleDeposit) onlyGroupCreator(groupId) external {
-        
-      _validateCycleCreationActionValid(groupId,maximumSlots,hasMaximumSlots);
-        
-      lastCycleId +=1;
-      Cycle memory cycle  = Cycle(true,lastCycleId,groupId,0,startTimeStamp,duration,maximumSlots,hasMaximumSlots,minimumCycleDeposit,0,0,0,0,0, CycleStatus.NOT_STARTED);
-      
-      uint index = Cycles.length;
-      
-      RecordIndex memory recordIndex = RecordIndex(true,index);
-      
-      Cycles.push(cycle); 
-      CycleIndexer[lastCycleId] =  recordIndex;
-    }
+   
     
     
     
