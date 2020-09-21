@@ -195,9 +195,26 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         TokenAddress = tokenAddress;
     }
 
+    function withdrawFromCycle(uint256 cycleId) external {
+        address payable memberAddress = msg.sender;
+        _withdrawFromCycle(cycleId, memberAddress);
+    }
+
     function withdrawFromCycle(uint256 cycleId, address payable memberAddress)
+        external
+    {
+        _withdrawFromCycle(cycleId, memberAddress);
+    }
+
+    function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
         internal
     {
+        bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
+
+        if (isCycleReadyToBeEnded) {
+            _endCycle(cycleId);
+        }
+
         Cycle memory cycle = _getCycle(cycleId);
 
 
@@ -271,6 +288,10 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     }
 
     function endCycle(uint256 cycleId) external {
+        _endCycle(cycleId);
+    }
+
+    function _endCycle(uint256 cycleId) internal {
         bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
         require(isCycleReadyToBeEnded == true, "Cycle is still ongoing");
 
@@ -280,6 +301,8 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
         cycle.underlyingBalance = underlyingAmount;
         cycle.cycleStatus = CycleStatus.ENDED;
+
+        _updateCycle(cycle);
     }
 
     function _isCycleReadyToBeEnded(uint256 cycleId)
@@ -289,10 +312,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     {
         Cycle memory cycle = _getCycle(cycleId);
 
-        require(
-            cycle.cycleStatus == CycleStatus.ONGOING,
-            " Can only determine end state of  ONGOING cycle"
-        );
+        if (cycle.cycleStatus != CycleStatus.ONGOING) return false;
 
         uint256 currentTimeStamp = now;
         uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp +
