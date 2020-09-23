@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: MIT
+//pragma experimental ABIEncoderV2;
 
 pragma solidity ^0.6.0;
 
@@ -6,13 +7,9 @@ import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./Address.sol";
 import "./IDaiLendingService.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "./IERC20.sol";
 
-contract XendFinanceGroup_Yearn_V1 is Ownable {
-    using SafeMath for uint256;
-
-    using Address for address payable;
-
+contract XendFinanceGroupStorage_Yearn_V1 {
     // list of group records
     Group[] Groups;
     //Mapping that enables ease of traversal of the group records
@@ -47,7 +44,8 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     mapping(address => RecordIndex[]) public GroupMembersIndexerByDepositor;
 
     //Mapping that enables easy traversal of cycle members in a group. outer key is the group id, inner key is the member address
-    mapping(uint256 => mapping(address => RecordIndex)) GroupMembersDeepIndexer;
+    mapping(uint256 => mapping(address => RecordIndex))
+        public GroupMembersDeepIndexer;
 
     CycleMember[] CycleMembers;
 
@@ -62,8 +60,6 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
     uint256 lastGroupId;
     uint256 lastCycleId;
-    //uint lastGroupMemberId;
-    //uint lastCycleMemberId;
 
     address LendingServiceAddress;
 
@@ -100,17 +96,6 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         CycleStatus cycleStatus;
     }
 
-    struct Member {
-        bool exists;
-        address payable _address;
-    }
-
-    struct GroupMember {
-        bool exists;
-        address payable _address;
-        uint256 groupId;
-    }
-
     struct CycleMember {
         bool exist;
         uint256 cycleId;
@@ -122,10 +107,31 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         bool hasWithdrawn;
     }
 
+    struct Member {
+        bool exists;
+        address payable _address;
+    }
+
+    struct GroupMember {
+        bool exists;
+        address payable _address;
+        uint256 groupId;
+    }
+
     struct RecordIndex {
         bool exists;
         uint256 index;
     }
+    enum CycleStatus {NOT_STARTED, ONGOING, ENDED}
+}
+
+contract XendFinanceGroup_Yearn_V1 is
+    XendFinanceGroupStorage_Yearn_V1,
+    Ownable
+{
+    using SafeMath for uint256;
+
+    using Address for address payable;
 
     struct CycleDepositResult {
         Group group;
@@ -135,27 +141,28 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         uint256 underlyingAmountDeposited;
     }
 
-    enum CycleStatus {NOT_STARTED, ONGOING, ENDED}
-
     event UnderlyingAssetDeposited(
-        uint256 cycleId,
-        address payable memberAddress,
+        uint256 indexed cycleId,
+        address payable indexed memberAddress,
         uint256 groupId,
         uint256 underlyingAmount,
-        address tokenAddress
+        address indexed tokenAddress
     );
 
     event DerivativeAssetWithdrawn(
-        uint256 cycleId,
-        address payable memberAddress,
+        uint256 indexed cycleId,
+        address payable indexed memberAddress,
         uint256 underlyingAmount,
         address tokenAddress
     );
 
-    event GroupCreated(uint256 groupId, address payable groupCreator);
+    event GroupCreated(
+        uint256 indexed groupId,
+        address payable indexed groupCreator
+    );
 
     event CycleCreated(
-        uint256 cycleId,
+        uint256 indexed cycleId,
         uint256 maximumSlots,
         bool hasMaximumSlots,
         uint256 stakeAmount,
@@ -164,8 +171,8 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     );
 
     event MemberJoinedCycle(
-        uint256 cycleId,
-        address payable memberAddress,
+        uint256 indexed cycleId,
+        address payable indexed memberAddress,
         uint256 groupId
     );
 
@@ -193,6 +200,179 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         daiToken = IERC20(tokenAddress);
         LendingAdapterAddress = lendingAdapterAddress;
         TokenAddress = tokenAddress;
+    }
+
+    function getRecordIndexLengthForCycleMembers(uint256 cycleId)
+        external
+        view
+        returns (uint256)
+    {
+        return CycleMembersIndexer[cycleId].length;
+    }
+
+    function getRecordIndexLengthForCycleMembersByDepositor(
+        address depositorAddress
+    ) external view returns (uint256) {
+        return CycleMembersIndexerByDepositor[depositorAddress].length;
+    }
+
+    function getRecordIndexLengthForGroupMembers(uint256 groupId)
+        external
+        view
+        returns (uint256)
+    {
+        return GroupMembersIndexer[groupId].length;
+    }
+
+    function getRecordIndexLengthForGroupMembersByDepositor(
+        address depositorAddress
+    ) external view returns (uint256) {
+        return GroupMembersIndexerByDepositor[depositorAddress].length;
+    }
+
+    function getRecordIndexLengthForGroupCycles(uint256 groupId)
+        external
+        view
+        returns (uint256)
+    {
+        return GroupCycleIndexer[groupId].length;
+    }
+
+    function getRecordIndexLengthForCreator(address groupCreator)
+        external
+        view
+        returns (uint256)
+    {
+        return GroupForCreatorIndexer[groupCreator].length;
+    }
+
+    function getSecondsLeftForCycleToEnd(uint256 cycleId)
+        external
+        view
+        returns (uint256)
+    {
+        Cycle memory cycle = _getCycle(cycleId);
+        require(cycle.cycleStatus == CycleStatus.ONGOING);
+        uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp +
+            cycle.cycleDuration;
+
+        if (cycleEndTimeStamp >= now) return cycleEndTimeStamp - now;
+        else return 0;
+    }
+
+    function getSecondsLeftForCycleToStart(uint256 cycleId)
+        external
+        view
+        returns (uint256)
+    {
+        Cycle memory cycle = _getCycle(cycleId);
+        require(cycle.cycleStatus == CycleStatus.NOT_STARTED);
+
+        if (cycle.cycleStartTimeStamp >= now)
+            return cycle.cycleStartTimeStamp - now;
+        else return 0;
+    }
+
+    function getCycleFinancials(uint256 index)
+        external
+        view
+        returns (
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 underlyingBalance,
+            uint256 derivativeBalance
+        )
+    {
+        Cycle memory cycle = Cycles[index];
+
+        return (
+            cycle.underlyingTotalDeposits,
+            cycle.underlyingTotalWithdrawn,
+            cycle.underlyingBalance,
+            cycle.derivativeBalance
+        );
+    }
+
+    function getCycle(uint256 index)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus
+        )
+    {
+        Cycle memory cycle = Cycles[index];
+
+        return (
+            cycle.id,
+            cycle.groupId,
+            cycle.numberOfDepositors,
+            cycle.cycleStartTimeStamp,
+            cycle.cycleDuration,
+            cycle.maximumSlots,
+            cycle.hasMaximumSlots,
+            cycle.cycleStakeAmount,
+            cycle.totalStakes,
+            cycle.stakesClaimed,
+            cycle.cycleStatus
+        );
+    }
+
+    function getGroup(uint256 index)
+        external
+        view
+        returns (
+            bool exists,
+            uint256 id,
+            string memory name,
+            string memory symbol,
+            address payable creatorAddress
+        )
+    {
+        Group memory group = Groups[index];
+        return (
+            group.exists,
+            group.id,
+            group.name,
+            group.symbol,
+            group.creatorAddress
+        );
+    }
+
+    function getCycleMember(uint256 index)
+        external
+        view
+        returns (
+            bool exist,
+            uint256 cycleId,
+            uint256 groupId,
+            address payable _address,
+            uint256 totalLiquidityAsPenalty,
+            uint256 numberOfCycleStakes,
+            uint256 stakesClaimed,
+            bool hasWithdrawn
+        )
+    {
+        CycleMember memory cycleMember = CycleMembers[index];
+        return (
+            cycleMember.exist,
+            cycleMember.cycleId,
+            cycleMember.groupId,
+            cycleMember._address,
+            cycleMember.totalLiquidityAsPenalty,
+            cycleMember.numberOfCycleStakes,
+            cycleMember.stakesClaimed,
+            cycleMember.hasWithdrawn
+        );
     }
 
     function withdrawFromCycle(uint256 cycleId) external {
@@ -267,16 +447,27 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
     function activateCycle(uint256 cycleId) external onlyCycleCreator(cycleId) {
         Cycle memory cycle = _getCycle(cycleId);
+        uint256 currentTimeStamp = now;
         require(
             cycle.cycleStatus == CycleStatus.NOT_STARTED,
             "Cannot activate a cycle not in the 'NOT_STARTED' state"
         );
+        require(
+            cycle.numberOfDepositors > 0,
+            "Cannot activate cycle that has no depositors"
+        );
+
+        require(
+            cycle.cycleStartTimeStamp <= currentTimeStamp,
+            "Cycle start time has not been reached"
+        );
 
         uint256 derivativeAmount = lendCycleDeposit(cycle);
-
+        cycle.derivativeBalance = derivativeAmount;
+        cycle.cycleStartTimeStamp = currentTimeStamp;
         _startCycle(cycle);
         uint256 blockNumber = block.number;
-        uint256 blockTimestamp = now;
+        uint256 blockTimestamp = currentTimeStamp;
 
         emit CycleStartedEvent(
             cycleId,
@@ -318,7 +509,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp +
             cycle.cycleDuration;
 
-        if (cycleEndTimeStamp >= currentTimeStamp) return true;
+        if (currentTimeStamp >= cycleEndTimeStamp) return true;
         else return false;
     }
 
@@ -338,7 +529,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     function redeemLending(Cycle memory cycle) internal returns (uint256) {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
 
-        lendingService.Withdraw(cycle.derivativeBalance);
+        lendingService.WithdrawBySharesOnly(cycle.derivativeBalance);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
 
@@ -352,6 +543,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
     function createGroup(string calldata name, string calldata symbol)
         external
     {
+        _validateGroupNameAndSymbolIsAvailable(name, symbol);
         lastGroupId += 1;
         Group memory group = Group(true, lastGroupId, name, symbol, msg.sender);
 
@@ -361,8 +553,24 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         Groups.push(group);
         GroupIndexer[lastGroupId] = recordIndex;
         GroupIndexerByName[name] = recordIndex;
+        GroupForCreatorIndexer[msg.sender].push(recordIndex);
 
         emit GroupCreated(group.id, msg.sender);
+    }
+
+    function _validateGroupNameAndSymbolIsAvailable(
+        string memory name,
+        string memory symbol
+    ) internal {
+        bytes memory nameInBytes = bytes(name); // Uses memory
+        bytes memory symbolInBytes = bytes(symbol); // Uses memory
+
+        require(nameInBytes.length > 0, "Group name cannot be empty");
+        require(symbolInBytes.length > 0, "Group sysmbol cannot be empty");
+
+        bool nameExist = GroupIndexerByName[name].exists;
+
+        require(nameExist == false, "Group name has already been used");
     }
 
     function createCycle(
@@ -405,7 +613,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
         Cycles.push(cycle);
         CycleIndexer[lastCycleId] = recordIndex;
-
+        GroupCycleIndexer[cycle.groupId].push(recordIndex);
         emit CycleCreated(
             cycle.id,
             maximumSlots,
@@ -434,7 +642,10 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         uint256 numberOfStakes,
         address payable depositorAddress
     ) internal {
+        require(numberOfStakes > 0, "Minimum stakes that can be acquired is 1");
+
         Group memory group = _getCycleGroup(cycleId);
+        Cycle memory cycle = _getCycle(cycleId);
 
 
             bool didCycleMemberExistBeforeNow
@@ -443,7 +654,10 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
             .id][depositorAddress]
             .exists;
 
-        Cycle memory cycle = _getCycle(cycleId);
+        _validateCycleDepositCriteriaAreMet(
+            cycle,
+            didCycleMemberExistBeforeNow
+        );
 
         CycleDepositResult memory result = _addDepositorToCycle(
             cycleId,
@@ -474,6 +688,24 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         }
     }
 
+    function _validateCycleDepositCriteriaAreMet(
+        Cycle memory cycle,
+        bool didCycleMemberExistBeforeNow
+    ) internal view {
+        bool hasMaximumSlots = cycle.hasMaximumSlots;
+        if (hasMaximumSlots == true && didCycleMemberExistBeforeNow == false) {
+            require(
+                cycle.numberOfDepositors < cycle.maximumSlots,
+                "Maximum slot for depositors has been reached"
+            );
+        }
+
+        require(
+            cycle.cycleStatus == CycleStatus.NOT_STARTED,
+            "This cycle is not accepting deposits anymore"
+        );
+    }
+
     function _addDepositorToCycle(
         uint256 cycleId,
         uint256 cycleAmountForStake,
@@ -498,7 +730,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
             depositorAddress
         );
 
-        cycleMember = _saveMemberDeposit(cycleMember, underlyingAmount);
+        cycleMember = _saveMemberDeposit(cycleMember, numberOfStakes);
 
         CycleDepositResult memory result = CycleDepositResult(
             group,
@@ -595,9 +827,6 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
         CycleMember memory cycleMember,
         uint256 numberOfCycleStakes
     ) internal returns (CycleMember memory) {
-        uint256 index = CycleMembersDeepIndexer[cycleMember.cycleId][cycleMember
-            ._address]
-            .index;
         cycleMember.numberOfCycleStakes += numberOfCycleStakes;
         _updateCycleMember(cycleMember);
         return cycleMember;
@@ -736,10 +965,9 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
         require(doesGroupExist == true, "Group not found");
 
-        require(
-            hasMaximumSlots == true && maximumsSlots == 0,
-            "Maximum slot settings cannot be empty"
-        );
+        if (hasMaximumSlots == true) {
+            require(maximumsSlots > 0, "Maximum slot settings cannot be empty");
+        }
     }
 
     function doesGroupExist(uint256 groupId) internal view returns (bool) {
@@ -843,7 +1071,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
         require(
             msg.sender == group.creatorAddress,
-            "nauthorized access to contract"
+            "unauthorized access to contract"
         );
         _;
     }
@@ -853,7 +1081,7 @@ contract XendFinanceGroup_Yearn_V1 is Ownable {
 
         require(
             msg.sender == group.creatorAddress,
-            "nauthorized access to contract"
+            "unauthorized access to contract"
         );
         _;
     }
