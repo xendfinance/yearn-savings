@@ -18,7 +18,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
     //Mapping that enables ease of traversal of the Client Records
     mapping(address => RecordIndex) public ClientRecordIndexer;
 
-    address LendingServiceAddress;
+    address LendingAdapterAddress;
 
     struct ClientRecord {
         bool exists;
@@ -52,12 +52,85 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
 
     IDaiLendingService lendingService;
     IERC20 daiToken;
+    
 
-    constructor(address lendingServiceAddress, address tokenAddress) public {
+    constructor(address lendingAdapterAddress,  address lendingServiceAddress,  address tokenAddress) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
-        LendingServiceAddress = lendingServiceAddress;
+        LendingAdapterAddress = lendingAdapterAddress;
     }
+    
+   
+    
+    function getClientRecord() external returns
+    (
+        bool exists,
+        address payable _address,
+        string memory email,
+        uint256 underlyingTotalDeposits,
+        uint256 underlyingTotalWithdrawn,
+        uint256 derivativeBalance,
+        uint256 derivativeTotalDeposits,
+        uint256 derivativeTotalWithdrawn   
+        
+    )
+    {
+       RecordIndex memory recordIndex =  ClientRecordIndexer[msg.sender];
+       require(recordIndex.exists==true,"Savings information not found for this wallet address");
+       return _getClientRecordByIndex(recordIndex.index);
+
+
+        
+    }
+    
+      function getClientRecordByIndex(uint index) external returns
+    (
+        bool exists,
+        address payable _address,
+        string memory email,
+        uint256 underlyingTotalDeposits,
+        uint256 underlyingTotalWithdrawn,
+        uint256 derivativeBalance,
+        uint256 derivativeTotalDeposits,
+        uint256 derivativeTotalWithdrawn   
+        
+    )
+    {
+        
+        
+        return _getClientRecordByIndex(index);
+    }
+    
+     function _getClientRecordByIndex(uint index) internal returns
+    (
+        bool exists,
+        address payable _address,
+        string memory email,
+        uint256 underlyingTotalDeposits,
+        uint256 underlyingTotalWithdrawn,
+        uint256 derivativeBalance,
+        uint256 derivativeTotalDeposits,
+        uint256 derivativeTotalWithdrawn   
+        
+    )
+    {
+        
+        ClientRecord memory clientRecord = ClientRecords[index];
+        return (
+            
+             clientRecord.exists,
+             clientRecord._address,
+             clientRecord.email,
+             clientRecord.underlyingTotalDeposits,
+             clientRecord.underlyingTotalWithdrawn,
+             clientRecord.derivativeBalance,
+             clientRecord.derivativeTotalDeposits,
+             clientRecord.derivativeTotalWithdrawn   
+            
+            );
+    }
+    
+    
 
     function withdraw(uint256 derivativeAmount) external {
         address payable recipient = msg.sender;
@@ -78,7 +151,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
 
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
 
-        lendingService.Withdraw(derivativeAmount);
+        lendingService.WithdrawBySharesOnly(derivativeAmount);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
 
@@ -149,7 +222,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
             "Could not complete deposit process from token contract"
         );
 
-        daiToken.approve(LendingServiceAddress, amountTransferrable);
+        daiToken.approve(LendingAdapterAddress, amountTransferrable);
 
         uint256 balanceBeforeDeposit = lendingService.userShares();
 
