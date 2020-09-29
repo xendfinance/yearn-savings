@@ -2,6 +2,10 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface IGroups is IGroupSchema {
+    function createMember(address payable depositor) external;
+
+    function getMember(address _address) external view returns (bool, address);
+
     function createGroup(string calldata name, string calldata symbol) external;
 
     function updateGroup(
@@ -13,6 +17,45 @@ interface IGroups is IGroupSchema {
     function doesGroupExist(uint256 groupId) external view returns (bool);
 
     function doesGroupExist(string calldata groupName)
+        external
+        view
+        returns (bool);
+
+    function doesMemberExist(address depositor) external view returns (bool);
+
+    function createGroupMember(uint256 groupId, address payable depositor)
+        external;
+
+    function getGroupMember(uint256 index)
+        external
+        view
+        returns (address payable _address, uint256 groupId);
+
+    function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
+        external
+        view
+        returns (bool exist, uint256 index);
+
+    function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)
+        external
+        view
+        returns (uint256);
+
+    function getRecordIndexLengthForGroupMembersIndexerByDepositor(
+        address depositor
+    ) external view returns (uint256);
+
+    function getGroupMembersIndexer(uint256 groupId, uint256 indexerLocation)
+        external
+        view
+        returns (bool exist, uint256 index);
+
+    function getGroupMembersIndexerByDepositor(
+        address depositor,
+        uint256 indexerLocation
+    ) external view returns (bool exist, uint256 index);
+
+    function doesGroupMemberExist(uint256 groupId, address depositor)
         external
         view
         returns (bool);
@@ -29,7 +72,7 @@ interface IGroups is IGroupSchema {
 
     function getGroupForCreatorIndexer(
         address groupCreator,
-        int256 indexerLocation
+        uint256 indexerLocation
     ) external view returns (bool exist, uint256 index);
 
     function getGroupIndexerByName(string calldata groupName)

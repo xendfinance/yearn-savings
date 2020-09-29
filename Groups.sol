@@ -33,7 +33,7 @@ contract GroupStorageOwners {
 
 contract Groups is IGroupSchema, GroupStorageOwners {
     // list of group records
-    Group[] Groups;
+    Group[] private Groups;
     //Mapping that enables ease of traversal of the group records
     mapping(uint256 => RecordIndex) private GroupIndexer;
 
@@ -43,12 +43,58 @@ contract Groups is IGroupSchema, GroupStorageOwners {
     // indexes a group location using the group name
     mapping(string => RecordIndex) private GroupIndexerByName;
 
+    GroupMember[] GroupMembers;
+
+    //Mapping of a groups members. Key is the group id,
+    mapping(uint256 => RecordIndex[]) private GroupMembersIndexer;
+
+    mapping(address => RecordIndex[]) private GroupMembersIndexerByDepositor;
+    mapping(uint256 => mapping(address => RecordIndex))
+        private GroupMembersDeepIndexer;
+
+    // list of group records
+    Member[] private Members;
+
+    //Mapping that enables ease of traversal of the member records. key is the member address
+    mapping(address => RecordIndex) private MemberIndexer;
+
     uint256 lastGroupId;
+
+    function createMember(address payable depositor) external {
+        Member memory member = Member(true, depositor);
+
+        bool exist = _doesMemberExist(depositor);
+
+        require(exist == false, "Member already exists");
+
+        RecordIndex memory recordIndex = RecordIndex(true, Members.length);
+
+        Members.push(member);
+        MemberIndexer[depositor] = recordIndex;
+    }
+
+    function getMember(address _address) external view returns (bool, address) {
+        uint256 index = _getMemberIndex(_address);
+        Member memory member = Members[index];
+
+        return (member.exists, member._address);
+    }
+
+    function _getMemberIndex(address _address) internal view returns (uint256) {
+        bool doesMemberExist = MemberIndexer[_address].exists;
+        require(doesMemberExist == true, "Member not found");
+
+        uint256 index = MemberIndexer[_address].index;
+        return index;
+    }
 
     function createGroup(string calldata name, string calldata symbol)
         external
         onlyStorageOracle
     {
+        bool exist = _doesGroupExist(name);
+        require(exist == false, "Group name has already been used");
+
         lastGroupId += 1;
         Group memory group = Group(true, lastGroupId, name, symbol, msg.sender);
         uint256 index = Groups.length;
@@ -64,27 +110,134 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         string calldata name,
         string calldata symbol
     ) external onlyStorageOracle {
-        uint256 index = getGroupIndex(id);
+        uint256 index = _getGroupIndex(id);
         Groups[index].name = name;
         Groups[index].symbol = symbol;
     }
 
-    function doesGroupExist(uint256 groupId) public view returns (bool) {
-        bool groupExist = GroupIndexer[groupId].exists;
-
-        if (groupExist) return true;
-        else return false;
+    function doesGroupExist(uint256 groupId) external view returns (bool) {
+        return _doesGroupExist(groupId);
     }
 
-    function doesGroupExist(string memory groupName)
-        public
+    function _doesGroupExist(uint256 groupId) internal view returns (bool) {
+        bool groupExist = GroupIndexer[groupId].exists;
+
+        return groupExist;
+    }
+
+    function doesGroupExist(string calldata groupName)
+        external
+        view
+        returns (bool)
+    {
+        return _doesGroupExist(groupName);
+    }
+
+    function _doesGroupExist(string memory groupName)
+        internal
         view
         returns (bool)
     {
         bool groupExist = GroupIndexerByName[groupName].exists;
 
-        if (groupExist) return true;
+        return groupExist;
+    }
+
+    function doesMemberExist(address depositor) external view returns (bool) {
+        return _doesMemberExist(depositor);
+    }
+
+    function _doesMemberExist(address depositor) internal view returns (bool) {
+        bool exist = MemberIndexer[depositor].exists;
+
+        if (exist) return true;
         else return false;
+    }
+
+    function createGroupMember(uint256 groupId, address payable depositor)
+        external
+    {
+        bool exist = _doesGroupMemberExist(groupId, depositor);
+        require(exist == false, "Group member exists");
+
+        GroupMember memory groupMember = GroupMember(true, depositor, groupId);
+        RecordIndex memory recordIndex = RecordIndex(true, GroupMembers.length);
+
+        GroupMembersIndexer[groupId].push(recordIndex);
+        GroupMembersIndexerByDepositor[depositor].push(recordIndex);
+        GroupMembersDeepIndexer[groupId][depositor] = recordIndex;
+    }
+
+    function getGroupMember(uint256 index)
+        external
+        view
+        returns (address payable _address, uint256 groupId)
+    {
+        GroupMember memory groupMember = GroupMembers[index];
+        return (groupMember._address, groupMember.groupId);
+    }
+
+    function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
+        external
+        view
+        returns (bool exist, uint256 index)
+    {
+
+            RecordIndex memory recordIndex
+         = GroupMembersDeepIndexer[groupId][depositor];
+        return (recordIndex.exists, recordIndex.index);
+    }
+
+    function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)
+        external
+        view
+        returns (uint256)
+    {
+        return GroupMembersIndexer[groupId].length;
+    }
+
+    function getRecordIndexLengthForGroupMembersIndexerByDepositor(
+        address depositor
+    ) external view returns (uint256) {
+        return GroupMembersIndexerByDepositor[depositor].length;
+    }
+
+    function getGroupMembersIndexer(uint256 groupId, uint256 indexerLocation)
+        external
+        view
+        returns (bool exist, uint256 index)
+    {
+
+            RecordIndex memory recordIndex
+         = GroupMembersIndexer[groupId][indexerLocation];
+        return (recordIndex.exists, recordIndex.index);
+    }
+
+    function getGroupMembersIndexerByDepositor(
+        address depositor,
+        uint256 indexerLocation
+    ) external view returns (bool exist, uint256 index) {
+
+            RecordIndex memory recordIndex
+         = GroupMembersIndexerByDepositor[depositor][indexerLocation];
+        return (recordIndex.exists, recordIndex.index);
+    }
+
+    function doesGroupMemberExist(uint256 groupId, address depositor)
+        external
+        view
+        returns (bool)
+    {
+        return _doesGroupMemberExist(groupId, depositor);
+    }
+
+    function _doesGroupMemberExist(uint256 groupId, address depositor)
+        internal
+        view
+        returns (bool)
+    {
+        bool exist = GroupMembersDeepIndexer[groupId][depositor].exists;
+        return exist;
     }
 
     function getGroupIndexer(uint256 groupId)
@@ -106,11 +259,11 @@ contract Groups is IGroupSchema, GroupStorageOwners {
 
     function getGroupForCreatorIndexer(
         address groupCreator,
-        int256 indexerLocation
+        uint256 indexerLocation
     ) external view returns (bool exist, uint256 index) {
 
             RecordIndex memory recordIndex
-         = GroupForCreatorIndexer[groupCreator][index];
+         = GroupForCreatorIndexer[groupCreator][indexerLocation];
         return (recordIndex.exists, recordIndex.index);
     }
 
@@ -124,7 +277,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
     }
 
     function getGroupById(uint256 groupId)
-        public
+        external
         view
         onlyStorageOracle
         returns (
@@ -134,14 +287,28 @@ contract Groups is IGroupSchema, GroupStorageOwners {
             address payable
         )
     {
-        uint256 index = getGroupIndex(groupId);
+        uint256 index = _getGroupIndex(groupId);
 
         Group storage group = Groups[index];
         return (group.id, group.name, group.symbol, group.creatorAddress);
     }
 
     function getGroupByIndex(uint256 index)
-        public
+        external
+        view
+        onlyStorageOracle
+        returns (
+            uint256,
+            string memory,
+            string memory,
+            address payable
+        )
+    {
+        return _getGroupByIndex(index);
+    }
+
+    function _getGroupByIndex(uint256 index)
+        internal
         view
         onlyStorageOracle
         returns (
@@ -158,7 +325,16 @@ contract Groups is IGroupSchema, GroupStorageOwners {
     }
 
     function getGroupIndex(uint256 groupId)
-        public
+        external
+        view
+        onlyStorageOracle
+        returns (uint256)
+    {
+        return _getGroupIndex(groupId);
+    }
+
+    function _getGroupIndex(uint256 groupId)
+        internal
         view
         onlyStorageOracle
         returns (uint256)
