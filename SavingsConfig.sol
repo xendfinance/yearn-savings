@@ -5,8 +5,8 @@ import "./Ownable.sol";
 contract SavingsConfig is Ownable {
     using SafeMath for uint256;
 
-    mapping(string => RuleSet) RuleMapping;
-    mapping(string => address) RuleModifier;
+    mapping(string => RuleSet) public RuleMapping;
+    mapping(string => address) public RuleModifier;
 
     struct RuleSet {
         bool exists;
@@ -20,6 +20,45 @@ contract SavingsConfig is Ownable {
     enum RuleDefinition {RANGE, VALUE}
 
     constructor() public {}
+
+    function getRuleSet(string calldata ruleKey)
+        external
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            bool,
+            RuleDefinition
+        )
+    {
+        RuleSet memory ruleSet = RuleMapping[ruleKey];
+
+        require(
+            ruleSet.exists == true,
+            "No rule definitions found for rule key"
+        );
+
+        return (
+            ruleSet.minimum,
+            ruleSet.maximum,
+            ruleSet.exact,
+            ruleSet.applies,
+            ruleSet.ruleDefinition
+        );
+    }
+
+    function getRuleManager(string calldata ruleKey)
+        external
+        returns (address)
+    {
+        RuleSet memory ruleSet = RuleMapping[ruleKey];
+        require(
+            ruleSet.exists == true,
+            "No rule definitions found for rule key"
+        );
+        address ruleManager = RuleModifier[ruleKey];
+        return (ruleManager);
+    }
 
     function changeRuleCreator(string calldata ruleKey, address newRuleManager)
         external

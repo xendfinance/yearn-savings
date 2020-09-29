@@ -3,6 +3,18 @@ pragma solidity ^0.6.6;
 interface ISavingsConfig {
     enum RuleDefinition {RANGE, VALUE}
 
+    function getRuleSet(string calldata ruleKey)
+        external
+        returns (
+            uint256,
+            uint256,
+            uint256,
+            bool,
+            RuleDefinition
+        );
+
+    function getRuleManager(string calldata ruleKey) external returns (address);
+
     function changeRuleCreator(string calldata ruleKey, address newRuleManager)
         external;
 
