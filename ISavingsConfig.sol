@@ -1,6 +1,7 @@
 pragma solidity ^0.6.6;
+import "./ISavingsConfigSchema.sol";
 
-interface ISavingsConfig {
+interface ISavingsConfig is ISavingsConfigSchema {
     enum RuleDefinition {RANGE, VALUE}
 
     function getRuleSet(string calldata ruleKey)
