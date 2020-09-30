@@ -1,23 +1,13 @@
 pragma solidity ^0.6.6;
 import "./SafeMath.sol";
 import "./Ownable.sol";
+import "./ISavingsConfigSchema.sol";
 
-contract SavingsConfig is Ownable {
+contract SavingsConfig is ISavingsConfigSchema, Ownable {
     using SafeMath for uint256;
 
     mapping(string => RuleSet) public RuleMapping;
     mapping(string => address) public RuleModifier;
-
-    struct RuleSet {
-        bool exists;
-        uint256 minimum;
-        uint256 maximum;
-        uint256 exact;
-        bool applies;
-        RuleDefinition ruleDefinition;
-    }
-
-    enum RuleDefinition {RANGE, VALUE}
 
     constructor() public {}
 
