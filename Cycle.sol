@@ -1,10 +1,5 @@
 pragma solidity ^0.6.0;
 
-import "./SafeMath.sol";
-import "./Ownable.sol";
-import "./Address.sol";
-import "./IDaiLendingService.sol";
-import "./IERC20.sol";
 import "./IGroupSchema.sol";
 
 contract GroupStorageOwners {
@@ -60,7 +55,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
 
     uint256 lastCycleId;
 
-    function getCycleInfoByIndex(uint256 cycleId)
+    function getCycleInfoByIndex(uint256 index)
         external
         view
         returns (
@@ -134,6 +129,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         external
         view
         returns (
+            uint256 cycleId,
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
@@ -143,6 +139,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
 
         return (
+            cycleFinancial.cycleId,
             cycleFinancial.underlyingTotalDeposits,
             cycleFinancial.underlyingTotalWithdrawn,
             cycleFinancial.underlyingBalance,
@@ -257,7 +254,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 totalStakes,
         uint256 stakesClaimed,
         CycleStatus cycleStatus
-    ) external returns (lastCycleId) {
+    ) external returns (uint256) {
         lastCycleId += 1;
         Cycle memory cycle = Cycle(
             true,
@@ -396,6 +393,14 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         returns (uint256)
     {
         return CycleMembersIndexer[cycleId].length;
+    }
+
+    function getRecordIndexLengthForGroupCycleIndexer(uint256 groupId)
+        external
+        view
+        returns (uint256)
+    {
+        return GroupCycleIndexer[groupId].length;
     }
 
     function getRecordIndexLengthForCycleMembersByDepositor(

@@ -110,11 +110,13 @@ contract Groups is IGroupSchema, GroupStorageOwners {
     function updateGroup(
         uint256 id,
         string calldata name,
-        string calldata symbol
+        string calldata symbol,
+        address payable creatorAddress
     ) external onlyStorageOracle {
         uint256 index = _getGroupIndex(id);
         Groups[index].name = name;
         Groups[index].symbol = symbol;
+        Groups[index].creatorAddress = creatorAddress;
     }
 
     function doesGroupExist(uint256 groupId) external view returns (bool) {
@@ -182,12 +184,12 @@ contract Groups is IGroupSchema, GroupStorageOwners {
     function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
         external
         view
-        returns (bool exist, uint256 index)
+        returns (uint256 index)
     {
 
             RecordIndex memory recordIndex
          = GroupMembersDeepIndexer[groupId][depositor];
-        return (recordIndex.exists, recordIndex.index);
+        return (recordIndex.index);
     }
 
     function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)

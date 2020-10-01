@@ -15,7 +15,8 @@ interface IGroups is IGroupSchema {
     function updateGroup(
         uint256 id,
         string calldata name,
-        string calldata symbol
+        string calldata symbol,
+        address payable creatorAddress
     ) external;
 
     function doesGroupExist(uint256 groupId) external view returns (bool);
@@ -38,7 +39,7 @@ interface IGroups is IGroupSchema {
     function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
         external
         view
-        returns (bool exist, uint256 index);
+        returns (uint256 index);
 
     function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)
         external
