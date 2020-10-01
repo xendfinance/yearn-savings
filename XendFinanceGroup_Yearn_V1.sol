@@ -12,62 +12,6 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 
-/*
-contract XendFinanceGroupStorage_Yearn_V1 {
-    // list of group records
-    Group[] Groups;
-    //Mapping that enables ease of traversal of the group records
-    mapping(uint256 => RecordIndex) public GroupIndexer;
-
-    // Mapping that enables ease of traversal of groups created by an addressor
-    mapping(address => RecordIndex[]) public GroupForCreatorIndexer;
-
-    // indexes a group location using the group name
-    mapping(string => RecordIndex) public GroupIndexerByName;
-
-    // list of Group Cycles
-    Cycle[] Cycles;
-
-    //Mapping that enables ease of traversal of the cycle records. Key is cycle id
-    mapping(uint256 => RecordIndex) public CycleIndexer;
-
-    //Mapping that enables ease of traversal of cycle records by the group. key is group id
-    mapping(uint256 => RecordIndex[]) public GroupCycleIndexer;
-
-    // list of group records
-    Member[] Members;
-
-    //Mapping that enables ease of traversal of the member records. key is the member address
-    mapping(address => RecordIndex) public MemberIndexer;
-
-    GroupMember[] GroupMembers;
-
-    //Mapping of a groups members. Key is the group id,
-    mapping(uint256 => RecordIndex[]) public GroupMembersIndexer;
-
-    mapping(address => RecordIndex[]) public GroupMembersIndexerByDepositor;
-
-    //Mapping that enables easy traversal of cycle members in a group. outer key is the group id, inner key is the member address
-    mapping(uint256 => mapping(address => RecordIndex))
-        public GroupMembersDeepIndexer;
-
-    CycleMember[] CycleMembers;
-
-    //Mapping of a cycle members. key is the cycle id
-    mapping(uint256 => RecordIndex[]) public CycleMembersIndexer;
-
-    mapping(address => RecordIndex[]) public CycleMembersIndexerByDepositor;
-
-    //Mapping that enables easy traversal of cycle members in a group. outer key is the cycle id, inner key is the member address
-    mapping(uint256 => mapping(address => RecordIndex))
-        public CycleMembersDeepIndexer;
-    address LendingServiceAddress;
-
-   
-}
-
-*/
-
 contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
     using SafeMath for uint256;
 
@@ -650,7 +594,6 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         );
 
         _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
-
         emit UnderlyingAssetDeposited(
             cycle.id,
             depositorAddress,
@@ -732,10 +675,14 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         uint256 numberOfCycleStakes
     ) internal {
         cycle.totalStakes += numberOfCycleStakes;
-        cycleFinancial.underlyingTotalDeposits += cycle.cycleStakeAmount.mul(
-            numberOfCycleStakes
-        );
+        uint256 depositAmount = cycle.cycleStakeAmount.mul(numberOfCycleStakes);
+        cycleFinancial.underlyingTotalDeposits += depositAmount;
         _updateCycleFinancials(cycleFinancial);
+        _updateTotalTokenDepositAmount(depositAmount);
+    }
+
+    function _updateTotalTokenDepositAmount(uint256 amount) internal {
+        groupStorage.incrementTokenDeposit(TokenAddress, amount);
     }
 
     function _processMemberDeposit(
