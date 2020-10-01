@@ -60,7 +60,41 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
 
     uint256 lastCycleId;
 
-    function getCycleInfo(uint256 cycleId)
+    function getCycleInfoByIndex(uint256 cycleId)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus
+        )
+    {
+        Cycle memory cycle = Cycles[index];
+
+        return (
+            cycle.id,
+            cycle.groupId,
+            cycle.numberOfDepositors,
+            cycle.cycleStartTimeStamp,
+            cycle.cycleDuration,
+            cycle.maximumSlots,
+            cycle.hasMaximumSlots,
+            cycle.cycleStakeAmount,
+            cycle.totalStakes,
+            cycle.stakesClaimed,
+            cycle.cycleStatus
+        );
+    }
+
+    function getCycleInfoById(uint256 cycleId)
         external
         view
         returns (
@@ -96,7 +130,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         );
     }
 
-    function getCycleFinancials(uint256 index)
+    function getCycleFinancialsByIndex(uint256 index)
         external
         view
         returns (
@@ -106,6 +140,27 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
             uint256 derivativeBalance
         )
     {
+        CycleFinancial memory cycleFinancial = CycleFinancials[index];
+
+        return (
+            cycleFinancial.underlyingTotalDeposits,
+            cycleFinancial.underlyingTotalWithdrawn,
+            cycleFinancial.underlyingBalance,
+            cycleFinancial.derivativeBalance
+        );
+    }
+
+    function getCycleFinancialsByCycleId(uint256 cycleId)
+        external
+        view
+        returns (
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 underlyingBalance,
+            uint256 derivativeBalance
+        )
+    {
+        uint256 index = _getCycleFinancialIndex(cycleId);
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
 
         return (

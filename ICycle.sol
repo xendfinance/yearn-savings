@@ -2,7 +2,7 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface ICycles is IGroupSchema {
-    function getCycleInfo(uint256 cycleId)
+    function getCycleInfoByIndex(uint256 cycleId)
         external
         view
         returns (
@@ -19,7 +19,34 @@ interface ICycles is IGroupSchema {
             CycleStatus cycleStatus
         );
 
-    function getCycleFinancials(uint256 index)
+    function getCycleInfoById(uint256 cycleId)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus
+        );
+
+    function getCycleFinancialsByIndex(uint256 index)
+        external
+        view
+        returns (
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 underlyingBalance,
+            uint256 derivativeBalance
+        );
+
+    function getCycleFinancialsByCycleId(uint256 cycleId)
         external
         view
         returns (

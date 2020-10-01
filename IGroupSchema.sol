@@ -65,5 +65,6 @@ interface IGroupSchema {
         bool exists;
         uint256 index;
     }
+
     enum CycleStatus {NOT_STARTED, ONGOING, ENDED}
 }

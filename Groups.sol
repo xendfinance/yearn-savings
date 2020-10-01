@@ -1,15 +1,14 @@
 pragma solidity ^0.6.0;
 
-import "./SafeMath.sol";
-import "./Ownable.sol";
-import "./Address.sol";
-import "./IDaiLendingService.sol";
-import "./IERC20.sol";
 import "./IGroupSchema.sol";
 
 contract GroupStorageOwners {
     address owner;
     mapping(address => bool) private storageOracles;
+    
+    constructor() public{
+        owner = msg.sender;
+    }
 
     function activateStorageOracle(address oracle) external onlyOwner {
         storageOracles[oracle] = true;
@@ -73,11 +72,11 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         MemberIndexer[depositor] = recordIndex;
     }
 
-    function getMember(address _address) external view returns (bool, address) {
+    function getMember(address _address) external view returns (address) {
         uint256 index = _getMemberIndex(_address);
         Member memory member = Members[index];
 
-        return (member.exists, member._address);
+        return (member._address);
     }
 
     function _getMemberIndex(address _address) internal view returns (uint256) {
@@ -88,9 +87,9 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return index;
     }
 
-    function createGroup(string calldata name, string calldata symbol)
+    function createGroup(string calldata name, string calldata symbol, address groupCreator)
         external
-        onlyStorageOracle
+        onlyStorageOracle returns (uint)
     {
         bool exist = _doesGroupExist(name);
         require(exist == false, "Group name has already been used");
@@ -102,7 +101,9 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         Groups.push(group);
         GroupIndexer[lastGroupId] = recordIndex;
         GroupIndexerByName[name] = recordIndex;
-        GroupForCreatorIndexer[msg.sender].push(recordIndex);
+        GroupForCreatorIndexer[groupCreator].push(recordIndex);
+        
+        return lastGroupId;
     }
 
     function updateGroup(
