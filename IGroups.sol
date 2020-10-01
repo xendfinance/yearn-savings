@@ -2,6 +2,28 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface IGroups is IGroupSchema {
+    function getLengthOfTokenAddressesUsedInDeposit()
+        external
+        returns (uint256);
+
+    function incrementTokenDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256);
+
+    function decrementTokenDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256);
+
+    function getTokenDeposit(address tokenAddress) external returns (uint256);
+
+    function incrementEtherDeposit(uint256 amount) external returns (uint256);
+
+    function decrementEtherDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256);
+
+    function getEtherDeposit(address tokenAddress) external returns (uint256);
+
     function createMember(address payable depositor) external;
 
     function getMember(address _address) external view returns (address);

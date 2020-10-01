@@ -59,6 +59,66 @@ contract Groups is IGroupSchema, GroupStorageOwners {
 
     uint256 lastGroupId;
 
+    address[] tokenAddresses;
+    uint256 totalEthersDeposited;
+    mapping(address => uint256) totalTokensDeposited;
+
+    function getLengthOfTokenAddressesUsedInDeposit()
+        external
+        returns (uint256)
+    {
+        return tokenAddresses.length;
+    }
+
+    function incrementTokenDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256)
+    {
+        if (totalTokensDeposited[tokenAddress] == 0) {
+            tokenAddresses.push(tokenAddress);
+        }
+        totalTokensDeposited[tokenAddress] += amount;
+        return totalTokensDeposited[tokenAddress];
+    }
+
+    function decrementTokenDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256)
+    {
+        uint256 currentAmount = totalTokensDeposited[tokenAddress];
+        require(
+            currentAmount >= amount,
+            "deposit balance overdraft is not allowed"
+        );
+        totalTokensDeposited[tokenAddress] -= amount;
+        return totalTokensDeposited[tokenAddress];
+    }
+
+    function getTokenDeposit(address tokenAddress) external returns (uint256) {
+        return totalTokensDeposited[tokenAddress];
+    }
+
+    function incrementEtherDeposit(uint256 amount) external returns (uint256) {
+        totalEthersDeposited += amount;
+        return totalEthersDeposited;
+    }
+
+    function decrementEtherDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256)
+    {
+        require(
+            totalEthersDeposited >= amount,
+            "deposit balance overdraft is not allowed"
+        );
+        totalEthersDeposited -= amount;
+        return totalEthersDeposited;
+    }
+
+    function getEtherDeposit(address tokenAddress) external returns (uint256) {
+        return totalTokensDeposited[tokenAddress];
+    }
+
     function createMember(address payable depositor) external {
         Member memory member = Member(true, depositor);
 
