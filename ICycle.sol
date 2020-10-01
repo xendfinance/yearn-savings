@@ -99,7 +99,7 @@ interface ICycles is IGroupSchema {
         uint256 totalStakes,
         uint256 stakesClaimed,
         CycleStatus cycleStatus
-    ) external;
+    ) external returns (uint256);
 
     function createCycleFinancials(
         uint256 cycleId,

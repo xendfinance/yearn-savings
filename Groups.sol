@@ -5,8 +5,8 @@ import "./IGroupSchema.sol";
 contract GroupStorageOwners {
     address owner;
     mapping(address => bool) private storageOracles;
-    
-    constructor() public{
+
+    constructor() public {
         owner = msg.sender;
     }
 
@@ -87,10 +87,11 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return index;
     }
 
-    function createGroup(string calldata name, string calldata symbol, address groupCreator)
-        external
-        onlyStorageOracle returns (uint)
-    {
+    function createGroup(
+        string calldata name,
+        string calldata symbol,
+        address groupCreator
+    ) external onlyStorageOracle returns (uint256) {
         bool exist = _doesGroupExist(name);
         require(exist == false, "Group name has already been used");
 
@@ -102,7 +103,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         GroupIndexer[lastGroupId] = recordIndex;
         GroupIndexerByName[name] = recordIndex;
         GroupForCreatorIndexer[groupCreator].push(recordIndex);
-        
+
         return lastGroupId;
     }
 

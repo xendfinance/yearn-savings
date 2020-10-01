@@ -257,7 +257,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 totalStakes,
         uint256 stakesClaimed,
         CycleStatus cycleStatus
-    ) external {
+    ) external returns (lastCycleId) {
         lastCycleId += 1;
         Cycle memory cycle = Cycle(
             true,
@@ -279,6 +279,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         Cycles.push(cycle);
         CycleIndexer[lastCycleId] = recordIndex;
         GroupCycleIndexer[cycle.groupId].push(recordIndex);
+        return lastCycleId;
     }
 
     function createCycleFinancials(

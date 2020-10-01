@@ -4,9 +4,13 @@ import "./IGroupSchema.sol";
 interface IGroups is IGroupSchema {
     function createMember(address payable depositor) external;
 
-    function getMember(address _address) external view returns (bool, address);
+    function getMember(address _address) external view returns (address);
 
-    function createGroup(string calldata name, string calldata symbol) external;
+    function createGroup(
+        string calldata name,
+        string calldata symbol,
+        address groupCreator
+    ) external returns (uint256);
 
     function updateGroup(
         uint256 id,
