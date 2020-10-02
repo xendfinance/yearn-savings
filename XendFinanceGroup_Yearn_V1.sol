@@ -2,7 +2,8 @@
 //pragma experimental ABIEncoderV2;
 
 pragma solidity ^0.6.0;
-
+import "./ISavingsConfig.sol";
+import "./ITreasury.sol";
 import "./Ownable.sol";
 import "./IGroups.sol";
 import "./ICycles.sol";
@@ -12,7 +13,10 @@ import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contr
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol";
 
-contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
+contract XendFinanceGroup_Yearn_V1 is
+    IGroupSchema,ISavingsConfigSchema,
+    Ownable
+{
     using SafeMath for uint256;
 
     using Address for address payable;
@@ -23,6 +27,11 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         GroupMember groupMember;
         CycleMember cycleMember;
         uint256 underlyingAmountDeposited;
+    }
+    
+    struct WithdrawalResolution{
+        uint AmountToSendToMember;
+        uint AmountToSendToTreasury;
     }
 
     event UnderlyingAssetDeposited(
@@ -74,16 +83,23 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
     IERC20 daiToken;
     IGroups groupStorage;
     ICycles cycleStorage;
-
+    ITreasury treasury;
+    ISavingsConfig savingsConfig;
+    
+    
     address LendingAdapterAddress;
     address TokenAddress;
+    
+    string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
 
     constructor(
         address lendingAdapterAddress,
         address lendingServiceAddress,
         address tokenAddress,
         address groupStorageAddress,
-        address cycleStorageAddress
+        address cycleStorageAddress,
+        address treasuryAddress,
+        address savingsConfigAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
@@ -91,23 +107,172 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         TokenAddress = tokenAddress;
         groupStorage = IGroups(groupStorageAddress);
         cycleStorage = ICycles(cycleStorageAddress);
+        treasury = ITreasury(treasuryAddress);
+        savingsConfig = ISavingsConfig(savingsConfigAddress);
     }
 
+
+     function withdrawFromCycleWhileItIsOngoing(uint256 cycleId) external {
+        address payable memberAddress = msg.sender;
+        _withdrawFromCycleWhileItIsOngoing(cycleId, memberAddress);
+    }
+    
+    function _withdrawFromCycleWhileItIsOngoing(uint cycleId, address payable memberAddress){
+        bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
+
+        require(isCycleReadyToBeEnded==false, "Cycle has already ended, use normal withdrawl route");
+        
+        Cycle memory cycle  = _getCycleById(cycleId);
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(cycleId,memberAddress); 
+
+         require(memberExistInCycle == true, "You are not a member of this cycle");
+
+
+        CycleMember memory cycleMember = _getCycleMember(memberAddress,cycle.id, cycle.groupId,true);
+
+        require(
+            cycleMember.hasWithdrawn == false,
+            "Funds have already been withdrawn"
+        );
+
+        uint stakesHoldings = cycleMember.numberOfCycleStakes;
+        uint currentWorthOfMembersDeposit = lendingService.getPricePerFullShare();
+        
+        uint underlyingAmountToSendToMember = stakesHoldings.mul(currentWorthOfMembersDeposit);
+        uint totalUnderlyingAmountMemberDeposited = cycleMember.numberOfCycleStakes * cycle.cycleStakeAmount;
+        
+
+        //getting the underlying asset amount that backs 1 stake amount
+        uint256 underlyingAssetForStake = cycleFinancial.underlyingBalance.div(
+            cycle.totalStakes
+        );
+
+        //cycle members stake amount worth
+        uint256 totalCycleMemberAssetAmount = underlyingAssetForStake.mul(
+            stakesHoldings
+        );
+        
+        cycle.stakesClaimed += stakesHoldings;
+        cycleFinancial.underlyingTotalWithdrawn -= totalCycleMemberAssetAmount;
+
+        cycleMember.hasWithdrawn = true;
+        cycleMember.stakesClaimed += stakesHoldings;
+        
+        
+    }
+    
+     
+    struct WithdrawalResolution{
+        uint AmountToSendToMember;
+        uint AmountToSendToTreasury;
+    }
+    
+    //Determines how much we send to the treasury and how much we send to the member
+    function _computeAmountToSendToParties(uint totalUnderlyingAmountMemberDeposited,uint worthOfMemberDepositNow) internal  returns WithdrawalResolution memory{
+        
+        ( uint minimum, uint maximum, uint exact, uint applies, uint ruleDefinition )  =  savingsConfig.getRuleSet(PERCENTAGE_PAYOUT_TO_USERS);
+        
+        require(ruleDefinition==RuleDefinition.VALUE,"unsupported rule defintion for rule set");
+        
+        //ensures we send what the user's investment is currently worth when his original deposit did not appreciate in value
+        if(totalUnderlyingAmountMemberDeposited>=worthOfMemberDepositNow)
+        {
+            return WithdrawalResolution(worthOfMemberDepositNow,0)
+        }
+        else{
+            uint maxAmountUserCanBePaid = _getMaxAmountUserCanBePaidConsideringInterestLimit(exact,totalUnderlyingAmountMemberDeposited)
+            
+            if(worthOfMemberDepositNow>maxAmountUserCanBePaid){
+                uint amountToSendToTreasury = worthOfMemberDepositNow - maxAmountUserCanBePaid;
+                return WithdrawalResolution(maxAmountUserCanBePaid,amountToSendToTreasury);
+            }
+            else{
+                return WithdrawalResolution(worthOfMemberDepositNow,0);
+
+            }
+        }
+        
+    }
+    
+    
+    function _getMaxAmountUserCanBePaidConsideringInterestLimit(uint maxPayoutPercentage,uint totalUnderlyingAmountMemberDeposited){
+        uint percentageConsideration = 100+maxPayoutPercentage;
+        return totalUnderlyingAmountMemberDeposited.mul(percentageConsideration).div(100);
+    }
+    
+    
+      function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
+        internal
+    {
+        bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
+
+        if (isCycleReadyToBeEnded) {
+            _endCycle(cycleId);
+        }
+
+        Cycle memory cycle = _getCycleById(cycleId);
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
+
+
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(cycleId,memberAddress); 
+
+        require(memberExistInCycle == true, "You are not a member of this cycle");
+
+
+        CycleMember memory cycleMember = _getCycleMember(memberAddress,cycle.id, cycle.groupId,true);
+
+        require(
+            cycleMember.hasWithdrawn == false,
+            "Funds have already been withdrawn"
+        );
+
+        //how many stakes a cycle member has
+        uint256 stakesHoldings = cycleMember.numberOfCycleStakes;
+
+        //getting the underlying asset amount that backs 1 stake amount
+        uint256 underlyingAssetForStake = cycleFinancial.underlyingBalance.div(
+            cycle.totalStakes
+        );
+
+        //cycle members stake amount worth
+        uint256 totalCycleMemberAssetAmount = underlyingAssetForStake.mul(
+            stakesHoldings
+        );
+
+        cycle.stakesClaimed += stakesHoldings;
+        cycleFinancial.underlyingTotalWithdrawn -= totalCycleMemberAssetAmount;
+
+        cycleMember.hasWithdrawn = true;
+        cycleMember.stakesClaimed += stakesHoldings;
+
+        _updateCycle(cycle);
+        _updateCycleFinancials(cycleFinancial);
+        _updateCycleMember(cycleMember);
+
+        emit DerivativeAssetWithdrawn(
+            cycleId,
+            memberAddress,
+            totalCycleMemberAssetAmount,
+            TokenAddress
+        );
+    }
+    
+    
+    
+    
     function getRecordIndexLengthForCycleMembers(uint256 cycleId)
         external
         view
         returns (uint256)
     {
-        return cycleStorage.getRecordIndexLengthForCycleMembers(cycleId);
+        return cycleStorage.getRecordIndexLengthForCycleMembers(cycleId); 
     }
 
     function getRecordIndexLengthForCycleMembersByDepositor(
         address depositorAddress
     ) external view returns (uint256) {
-        return
-            cycleStorage.getRecordIndexLengthForCycleMembersByDepositor(
-                depositorAddress
-            );
+        return  cycleStorage.getRecordIndexLengthForCycleMembersByDepositor(depositorAddress);
     }
 
     function getRecordIndexLengthForGroupMembers(uint256 groupId)
@@ -121,10 +286,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
     function getRecordIndexLengthForGroupMembersByDepositor(
         address depositorAddress
     ) external view returns (uint256) {
-        return
-            groupStorage.getRecordIndexLengthForGroupMembersIndexerByDepositor(
-                depositorAddress
-            );
+        return  groupStorage.getRecordIndexLengthForGroupMembersIndexerByDepositor(depositorAddress);
     }
 
     function getRecordIndexLengthForGroupCycles(uint256 groupId)
@@ -140,7 +302,8 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         view
         returns (uint256)
     {
-        return groupStorage.getRecordIndexLengthForCreator(groupCreator);
+        return  groupStorage.getRecordIndexLengthForCreator(groupCreator); 
+        
     }
 
     function getSecondsLeftForCycleToEnd(uint256 cycleId)
@@ -224,7 +387,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         );
     }
 
-    function getGroupByIndex(uint256 index)
+    function getGroupByIndex(uint index)
         external
         view
         returns (
@@ -244,8 +407,8 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             group.creatorAddress
         );
     }
-
-    function getGroupById(uint256 _id)
+    
+     function getGroupById(uint _id)
         external
         view
         returns (
@@ -314,26 +477,15 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         }
 
         Cycle memory cycle = _getCycleById(cycleId);
-        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
-            cycleId
-        );
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
 
-        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
-            cycleId,
-            memberAddress
-        );
 
-        require(
-            memberExistInCycle == true,
-            "You are not a member of this cycle"
-        );
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(cycleId,memberAddress); 
 
-        CycleMember memory cycleMember = _getCycleMember(
-            memberAddress,
-            cycle.id,
-            cycle.groupId,
-            true
-        );
+        require(memberExistInCycle == true, "You are not a member of this cycle");
+
+
+        CycleMember memory cycleMember = _getCycleMember(memberAddress,cycle.id, cycle.groupId,true);
 
         require(
             cycleMember.hasWithdrawn == false,
@@ -373,9 +525,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
 
     function activateCycle(uint256 cycleId) external onlyCycleCreator(cycleId) {
         Cycle memory cycle = _getCycleById(cycleId);
-        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
-            cycleId
-        );
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
 
         uint256 currentTimeStamp = now;
         require(
@@ -397,7 +547,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         cycle.cycleStartTimeStamp = currentTimeStamp;
         _startCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
-
+        
         uint256 blockNumber = block.number;
         uint256 blockTimestamp = currentTimeStamp;
 
@@ -419,13 +569,12 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         require(isCycleReadyToBeEnded == true, "Cycle is still ongoing");
 
         Cycle memory cycle = _getCycleById(cycleId);
-        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
-            cycleId
-        );
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
+
 
         uint256 underlyingAmount = redeemLending(cycleFinancial);
 
-        cycleFinancial.underlyingBalance = underlyingAmount;
+        cycleFinancial.underlyingBalance += underlyingAmount;
         cycle.cycleStatus = CycleStatus.ENDED;
 
         _updateCycle(cycle);
@@ -437,6 +586,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         returns (bool)
     {
         Cycle memory cycle = _getCycleById(cycleId);
+        
 
         if (cycle.cycleStatus != CycleStatus.ONGOING) return false;
 
@@ -448,14 +598,8 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         else return false;
     }
 
-    function lendCycleDeposit(CycleFinancial memory cycleFinancial)
-        internal
-        returns (uint256)
-    {
-        daiToken.approve(
-            LendingAdapterAddress,
-            cycleFinancial.underlyingTotalDeposits
-        );
+    function lendCycleDeposit(CycleFinancial memory cycleFinancial) internal returns (uint256) {
+        daiToken.approve(LendingAdapterAddress, cycleFinancial.underlyingTotalDeposits);
 
         uint256 balanceBeforeDeposit = lendingService.userShares();
 
@@ -467,10 +611,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         return amountOfyDai;
     }
 
-    function redeemLending(CycleFinancial memory cycleFinancial)
-        internal
-        returns (uint256)
-    {
+    function redeemLending(CycleFinancial memory cycleFinancial) internal returns (uint256) {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
 
         lendingService.WithdrawBySharesOnly(cycleFinancial.derivativeBalance);
@@ -488,8 +629,8 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         external
     {
         _validateGroupNameAndSymbolIsAvailable(name, symbol);
-
-        uint256 groupId = groupStorage.createGroup(name, symbol, msg.sender);
+       
+        uint groupId = groupStorage.createGroup(name,symbol, msg.sender);
 
         emit GroupCreated(groupId, msg.sender);
     }
@@ -523,27 +664,18 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             hasMaximumSlots
         );
 
-        uint256 cycleId = cycleStorage.createCycle(
-            groupId,
-            0,
-            startTimeStamp,
-            duration,
-            maximumSlots,
-            hasMaximumSlots,
-            cycleStakeAmount,
-            0,
-            0,
-            CycleStatus.NOT_STARTED
-        );
-
-        emit CycleCreated(
-            cycleId,
-            maximumSlots,
-            hasMaximumSlots,
-            cycleStakeAmount,
-            startTimeStamp,
-            duration
-        );
+       
+    
+    uint cycleId = cycleStorage.createCycle(groupId,0,startTimeStamp,duration,maximumSlots,hasMaximumSlots,cycleStakeAmount,0,0,CycleStatus.NOT_STARTED);
+        
+    emit CycleCreated(
+        cycleId,
+        maximumSlots,
+        hasMaximumSlots,
+        cycleStakeAmount,
+        startTimeStamp,
+        duration
+    );
     }
 
     function joinCycle(uint256 cycleId, uint256 numberOfStakes) external {
@@ -568,18 +700,11 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
 
         Group memory group = _getCycleGroup(cycleId);
         Cycle memory cycle = _getCycleById(cycleId);
-        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
-            cycleId
-        );
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(cycleId);
 
-        bool didCycleMemberExistBeforeNow = cycleStorage.doesCycleMemberExist(
-            cycleId,
-            depositorAddress
-        );
-        bool didGroupMemberExistBeforeNow = groupStorage.doesGroupMemberExist(
-            group.id,
-            depositorAddress
-        );
+
+        bool didCycleMemberExistBeforeNow = cycleStorage.doesCycleMemberExist(cycleId, depositorAddress);
+        bool didGroupMemberExistBeforeNow = groupStorage.doesGroupMemberExist(group.id,depositorAddress);
 
         _validateCycleDepositCriteriaAreMet(
             cycle,
@@ -613,7 +738,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             emit MemberJoinedGroup(depositorAddress, result.group.id);
         }
     }
-
+    
     function _validateCycleDepositCriteriaAreMet(
         Cycle memory cycle,
         bool didCycleMemberExistBeforeNow
@@ -675,14 +800,17 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         uint256 numberOfCycleStakes
     ) internal {
         cycle.totalStakes += numberOfCycleStakes;
-        uint256 depositAmount = cycle.cycleStakeAmount.mul(numberOfCycleStakes);
+        uint depositAmount = cycle.cycleStakeAmount.mul(
+            numberOfCycleStakes
+        );
         cycleFinancial.underlyingTotalDeposits += depositAmount;
         _updateCycleFinancials(cycleFinancial);
         _updateTotalTokenDepositAmount(depositAmount);
+
     }
 
-    function _updateTotalTokenDepositAmount(uint256 amount) internal {
-        groupStorage.incrementTokenDeposit(TokenAddress, amount);
+    function _updateTotalTokenDepositAmount(uint amount) internal{
+        groupStorage.incrementTokenDeposit(TokenAddress,amount);
     }
 
     function _processMemberDeposit(
@@ -772,49 +900,38 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
 
         if (!memberExists) {
             groupStorage.createMember(depositor);
-        }
-
-        address depositorAddress = groupStorage.getMember(depositor);
-        return Member(true, depositor);
+        } 
+        
+        address depositorAddress = groupStorage.getMember(depositor); 
+        return Member(true,depositor);
     }
 
+   
     function _getCycleMember(
         address payable depositor,
         uint256 _cycleId,
         uint256 _groupId,
         bool throwOnNotFound
     ) internal returns (CycleMember memory) {
-        bool cycleMemberExists = cycleStorage.doesCycleMemberExist(
-            _cycleId,
-            depositor
-        );
+        
+        bool cycleMemberExists = cycleStorage.doesCycleMemberExist(_cycleId,depositor);
 
         if (throwOnNotFound)
             require(cycleMemberExists == true, "Member not found");
-
-        if (!cycleMemberExists) {
-            cycleStorage.createCycleMember(
-                _cycleId,
-                _groupId,
-                depositor,
-                0,
-                0,
-                0,
-                false
-            );
-        }
-
-        uint256 index = cycleStorage.getCycleMemberIndex(_cycleId, depositor);
-
+            
+         if (!cycleMemberExists) {
+            cycleStorage.createCycleMember(_cycleId,_groupId,depositor,0,0,0,false);
+        } 
+        
+        uint index = cycleStorage.getCycleMemberIndex(_cycleId,depositor);
+        
         return _getCycleMember(index);
     }
-
-    function _getCycleMember(uint256 index)
-        internal
-        view
-        returns (CycleMember memory)
-    {
-        (
+    
+     function _getCycleMember(uint index) internal view returns (CycleMember memory) {
+        
+        
+         (
             uint256 cycleId,
             uint256 groupId,
             address payable _address,
@@ -822,19 +939,9 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             uint256 numberOfCycleStakes,
             uint256 stakesClaimed,
             bool hasWithdrawn
-        ) = cycleStorage.getCycleMember(index);
-
-        return
-            CycleMember(
-                true,
-                cycleId,
-                groupId,
-                _address,
-                totalLiquidityAsPenalty,
-                numberOfCycleStakes,
-                stakesClaimed,
-                hasWithdrawn
-            );
+        ) =  cycleStorage.getCycleMember(index);
+        
+        return CycleMember(true,cycleId,groupId,_address,totalLiquidityAsPenalty,numberOfCycleStakes,stakesClaimed,hasWithdrawn);
     }
 
     function _getGroupMember(
@@ -842,26 +949,22 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         uint256 groupId,
         bool throwOnNotFound
     ) internal returns (GroupMember memory) {
-        bool groupMemberExists = groupStorage.doesGroupMemberExist(
-            groupId,
-            depositor
-        );
+        
+        bool groupMemberExists = groupStorage.doesGroupMemberExist(groupId,depositor);
 
         if (throwOnNotFound)
             require(groupMemberExists == true, "Member not found");
 
         if (!groupMemberExists) {
-            groupStorage.createGroupMember(groupId, depositor);
-        }
-
-        uint256 index = groupStorage.getGroupMembersDeepIndexer(
-            groupId,
-            depositor
-        );
-        (address payable _address, uint256 groupId) = groupStorage
-            .getGroupMember(index);
-
-        return GroupMember(true, _address, groupId);
+           
+            groupStorage.createGroupMember(groupId,depositor);
+           
+        } 
+        
+        uint index = groupStorage.getGroupMembersDeepIndexer(groupId,depositor);
+        (address payable _address, uint256 groupId) =  groupStorage.getGroupMember(index);
+        
+        return GroupMember(true,_address,groupId);
     }
 
     function _startCycle(Cycle memory cycle) internal {
@@ -873,45 +976,32 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         cycle.cycleStatus = CycleStatus.ENDED;
         _updateCycle(cycle);
     }
-
+    
+    
     function _updateCycle(Cycle memory cycle) internal {
-        cycleStorage.updateCycle(
-            cycle.id,
-            cycle.numberOfDepositors,
-            cycle.cycleStartTimeStamp,
-            cycle.cycleDuration,
-            cycle.maximumSlots,
-            cycle.hasMaximumSlots,
-            cycle.cycleStakeAmount,
-            cycle.totalStakes,
-            cycle.stakesClaimed,
-            cycle.cycleStatus
-        );
+       
+       
+        cycleStorage.updateCycle(cycle.id,cycle.numberOfDepositors,cycle.cycleStartTimeStamp, cycle.cycleDuration, cycle.maximumSlots, cycle.hasMaximumSlots, cycle.cycleStakeAmount, cycle.totalStakes, cycle.stakesClaimed,cycle.cycleStatus);
+        
     }
+    
+    
+    
+      function _updateCycleFinancials(CycleFinancial memory cycleFinancial) internal {
+       
+       cycleStorage.updateCycleFinancials(cycleFinancial.cycleId, cycleFinancial.underlyingTotalDeposits, cycleFinancial.underlyingTotalWithdrawn, cycleFinancial.underlyingBalance, cycleFinancial.derivativeBalance); 
+       
 
-    function _updateCycleFinancials(CycleFinancial memory cycleFinancial)
-        internal
-    {
-        cycleStorage.updateCycleFinancials(
-            cycleFinancial.cycleId,
-            cycleFinancial.underlyingTotalDeposits,
-            cycleFinancial.underlyingTotalWithdrawn,
-            cycleFinancial.underlyingBalance,
-            cycleFinancial.derivativeBalance
-        );
     }
 
     function _updateGroup(Group memory group) internal {
         uint256 index = _getGroupIndex(group.id);
-
-        (
-            uint256 id,
-            string memory name,
-            string memory symbol,
-            address payable groupCreator
-        ) = (group.id, group.name, group.symbol, group.creatorAddress);
-
-        groupStorage.updateGroup(id, name, symbol, groupCreator);
+        
+        
+          (uint256 id, string memory name, string memory symbol, address payable groupCreator) = (group.id, group.name, group.symbol, group.creatorAddress);
+        
+          groupStorage.updateGroup(id,name,symbol,groupCreator);
+        
     }
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
@@ -920,28 +1010,15 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             cycleMember._address
         );
         (
-            uint256 cycleId,
-            address payable depositor,
-            uint256 totalLiquidityAsPenalty,
-            uint256 numberOfCycleStakes,
-            uint256 stakesClaimed,
-            bool hasWithdrawn
-        ) = (
-            cycleMember.cycleId,
-            cycleMember._address,
-            cycleMember.totalLiquidityAsPenalty,
-            cycleMember.numberOfCycleStakes,
-            cycleMember.stakesClaimed,
-            cycleMember.hasWithdrawn
-        );
-        cycleStorage.updateCycleMember(
-            cycleId,
-            depositor,
-            totalLiquidityAsPenalty,
-            numberOfCycleStakes,
-            stakesClaimed,
-            hasWithdrawn
-        );
+        uint256 cycleId,
+        address payable depositor,
+        uint256 totalLiquidityAsPenalty,
+        uint256 numberOfCycleStakes,
+        uint256 stakesClaimed,
+        bool hasWithdrawn
+    ) = (cycleMember.cycleId, cycleMember._address, cycleMember.totalLiquidityAsPenalty, cycleMember.numberOfCycleStakes, cycleMember.stakesClaimed, cycleMember.hasWithdrawn);
+        cycleStorage.updateCycleMember(cycleId,depositor,totalLiquidityAsPenalty,numberOfCycleStakes,stakesClaimed,hasWithdrawn);
+        
     }
 
     function _validateCycleCreationActionValid(
@@ -971,7 +1048,7 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
     }
 
     function _doesGroupExist(uint256 groupId) internal view returns (bool) {
-        bool groupExist = groupStorage.doesGroupExist(groupId);
+         bool groupExist = groupStorage.doesGroupExist(groupId);
 
         return groupExist;
     }
@@ -987,7 +1064,8 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
     }
 
     function _getGroup(uint256 groupId) internal view returns (Group memory) {
-        return _getGroupById(groupId);
+         return  _getGroupById(groupId);
+
     }
 
     function _getCycleGroup(uint256 cycleId)
@@ -995,17 +1073,17 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         view
         returns (Group memory)
     {
+
         Cycle memory cycle = _getCycleById(cycleId);
 
-        return _getGroupById(cycle.groupId);
+        return  _getGroupById(cycle.groupId);
     }
 
-    function _getCycleById(uint256 cycleId)
-        internal
-        view
-        returns (Cycle memory)
-    {
-        (
+   
+    
+    function _getCycleById(uint cycleId) internal view returns (Cycle memory) {
+
+       (
             uint256 id,
             uint256 groupId,
             uint256 numberOfDepositors,
@@ -1018,31 +1096,16 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             uint256 stakesClaimed,
             CycleStatus cycleStatus
         ) = cycleStorage.getCycleInfoById(cycleId);
-
-        Cycle memory cycleInfo = Cycle(
-            true,
-            id,
-            groupId,
-            numberOfDepositors,
-            cycleStartTimeStamp,
-            cycleDuration,
-            maximumSlots,
-            hasMaximumSlots,
-            cycleStakeAmount,
-            totalStakes,
-            stakesClaimed,
-            cycleStatus
-        );
-
+        
+        Cycle memory cycleInfo = Cycle(true,id,groupId,numberOfDepositors,cycleStartTimeStamp,cycleDuration,maximumSlots,hasMaximumSlots,cycleStakeAmount,totalStakes,stakesClaimed,cycleStatus);
+        
+        
         return cycleInfo;
     }
+    
+     function _getCycleByIndex(uint index) internal view returns (Cycle memory) {
 
-    function _getCycleByIndex(uint256 index)
-        internal
-        view
-        returns (Cycle memory)
-    {
-        (
+       (
             uint256 id,
             uint256 groupId,
             uint256 numberOfDepositors,
@@ -1055,74 +1118,41 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
             uint256 stakesClaimed,
             CycleStatus cycleStatus
         ) = cycleStorage.getCycleInfoByIndex(index);
-
-        Cycle memory cycleInfo = Cycle(
-            true,
-            id,
-            groupId,
-            numberOfDepositors,
-            cycleStartTimeStamp,
-            cycleDuration,
-            maximumSlots,
-            hasMaximumSlots,
-            cycleStakeAmount,
-            totalStakes,
-            stakesClaimed,
-            cycleStatus
-        );
-
+        
+        Cycle memory cycleInfo = Cycle(true,id,groupId,numberOfDepositors,cycleStartTimeStamp,cycleDuration,maximumSlots,hasMaximumSlots,cycleStakeAmount,totalStakes,stakesClaimed,cycleStatus);
+        
+        
         return cycleInfo;
     }
-
-    function _getCycleFinancialByCycleId(uint256 cycleId)
-        internal
-        view
-        returns (CycleFinancial memory)
-    {
-        (
+    
+    function _getCycleFinancialByCycleId(uint cycleId) internal view returns(CycleFinancial memory){
+        
+     (
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
             uint256 derivativeBalance
-        ) = cycleStorage.getCycleFinancialsByCycleId(cycleId);
-
-        return
-            CycleFinancial(
-                true,
-                cycleId,
-                underlyingTotalDeposits,
-                underlyingTotalWithdrawn,
-                underlyingBalance,
-                derivativeBalance
-            );
+        ) =    cycleStorage.getCycleFinancialsByCycleId(cycleId);
+        
+        return CycleFinancial(true,cycleId,underlyingTotalDeposits,underlyingTotalWithdrawn,underlyingBalance,derivativeBalance);
+        
+    }
+    
+    function _getCycleFinancialByIndex(uint index) internal view returns(CycleFinancial memory){
+        
+     (
+            uint cycleId,
+            uint underlyingTotalDeposits,
+            uint underlyingTotalWithdrawn,
+            uint underlyingBalance,
+            uint derivativeBalance
+        ) =    cycleStorage.getCycleFinancialsByIndex(index);
+        
+        return CycleFinancial(true,cycleId,underlyingTotalDeposits,underlyingTotalWithdrawn,underlyingBalance,derivativeBalance);
+        
     }
 
-    function _getCycleFinancialByIndex(uint256 index)
-        internal
-        view
-        returns (CycleFinancial memory)
-    {
-        (
-            uint256 cycleId,
-            uint256 underlyingTotalDeposits,
-            uint256 underlyingTotalWithdrawn,
-            uint256 underlyingBalance,
-            uint256 derivativeBalance
-        ) = cycleStorage.getCycleFinancialsByIndex(index);
-
-        return
-            CycleFinancial(
-                true,
-                cycleId,
-                underlyingTotalDeposits,
-                underlyingTotalWithdrawn,
-                underlyingBalance,
-                derivativeBalance
-            );
-    }
-
-    /*
-    function _getTrackedGroup(uint256 _groupId)
+     function _getGroupById(uint256 _groupId)
         internal
         view
         returns (Group memory)
@@ -1137,53 +1167,42 @@ contract XendFinanceGroup_Yearn_V1 is IGroupSchema, Ownable {
         Group memory group = Group(true,groupId,name,symbol,creatorAddress);
         return group;
     }
-    */
-
-    function _getGroupById(uint256 _groupId)
-        internal
-        view
-        returns (Group memory)
-    {
-        (
+    
+    
+    
+    function _getGroupByIndex(uint index)internal view returns (Group memory){
+        
+         (
             uint256 groupId,
-            string memory name,
-            string memory symbol,
-            address payable creatorAddress
-        ) = groupStorage.getGroupById(_groupId);
-
-        Group memory group = Group(true, groupId, name, symbol, creatorAddress);
-        return group;
-    }
-
-    function _getGroupByIndex(uint256 index)
-        internal
-        view
-        returns (Group memory)
-    {
-        (
-            uint256 groupId,
-            string memory name,
+            string memory name ,
             string memory symbol,
             address payable creatorAddress
         ) = groupStorage.getGroupByIndex(index);
-
-        Group memory group = Group(true, groupId, name, symbol, creatorAddress);
+        
+        Group memory group = Group(true,groupId,name,symbol,creatorAddress);
         return group;
+        
+
     }
 
     function _getGroupIndex(uint256 groupId) internal view returns (uint256) {
+        
         return groupStorage.getGroupIndex(groupId);
     }
 
     function _getCycleIndex(uint256 cycleId) internal view returns (uint256) {
+        
         return cycleStorage.getCycleIndex(cycleId);
+        
     }
 
     function _getCycleMemberIndex(
         uint256 cycleId,
         address payable memberAddress
     ) internal view returns (uint256) {
-        return cycleStorage.getCycleMemberIndex(cycleId, memberAddress);
+
+        return cycleStorage.getCycleMemberIndex(cycleId,memberAddress);
+       
     }
 
     modifier onlyGroupCreator(uint256 groupId) {

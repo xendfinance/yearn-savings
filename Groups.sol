@@ -115,8 +115,8 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return totalEthersDeposited;
     }
 
-    function getEtherDeposit(address tokenAddress) external returns (uint256) {
-        return totalTokensDeposited[tokenAddress];
+    function getEtherDeposit() external returns (uint256) {
+        return totalEthersDeposited;
     }
 
     function createMember(address payable depositor) external {

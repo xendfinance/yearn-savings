@@ -22,7 +22,7 @@ interface IGroups is IGroupSchema {
         external
         returns (uint256);
 
-    function getEtherDeposit(address tokenAddress) external returns (uint256);
+    function getEtherDeposit() external returns (uint256);
 
     function createMember(address payable depositor) external;
 
