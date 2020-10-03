@@ -3,7 +3,7 @@ import "./SafeMath.sol";
 import "./Ownable.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 
-interface Treasury {
+interface ITreasury {
     function depositToken(address token) external;
 
     function getEtherBalance() external view returns (uint256);

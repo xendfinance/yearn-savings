@@ -18,9 +18,7 @@ interface IGroups is IGroupSchema {
 
     function incrementEtherDeposit(uint256 amount) external returns (uint256);
 
-    function decrementEtherDeposit(address tokenAddress, uint256 amount)
-        external
-        returns (uint256);
+    function decrementEtherDeposit(uint256 amount) external returns (uint256);
 
     function getEtherDeposit() external returns (uint256);
 

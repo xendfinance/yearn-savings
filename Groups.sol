@@ -103,10 +103,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return totalEthersDeposited;
     }
 
-    function decrementEtherDeposit(address tokenAddress, uint256 amount)
-        external
-        returns (uint256)
-    {
+    function decrementEtherDeposit(uint256 amount) external returns (uint256) {
         require(
             totalEthersDeposited >= amount,
             "deposit balance overdraft is not allowed"

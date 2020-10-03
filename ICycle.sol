@@ -16,7 +16,8 @@ interface ICycles is IGroupSchema {
             uint256 cycleStakeAmount,
             uint256 totalStakes,
             uint256 stakesClaimed,
-            CycleStatus cycleStatus
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
         );
 
     function getCycleInfoById(uint256 cycleId)
@@ -33,7 +34,8 @@ interface ICycles is IGroupSchema {
             uint256 cycleStakeAmount,
             uint256 totalStakes,
             uint256 stakesClaimed,
-            CycleStatus cycleStatus
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
         );
 
     function getCycleFinancialsByIndex(uint256 index)
@@ -44,7 +46,9 @@ interface ICycles is IGroupSchema {
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
-            uint256 derivativeBalance
+            uint256 derivativeBalance,
+            uint256 underylingBalanceClaimedBeforeMaturity,
+            uint256 derivativeBalanceClaimedBeforeMaturity
         );
 
     function getCycleFinancialsByCycleId(uint256 cycleId)
@@ -54,7 +58,9 @@ interface ICycles is IGroupSchema {
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
-            uint256 derivativeBalance
+            uint256 derivativeBalance,
+            uint256 underylingBalanceClaimedBeforeMaturity,
+            uint256 derivativeBalanceClaimedBeforeMaturity
         );
 
     function getCycleMember(uint256 index)
@@ -99,7 +105,8 @@ interface ICycles is IGroupSchema {
         uint256 cycleStakeAmount,
         uint256 totalStakes,
         uint256 stakesClaimed,
-        CycleStatus cycleStatus
+        CycleStatus cycleStatus,
+        uint256 stakesClaimedBeforeMaturity
     ) external returns (uint256);
 
     function createCycleFinancials(
@@ -108,7 +115,9 @@ interface ICycles is IGroupSchema {
         uint256 underlyingTotalDeposits,
         uint256 underlyingTotalWithdrawn,
         uint256 underlyingBalance,
-        uint256 derivativeBalance
+        uint256 derivativeBalance,
+        uint256 underylingBalanceClaimedBeforeMaturity,
+        uint256 derivativeBalanceClaimedBeforeMaturity
     ) external;
 
     function updateCycle(
@@ -121,7 +130,8 @@ interface ICycles is IGroupSchema {
         uint256 cycleStakeAmount,
         uint256 totalStakes,
         uint256 stakesClaimed,
-        CycleStatus cycleStatus
+        CycleStatus cycleStatus,
+        uint256 stakesClaimedBeforeMaturity
     ) external;
 
     function updateCycleFinancials(
@@ -129,7 +139,9 @@ interface ICycles is IGroupSchema {
         uint256 underlyingTotalDeposits,
         uint256 underlyingTotalWithdrawn,
         uint256 underlyingBalance,
-        uint256 derivativeBalance
+        uint256 derivativeBalance,
+        uint256 underylingBalanceClaimedBeforeMaturity,
+        uint256 derivativeBalanceClaimedBeforeMaturity
     ) external;
 
     function getCycleIndex(uint256 cycleId) external view returns (uint256);
