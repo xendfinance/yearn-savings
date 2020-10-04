@@ -25,7 +25,7 @@ contract GroupStorageOwners {
 
     modifier onlyStorageOracle() {
         bool hasAccess = storageOracles[msg.sender];
-        require(msg.sender == owner, "unauthorized access to contract");
+        require(hasAccess, "unauthorized access to contract");
         _;
     }
 }
@@ -72,6 +72,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
 
     function incrementTokenDeposit(address tokenAddress, uint256 amount)
         external
+        onlyStorageOracle
         returns (uint256)
     {
         if (totalTokensDeposited[tokenAddress] == 0) {
@@ -83,6 +84,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
 
     function decrementTokenDeposit(address tokenAddress, uint256 amount)
         external
+        onlyStorageOracle
         returns (uint256)
     {
         uint256 currentAmount = totalTokensDeposited[tokenAddress];
@@ -98,12 +100,20 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return totalTokensDeposited[tokenAddress];
     }
 
-    function incrementEtherDeposit(uint256 amount) external returns (uint256) {
+    function incrementEtherDeposit(uint256 amount)
+        external
+        onlyStorageOracle
+        returns (uint256)
+    {
         totalEthersDeposited += amount;
         return totalEthersDeposited;
     }
 
-    function decrementEtherDeposit(uint256 amount) external returns (uint256) {
+    function decrementEtherDeposit(address tokenAddress, uint256 amount)
+        external
+        onlyStorageOracle
+        returns (uint256)
+    {
         require(
             totalEthersDeposited >= amount,
             "deposit balance overdraft is not allowed"
@@ -112,11 +122,14 @@ contract Groups is IGroupSchema, GroupStorageOwners {
         return totalEthersDeposited;
     }
 
-    function getEtherDeposit() external returns (uint256) {
-        return totalEthersDeposited;
+    function getEtherDeposit(address tokenAddress) external returns (uint256) {
+        return totalTokensDeposited[tokenAddress];
     }
 
-    function createMember(address payable depositor) external {
+    function createMember(address payable depositor)
+        external
+        onlyStorageOracle
+    {
         Member memory member = Member(true, depositor);
 
         bool exist = _doesMemberExist(depositor);
@@ -217,6 +230,7 @@ contract Groups is IGroupSchema, GroupStorageOwners {
 
     function createGroupMember(uint256 groupId, address payable depositor)
         external
+        onlyStorageOracle
     {
         bool exist = _doesGroupMemberExist(groupId, depositor);
         require(exist == false, "Group member exists");

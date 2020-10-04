@@ -4,37 +4,17 @@ pragma solidity ^0.6.0;
 
 import "./SafeMath.sol";
 import "./Ownable.sol";
-import "./Address.sol";
 import "./IDaiLendingService.sol";
+import "./IClientRecordSchema.sol";
+import "./IClientRecord.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "./IRewardConfig.sol";
 
-contract XendFinanceIndividual_Yearn_V1 is Ownable {
+contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     using SafeMath for uint256;
 
     using Address for address payable;
-
-    // list of CLient Records
-    ClientRecord[] ClientRecords;
-    //Mapping that enables ease of traversal of the Client Records
-    mapping(address => RecordIndex) public ClientRecordIndexer;
-
-    address LendingAdapterAddress;
-
-    struct ClientRecord {
-        bool exists;
-        address payable _address;
-        string email;
-        uint256 underlyingTotalDeposits;
-        uint256 underlyingTotalWithdrawn;
-        uint256 derivativeBalance;
-        uint256 derivativeTotalDeposits;
-        uint256 derivativeTotalWithdrawn;
-    }
-
-    struct RecordIndex {
-        bool exists;
-        uint256 index;
-    }
 
     event UnderlyingAssetDeposited(
         address payable user,
@@ -52,85 +32,157 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
 
     IDaiLendingService lendingService;
     IERC20 daiToken;
-    
+    IClientRecord clientRecordStorage;
+    IRewardConfig rewardConfig;
 
-    constructor(address lendingAdapterAddress,  address lendingServiceAddress,  address tokenAddress) public {
+    constructor(
+        address lendingAdapterAddress,
+        address lendingServiceAddress,
+        address tokenAddress,
+        address clientRecordStorageAddress,
+        address rewardConfigAddress
+    ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
+        clientRecordStorage = IClientRecord(clientRecordStorageAddress);
         LendingAdapterAddress = lendingAdapterAddress;
+        rewardConfig = IRewardConfig(rewardConfigAddress);
     }
-    
-   
-    
-    function getClientRecord() external returns
-    (
-        bool exists,
-        address payable _address,
-        string memory email,
-        uint256 underlyingTotalDeposits,
-        uint256 underlyingTotalWithdrawn,
-        uint256 derivativeBalance,
-        uint256 derivativeTotalDeposits,
-        uint256 derivativeTotalWithdrawn   
-        
-    )
-    {
-       RecordIndex memory recordIndex =  ClientRecordIndexer[msg.sender];
-       require(recordIndex.exists==true,"Savings information not found for this wallet address");
-       return _getClientRecordByIndex(recordIndex.index);
 
+    function doesClientRecordExist(address depositor)
+        external
+        view
+        returns (bool)
+    {
+        return clientRecordStorage.doesClientRecordExist(depositor);
+    }
 
-        
-    }
-    
-      function getClientRecordByIndex(uint index) external returns
-    (
-        bool exists,
-        address payable _address,
-        string memory email,
-        uint256 underlyingTotalDeposits,
-        uint256 underlyingTotalWithdrawn,
-        uint256 derivativeBalance,
-        uint256 derivativeTotalDeposits,
-        uint256 derivativeTotalWithdrawn   
-        
-    )
+    function getClientRecord(address depositor)
+        external
+        returns (
+            address payable _address,
+            string memory email,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 derivativeBalance,
+            uint256 derivativeTotalDeposits,
+            uint256 derivativeTotalWithdrawn
+        )
     {
-        
-        
-        return _getClientRecordByIndex(index);
-    }
-    
-     function _getClientRecordByIndex(uint index) internal returns
-    (
-        bool exists,
-        address payable _address,
-        string memory email,
-        uint256 underlyingTotalDeposits,
-        uint256 underlyingTotalWithdrawn,
-        uint256 derivativeBalance,
-        uint256 derivativeTotalDeposits,
-        uint256 derivativeTotalWithdrawn   
-        
-    )
-    {
-        
-        ClientRecord memory clientRecord = ClientRecords[index];
+        RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
+        require(
+            recordIndex.exists == true,
+            "Savings information not found for this wallet address"
+        );
+        ClientRecord clientRecord = _getClientRecordByIndex(recordIndex.index);
         return (
-            
-             clientRecord.exists,
-             clientRecord._address,
-             clientRecord.email,
-             clientRecord.underlyingTotalDeposits,
-             clientRecord.underlyingTotalWithdrawn,
-             clientRecord.derivativeBalance,
-             clientRecord.derivativeTotalDeposits,
-             clientRecord.derivativeTotalWithdrawn   
-            
+            clientRecord._address,
+            clientRecord.underlyingTotalDeposits,
+            clientRecord.underlyingTotalWithdrawn,
+            clientRecord.derivativeBalance,
+            clientRecord.derivativeTotalDeposits,
+            clientRecord.derivativeTotalWithdrawn
+        );
+    }
+
+    function getClientRecord()
+        external
+        returns (
+            address payable _address,
+            string memory email,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 derivativeBalance,
+            uint256 derivativeTotalDeposits,
+            uint256 derivativeTotalWithdrawn
+        )
+    {
+        RecordIndex memory recordIndex = ClientRecordIndexer[msg.sender];
+        require(
+            recordIndex.exists == true,
+            "Savings information not found for this wallet address"
+        );
+        ClientRecord clientRecord = _getClientRecordByIndex(recordIndex.index);
+        return (
+            clientRecord._address,
+            clientRecord.underlyingTotalDeposits,
+            clientRecord.underlyingTotalWithdrawn,
+            clientRecord.derivativeBalance,
+            clientRecord.derivativeTotalDeposits,
+            clientRecord.derivativeTotalWithdrawn
+        );
+    }
+
+    function getClientRecordByIndex(uint256 index)
+        external
+        returns (
+            address payable _address,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 derivativeBalance,
+            uint256 derivativeTotalDeposits,
+            uint256 derivativeTotalWithdrawn
+        )
+    {
+        ClientRecord clientRecord = _getClientRecordByIndex(index);
+        return (
+            clientRecord._address,
+            clientRecord.underlyingTotalDeposits,
+            clientRecord.underlyingTotalWithdrawn,
+            clientRecord.derivativeBalance,
+            clientRecord.derivativeTotalDeposits,
+            clientRecord.derivativeTotalWithdrawn
+        );
+    }
+
+    function _getClientRecordByIndex(uint256 index)
+        internal
+        returns (ClientRecord memory)
+    {
+        (
+            address payable _address,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 derivativeBalance,
+            uint256 derivativeTotalDeposits,
+            uint256 derivativeTotalWithdrawn
+        ) = clientRecordStorage.getClientRecordByIndex(index);
+        return
+            ClientRecord(
+                true,
+                _address,
+                underlyingTotalDeposits,
+                underlyingTotalWithdrawn,
+                derivativeBalance,
+                derivativeTotalDeposits,
+                derivativeTotalWithdrawn
             );
     }
-    
-    
+
+    function _getClientRecordByAddress(address member)
+        internal
+        returns (ClientRecord memory)
+    {
+        (
+            address payable _address,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 derivativeBalance,
+            uint256 derivativeTotalDeposits,
+            uint256 derivativeTotalWithdrawn
+        ) = clientRecordStorage.getClientRecordByAddress(member);
+
+        return
+            ClientRecord(
+                true,
+                _address,
+                underlyingTotalDeposits,
+                underlyingTotalWithdrawn,
+                derivativeBalance,
+                derivativeTotalDeposits,
+                derivativeTotalWithdrawn
+            );
+    }
 
     function withdraw(uint256 derivativeAmount) external {
         address payable recipient = msg.sender;
@@ -164,6 +216,8 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
             amountOfUnderlyingAssetWithdrawn,
             derivativeAmount
         );
+        _updateClientRecord(clientRecord);
+
         emit DerivativeAssetWithdrawn(
             recipient,
             amountOfUnderlyingAssetWithdrawn,
@@ -237,6 +291,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
             amountTransferrable,
             amountOfyDai
         );
+        _updateClientRecord(clientRecord);
 
         emit UnderlyingAssetDeposited(
             depositorAddress,
@@ -267,25 +322,33 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
                 0
             );
 
-            record.underlyingTotalDeposits.add(underlyingAmountDeposited);
+            record.underlyingTotalDeposits = record.underlyingTotalDeposits.add(
+                underlyingAmountDeposited
+            );
 
-            record.derivativeTotalDeposits.add(derivativeAmountDeposited);
-            record.derivativeBalance.add(derivativeAmountDeposited);
+            record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
+                derivativeAmountDeposited
+            );
+            record.derivativeBalance = record.derivativeBalance.add(
+                derivativeAmountDeposited
+            );
 
-            RecordIndex memory recordIndex = RecordIndex(true, arrayLength);
-
-            ClientRecords.push(record);
-            ClientRecordIndexer[client] = recordIndex;
             return record;
         } else {
             RecordIndex memory recordIndex = ClientRecordIndexer[client];
 
             ClientRecord storage record = ClientRecords[recordIndex.index];
 
-            record.underlyingTotalDeposits.add(underlyingAmountDeposited);
+            record.underlyingTotalDeposits = record.underlyingTotalDeposits.add(
+                underlyingAmountDeposited
+            );
+            record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
+                derivativeAmountDeposited
+            );
+            record.derivativeBalance = record.derivativeBalance.add(
+                derivativeAmountDeposited
+            );
 
-            record.derivativeTotalDeposits.add(derivativeAmountDeposited);
-            record.derivativeBalance.add(derivativeAmountDeposited);
             return record;
         }
     }
@@ -303,11 +366,28 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable {
 
         ClientRecord storage record = ClientRecords[recordIndex.index];
 
-        record.underlyingTotalWithdrawn.add(underlyingAmountWithdrawn);
+        record.underlyingTotalWithdrawn = record.underlyingTotalWithdrawn.add(
+            underlyingAmountWithdrawn
+        );
 
-        record.derivativeTotalDeposits.add(derivativeAmountWithdrawn);
-        record.derivativeBalance.add(derivativeAmountWithdrawn);
+        record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
+            derivativeAmountWithdrawn
+        );
+        record.derivativeBalance = record.derivativeBalance.add(
+            derivativeAmountWithdrawn
+        );
 
         return record;
+    }
+
+    function _updateClientRecord(ClientRecord memory clientRecord) {
+        clientRecordStorage.updateClientRecord(
+            clientRecord._address,
+            clientRecord.underlyingTotalDeposits,
+            clientRecord.underlyingTotalWithdrawn,
+            clientRecord.derivativeBalance,
+            clientRecord.derivativeTotalDeposits,
+            clientRecord.derivativeTotalWithdrawn
+        );
     }
 }

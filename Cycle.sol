@@ -2,7 +2,7 @@ pragma solidity ^0.6.0;
 
 import "./IGroupSchema.sol";
 
-contract GroupStorageOwners {
+contract StorageOwners {
     address owner;
     mapping(address => bool) private storageOracles;
 
@@ -21,15 +21,14 @@ contract GroupStorageOwners {
 
     modifier onlyStorageOracle() {
         bool hasAccess = storageOracles[msg.sender];
-        require(msg.sender == owner, "unauthorized access to contract");
+        require(hasAccess, "unauthorized access to contract");
         _;
     }
 }
 
-contract Cycles is IGroupSchema, GroupStorageOwners {
+contract Cycles is IGroupSchema, StorageOwners {
     // list of Group Cycles
     Cycle[] private Cycles;
-    CycleFinancial[] private CycleFinancials;
 
     //Mapping that enables ease of traversal of the cycle records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleIndexer;
@@ -37,6 +36,8 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
     //Mapping that enables ease of traversal of cycle records by the group. key is group id
     mapping(uint256 => RecordIndex[]) private GroupCycleIndexer;
 
+    // list of the financial details about a cycle
+    CycleFinancial[] private CycleFinancials;
     //Mapping that enables ease of traversal of the cycle financials records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleFinancialsIndexer;
 
@@ -214,7 +215,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 numberOfCycleStakes,
         uint256 stakesClaimed,
         bool hasWithdrawn
-    ) external {
+    ) external onlyStorageOracle {
         bool exist = _doesCycleMemberExist(cycleId, depositor);
         require(exist == false, "Cycle member already exist");
 
@@ -267,7 +268,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 stakesClaimed,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
-    ) external returns (uint256) {
+    ) external onlyStorageOracle returns (uint256) {
         lastCycleId += 1;
         Cycle memory cycle = Cycle(
             true,
@@ -302,7 +303,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 derivativeBalance,
         uint256 underylingBalanceClaimedBeforeMaturity,
         uint256 derivativeBalanceClaimedBeforeMaturity
-    ) external {
+    ) external onlyStorageOracle {
         RecordIndex memory recordIndex = CycleIndexer[cycleId];
         CycleFinancial memory cycleFinancial = CycleFinancial(
             true,
@@ -331,7 +332,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 stakesClaimed,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
-    ) external {
+    ) external onlyStorageOracle {
         Cycle memory cycle = _getCycle(cycleId);
         cycle.numberOfDepositors = numberOfDepositors;
         cycle.cycleStartTimeStamp = startTimeStamp;
@@ -356,7 +357,7 @@ contract Cycles is IGroupSchema, GroupStorageOwners {
         uint256 derivativeBalance,
         uint256 underylingBalanceClaimedBeforeMaturity,
         uint256 derivativeBalanceClaimedBeforeMaturity
-    ) external {
+    ) external onlyStorageOracle {
         uint256 index = _getCycleFinancialIndex(cycleId);
 
         CycleFinancial memory cycleFinancial = CycleFinancials[index];

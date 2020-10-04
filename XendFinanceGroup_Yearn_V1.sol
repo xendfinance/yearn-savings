@@ -11,7 +11,9 @@ import "./IGroupSchema.sol";
 import "./IDaiLendingService.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "./IRewardConfig.sol";
 import "./SafeMath.sol";
+import "./IXendToken.sol";
 
 contract XendFinanceGroup_Yearn_V1 is
     IGroupSchema,
@@ -86,6 +88,8 @@ contract XendFinanceGroup_Yearn_V1 is
     ICycles cycleStorage;
     ITreasury treasury;
     ISavingsConfig savingsConfig;
+    IRewardConfig rewardConfig;
+    IXendToken xendToken;
 
     address LendingAdapterAddress;
     address TokenAddress;
@@ -101,7 +105,9 @@ contract XendFinanceGroup_Yearn_V1 is
         address groupStorageAddress,
         address cycleStorageAddress,
         address treasuryAddress,
-        address savingsConfigAddress
+        address savingsConfigAddress,
+        address rewardConfigAddress,
+        address xendTokenAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
@@ -112,6 +118,8 @@ contract XendFinanceGroup_Yearn_V1 is
         cycleStorage = ICycles(cycleStorageAddress);
         treasury = ITreasury(treasuryAddress);
         savingsConfig = ISavingsConfig(savingsConfigAddress);
+        rewardConfig = IRewardConfig(rewardConfigAddress);
+        xendToken = IXendToken(xendTokenAddress);
     }
 
     function withdrawFromCycleWhileItIsOngoing(uint256 cycleId) external {
@@ -324,6 +332,12 @@ contract XendFinanceGroup_Yearn_V1 is
 
         cycleMember.hasWithdrawn = true;
         cycleMember.stakesClaimed += stakesHoldings;
+        uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
+        _rewardUserWithTokens(
+            cycle.cycleDuration,
+            amountDeposited,
+            cycleMember._address
+        );
 
         _updateCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
@@ -335,6 +349,19 @@ contract XendFinanceGroup_Yearn_V1 is
             withdrawalResolution.amountToSendToMember,
             TokenAddress
         );
+    }
+
+    function _rewardUserWithTokens(
+        uint256 totalCycleTimeInSeconds,
+        uint256 amountDeposited,
+        address payable cycleMemberAddress
+    ) internal {
+        uint256 numberOfRewardTokens = rewardConfig
+            .CalculateCooperativeSavingsReward(
+            totalCycleTimeInSeconds,
+            amountDeposited
+        );
+        xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)
