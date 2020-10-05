@@ -34,24 +34,43 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     IERC20 daiToken;
     IClientRecord clientRecordStorage;
     IRewardConfig rewardConfig;
+    IERC20 derivativeToken;
+
+    bool isDeprecated = false;
 
     constructor(
         address lendingAdapterAddress,
         address lendingServiceAddress,
         address tokenAddress,
         address clientRecordStorageAddress,
-        address rewardConfigAddress
+        address rewardConfigAddress,
+        address derivativeTokenAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
         LendingAdapterAddress = lendingAdapterAddress;
         rewardConfig = IRewardConfig(rewardConfigAddress);
+        derivativeToken = IERC20(derivativeTokenAddress);
+    }
+
+    function deprecateContract(address newServiceAddress)
+        external
+        onlyOwner
+        onlyNonDeprecatedCalls
+    {
+        isDeprecated = true;
+        clientRecordStorage.reAssignStorageOracle(newServiceAddress);
+        uint256 derivativeTokenBalance = derivativeToken.balanceOf(
+            address(this)
+        );
+        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function doesClientRecordExist(address depositor)
         external
         view
+        onlyNonDeprecatedCalls
         returns (bool)
     {
         return clientRecordStorage.doesClientRecordExist(depositor);
@@ -59,6 +78,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
     function getClientRecord(address depositor)
         external
+        onlyNonDeprecatedCalls
         returns (
             address payable _address,
             string memory email,
@@ -87,6 +107,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
     function getClientRecord()
         external
+        onlyNonDeprecatedCalls
         returns (
             address payable _address,
             string memory email,
@@ -115,6 +136,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
     function getClientRecordByIndex(uint256 index)
         external
+        onlyNonDeprecatedCalls
         returns (
             address payable _address,
             uint256 underlyingTotalDeposits,
@@ -184,7 +206,10 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             );
     }
 
-    function withdraw(uint256 derivativeAmount) external {
+    function withdraw(uint256 derivativeAmount)
+        external
+        onlyNonDeprecatedCalls
+    {
         address payable recipient = msg.sender;
         _withdraw(recipient, derivativeAmount);
     }
@@ -192,7 +217,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     function withdrawDelegate(
         address payable recipient,
         uint256 derivativeAmount
-    ) external onlyOwner {
+    ) external onlyNonDeprecatedCalls onlyOwner {
         _withdraw(recipient, derivativeAmount);
     }
 
@@ -241,7 +266,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         );
     }
 
-    function deposit(string calldata email) external {
+    function deposit(string calldata email) external onlyNonDeprecatedCalls {
         address payable depositor = msg.sender;
         _deposit(depositor, email);
     }
@@ -249,7 +274,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     function depositDelegate(
         address payable depositorAddress,
         string calldata email
-    ) external onlyOwner {
+    ) external onlyNonDeprecatedCalls onlyOwner {
         _deposit(depositorAddress, email);
     }
 
@@ -389,5 +414,10 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             clientRecord.derivativeTotalDeposits,
             clientRecord.derivativeTotalWithdrawn
         );
+    }
+
+    modifier onlyNonDeprecatedCalls() {
+        require(isDeprecated == false, "Service contract has been deprecated");
+        _;
     }
 }

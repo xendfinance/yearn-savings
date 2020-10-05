@@ -18,9 +18,11 @@ interface IGroups is IGroupSchema {
 
     function incrementEtherDeposit(uint256 amount) external returns (uint256);
 
-    function decrementEtherDeposit(uint256 amount) external returns (uint256);
+    function decrementEtherDeposit(address tokenAddress, uint256 amount)
+        external
+        returns (uint256);
 
-    function getEtherDeposit() external returns (uint256);
+    function getEtherDeposit(address tokenAddress) external returns (uint256);
 
     function createMember(address payable depositor) external;
 
@@ -36,7 +38,7 @@ interface IGroups is IGroupSchema {
         uint256 id,
         string calldata name,
         string calldata symbol,
-        address payable creatorAddress
+        address payable creatorAddress0
     ) external;
 
     function doesGroupExist(uint256 groupId) external view returns (bool);
@@ -126,4 +128,10 @@ interface IGroups is IGroupSchema {
         );
 
     function getGroupIndex(uint256 groupId) external view returns (uint256);
+
+    function activateStorageOracle(address oracle) external;
+
+    function deactivateStorageOracle(address oracle) external;
+
+    function reAssignStorageOracle(address newOracle) external;
 }

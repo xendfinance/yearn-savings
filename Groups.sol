@@ -1,36 +1,9 @@
 pragma solidity ^0.6.0;
 
 import "./IGroupSchema.sol";
+import "./StorageOwners.sol";
 
-contract GroupStorageOwners {
-    address owner;
-    mapping(address => bool) private storageOracles;
-
-    constructor() public {
-        owner = msg.sender;
-    }
-
-    function activateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = true;
-    }
-
-    function deactivateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = false;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "unauthorized access to contract");
-        _;
-    }
-
-    modifier onlyStorageOracle() {
-        bool hasAccess = storageOracles[msg.sender];
-        require(hasAccess, "unauthorized access to contract");
-        _;
-    }
-}
-
-contract Groups is IGroupSchema, GroupStorageOwners {
+contract Groups is IGroupSchema, StorageOwners {
     // list of group records
     Group[] private Groups;
     //Mapping that enables ease of traversal of the group records

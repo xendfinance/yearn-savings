@@ -90,6 +90,7 @@ contract XendFinanceGroup_Yearn_V1 is
     ISavingsConfig savingsConfig;
     IRewardConfig rewardConfig;
     IXendToken xendToken;
+    IERC20 derivativeToken;
 
     address LendingAdapterAddress;
     address TokenAddress;
@@ -97,6 +98,8 @@ contract XendFinanceGroup_Yearn_V1 is
 
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
+
+    bool isDeprecated = false;
 
     constructor(
         address lendingAdapterAddress,
@@ -107,7 +110,8 @@ contract XendFinanceGroup_Yearn_V1 is
         address treasuryAddress,
         address savingsConfigAddress,
         address rewardConfigAddress,
-        address xendTokenAddress
+        address xendTokenAddress,
+        address derivativeTokenAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
@@ -120,9 +124,27 @@ contract XendFinanceGroup_Yearn_V1 is
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         rewardConfig = IRewardConfig(rewardConfigAddress);
         xendToken = IXendToken(xendTokenAddress);
+        derivativeToken = IERC20(derivativeTokenAddress);
     }
 
-    function withdrawFromCycleWhileItIsOngoing(uint256 cycleId) external {
+    function deprecateContract(address newServiceAddress)
+        external
+        onlyOwner
+        onlyNonDeprecatedCalls
+    {
+        isDeprecated = true;
+        groupStorage.reAssignStorageOracle(newServiceAddress);
+        cycleStorage.reAssignStorageOracle(newServiceAddress);
+        uint256 derivativeTokenBalance = derivativeToken.balanceOf(
+            address(this)
+        );
+        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
+    }
+
+    function withdrawFromCycleWhileItIsOngoing(uint256 cycleId)
+        external
+        onlyNonDeprecatedCalls
+    {
         address payable memberAddress = msg.sender;
         _withdrawFromCycleWhileItIsOngoing(cycleId, memberAddress);
     }
@@ -236,13 +258,17 @@ contract XendFinanceGroup_Yearn_V1 is
         cycleMember.stakesClaimed += numberOfStakesByMember;
     }
 
-    function withdrawFromCycle(uint256 cycleId) external {
+    function withdrawFromCycle(uint256 cycleId)
+        external
+        onlyNonDeprecatedCalls
+    {
         address payable memberAddress = msg.sender;
         _withdrawFromCycle(cycleId, memberAddress);
     }
 
     function withdrawFromCycle(uint256 cycleId, address payable memberAddress)
         external
+        onlyNonDeprecatedCalls
     {
         _withdrawFromCycle(cycleId, memberAddress);
     }
@@ -294,6 +320,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         //cycle members stake amount current worth
+
 
             uint256 underlyingAmountThatMemberDepositIsWorth
          = underlyingAssetForStake.mul(stakesHoldings);
@@ -453,6 +480,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getRecordIndexLengthForCycleMembers(uint256 cycleId)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         return cycleStorage.getRecordIndexLengthForCycleMembers(cycleId);
@@ -460,7 +488,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
     function getRecordIndexLengthForCycleMembersByDepositor(
         address depositorAddress
-    ) external view returns (uint256) {
+    ) external view onlyNonDeprecatedCalls returns (uint256) {
         return
             cycleStorage.getRecordIndexLengthForCycleMembersByDepositor(
                 depositorAddress
@@ -470,6 +498,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getRecordIndexLengthForGroupMembers(uint256 groupId)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         return groupStorage.getRecordIndexLengthForGroupMembersIndexer(groupId);
@@ -477,7 +506,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
     function getRecordIndexLengthForGroupMembersByDepositor(
         address depositorAddress
-    ) external view returns (uint256) {
+    ) external view onlyNonDeprecatedCalls returns (uint256) {
         return
             groupStorage.getRecordIndexLengthForGroupMembersIndexerByDepositor(
                 depositorAddress
@@ -487,6 +516,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getRecordIndexLengthForGroupCycles(uint256 groupId)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         return cycleStorage.getRecordIndexLengthForGroupCycleIndexer(groupId);
@@ -495,6 +525,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getRecordIndexLengthForCreator(address groupCreator)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         return groupStorage.getRecordIndexLengthForCreator(groupCreator);
@@ -503,6 +534,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getSecondsLeftForCycleToEnd(uint256 cycleId)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         Cycle memory cycle = _getCycleById(cycleId);
@@ -517,6 +549,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getSecondsLeftForCycleToStart(uint256 cycleId)
         external
         view
+        onlyNonDeprecatedCalls
         returns (uint256)
     {
         Cycle memory cycle = _getCycleById(cycleId);
@@ -530,6 +563,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getCycleFinancials(uint256 index)
         external
         view
+        onlyNonDeprecatedCalls
         returns (
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
@@ -550,6 +584,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getCycleByIndex(uint256 index)
         external
         view
+        onlyNonDeprecatedCalls
         returns (
             uint256 id,
             uint256 groupId,
@@ -584,6 +619,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getGroupByIndex(uint256 index)
         external
         view
+        onlyNonDeprecatedCalls
         returns (
             bool exists,
             uint256 id,
@@ -605,6 +641,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getGroupById(uint256 _id)
         external
         view
+        onlyNonDeprecatedCalls
         returns (
             bool exists,
             uint256 id,
@@ -626,6 +663,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function getCycleMember(uint256 index)
         external
         view
+        onlyNonDeprecatedCalls
         returns (
             bool exist,
             uint256 cycleId,
@@ -689,7 +727,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
-    function endCycle(uint256 cycleId) external {
+    function endCycle(uint256 cycleId) external onlyNonDeprecatedCalls {
         _endCycle(cycleId);
     }
 
@@ -768,6 +806,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
     function createGroup(string calldata name, string calldata symbol)
         external
+        onlyNonDeprecatedCalls
     {
         _validateGroupNameAndSymbolIsAvailable(name, symbol);
 
@@ -798,7 +837,7 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 maximumSlots,
         bool hasMaximumSlots,
         uint256 cycleStakeAmount
-    ) external onlyGroupCreator(groupId) {
+    ) external onlyNonDeprecatedCalls onlyGroupCreator(groupId) {
         _validateCycleCreationActionValid(
             groupId,
             maximumSlots,
@@ -829,7 +868,10 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
-    function joinCycle(uint256 cycleId, uint256 numberOfStakes) external {
+    function joinCycle(uint256 cycleId, uint256 numberOfStakes)
+        external
+        onlyNonDeprecatedCalls
+    {
         address payable depositorAddress = msg.sender;
         _joinCycle(cycleId, numberOfStakes, depositorAddress);
     }
@@ -838,7 +880,7 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 cycleId,
         uint256 numberOfStakes,
         address payable depositorAddress
-    ) external {
+    ) external onlyNonDeprecatedCalls {
         _joinCycle(cycleId, numberOfStakes, depositorAddress);
     }
 
@@ -1464,6 +1506,11 @@ contract XendFinanceGroup_Yearn_V1 is
         address payable memberAddress
     ) internal view returns (uint256) {
         return cycleStorage.getCycleMemberIndex(cycleId, memberAddress);
+    }
+
+    modifier onlyNonDeprecatedCalls() {
+        require(isDeprecated == false, "Service contract has been deprecated");
+        _;
     }
 
     modifier onlyGroupCreator(uint256 groupId) {

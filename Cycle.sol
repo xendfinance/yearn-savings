@@ -1,34 +1,12 @@
 pragma solidity ^0.6.0;
 
 import "./IGroupSchema.sol";
-
-contract StorageOwners {
-    address owner;
-    mapping(address => bool) private storageOracles;
-
-    function activateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = true;
-    }
-
-    function deactivateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = false;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "unauthorized access to contract");
-        _;
-    }
-
-    modifier onlyStorageOracle() {
-        bool hasAccess = storageOracles[msg.sender];
-        require(hasAccess, "unauthorized access to contract");
-        _;
-    }
-}
+import "./StorageOwners.sol";
 
 contract Cycles is IGroupSchema, StorageOwners {
     // list of Group Cycles
     Cycle[] private Cycles;
+    CycleFinancial[] private CycleFinancials;
 
     //Mapping that enables ease of traversal of the cycle records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleIndexer;
@@ -36,8 +14,6 @@ contract Cycles is IGroupSchema, StorageOwners {
     //Mapping that enables ease of traversal of cycle records by the group. key is group id
     mapping(uint256 => RecordIndex[]) private GroupCycleIndexer;
 
-    // list of the financial details about a cycle
-    CycleFinancial[] private CycleFinancials;
     //Mapping that enables ease of traversal of the cycle financials records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleFinancialsIndexer;
 

@@ -184,4 +184,10 @@ interface ICycles is IGroupSchema {
         external
         view
         returns (bool);
+
+    function activateStorageOracle(address oracle) external;
+
+    function deactivateStorageOracle(address oracle) external;
+
+    function reAssignStorageOracle(address newOracle) external;
 }

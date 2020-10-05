@@ -1,30 +1,7 @@
 pragma solidity ^0.6.0;
 
 import "./IClientRecordSchema.sol";
-
-contract StorageOwners {
-    address owner;
-    mapping(address => bool) private storageOracles;
-
-    function activateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = true;
-    }
-
-    function deactivateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = false;
-    }
-
-    modifier onlyOwner() {
-        require(msg.sender == owner, "unauthorized access to contract");
-        _;
-    }
-
-    modifier onlyStorageOracle() {
-        bool hasAccess = storageOracles[msg.sender];
-        require(hasAccess, "unauthorized access to contract");
-        _;
-    }
-}
+import "./StorageOwners.sol";
 
 contract ClientRecord is IClientRecordSchema, StorageOwners {
     // list of CLient Records
