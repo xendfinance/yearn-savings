@@ -38,6 +38,7 @@ contract Groups is IGroupSchema, StorageOwners {
 
     function getLengthOfTokenAddressesUsedInDeposit()
         external
+        view
         returns (uint256)
     {
         return tokenAddresses.length;
@@ -69,7 +70,11 @@ contract Groups is IGroupSchema, StorageOwners {
         return totalTokensDeposited[tokenAddress];
     }
 
-    function getTokenDeposit(address tokenAddress) external returns (uint256) {
+    function getTokenDeposit(address tokenAddress)
+        external
+        view
+        returns (uint256)
+    {
         return totalTokensDeposited[tokenAddress];
     }
 
@@ -82,7 +87,7 @@ contract Groups is IGroupSchema, StorageOwners {
         return totalEthersDeposited;
     }
 
-    function decrementEtherDeposit(address tokenAddress, uint256 amount)
+    function decrementEtherDeposit(uint256 amount)
         external
         onlyStorageOracle
         returns (uint256)
@@ -95,7 +100,11 @@ contract Groups is IGroupSchema, StorageOwners {
         return totalEthersDeposited;
     }
 
-    function getEtherDeposit(address tokenAddress) external returns (uint256) {
+    function getEtherDeposit(address tokenAddress)
+        external
+        view
+        returns (uint256)
+    {
         return totalTokensDeposited[tokenAddress];
     }
 
@@ -139,7 +148,13 @@ contract Groups is IGroupSchema, StorageOwners {
         require(exist == false, "Group name has already been used");
 
         lastGroupId += 1;
-        Group memory group = Group(true, lastGroupId, name, symbol, msg.sender);
+        Group memory group = Group(
+            true,
+            lastGroupId,
+            name,
+            symbol,
+            payable(groupCreator)
+        );
         uint256 index = Groups.length;
         RecordIndex memory recordIndex = RecordIndex(true, index);
         Groups.push(group);
@@ -208,7 +223,6 @@ contract Groups is IGroupSchema, StorageOwners {
         bool exist = _doesGroupMemberExist(groupId, depositor);
         require(exist == false, "Group member exists");
 
-        GroupMember memory groupMember = GroupMember(true, depositor, groupId);
         RecordIndex memory recordIndex = RecordIndex(true, GroupMembers.length);
 
         GroupMembersIndexer[groupId].push(recordIndex);

@@ -4,6 +4,7 @@ import "./IGroupSchema.sol";
 interface IGroups is IGroupSchema {
     function getLengthOfTokenAddressesUsedInDeposit()
         external
+        view
         returns (uint256);
 
     function incrementTokenDeposit(address tokenAddress, uint256 amount)
@@ -14,7 +15,10 @@ interface IGroups is IGroupSchema {
         external
         returns (uint256);
 
-    function getTokenDeposit(address tokenAddress) external returns (uint256);
+    function getTokenDeposit(address tokenAddress)
+        external
+        view
+        returns (uint256);
 
     function incrementEtherDeposit(uint256 amount) external returns (uint256);
 
@@ -22,7 +26,10 @@ interface IGroups is IGroupSchema {
         external
         returns (uint256);
 
-    function getEtherDeposit(address tokenAddress) external returns (uint256);
+    function getEtherDeposit(address tokenAddress)
+        external
+        view
+        returns (uint256);
 
     function createMember(address payable depositor) external;
 

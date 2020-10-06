@@ -154,12 +154,12 @@ interface ICycles is IGroupSchema {
     function getRecordIndexForCycleMembersIndexerByDepositor(
         uint256 cycleId,
         uint256 recordIndexLocation
-    ) external returns (bool, uint256);
+    ) external view returns (bool, uint256);
 
     function getRecordIndexForCycleMembersIndexer(
         address depositorAddress,
         uint256 recordIndexLocation
-    ) external returns (bool, uint256);
+    ) external view returns (bool, uint256);
 
     function getRecordIndexLengthForCycleMembers(uint256 cycleId)
         external

@@ -373,7 +373,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     function getRecordIndexForCycleMembersIndexerByDepositor(
         uint256 cycleId,
         uint256 recordIndexLocation
-    ) external returns (bool, uint256) {
+    ) external view returns (bool, uint256) {
 
             RecordIndex memory recordIndex
          = CycleMembersIndexer[cycleId][recordIndexLocation];
@@ -383,7 +383,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     function getRecordIndexForCycleMembersIndexer(
         address depositorAddress,
         uint256 recordIndexLocation
-    ) external returns (bool, uint256) {
+    ) external view returns (bool, uint256) {
 
             RecordIndex memory recordIndex
          = CycleMembersIndexerByDepositor[depositorAddress][recordIndexLocation];
