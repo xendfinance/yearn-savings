@@ -18,14 +18,11 @@ contract DaiLendingService {
     }
 
     function _getPricePerFullShare() internal pure returns (uint256) {
-        uint256 base = 11;
-        return base.mul(10**uint256(17));
+        uint256 base = 1;
+        return base.mul(10**uint256(18));
     }
 
     function save(uint256 amount) external {
-        uint256 pricePerFullShare = _getPricePerFullShare();
-        uint256 shareAmount = amount.div(pricePerFullShare);
-
         uint256 allowance = daiToken.allowance(msg.sender, address(this));
         require(amount == allowance, "amount mismatch");
 
@@ -35,7 +32,7 @@ contract DaiLendingService {
             amount
         );
         require(isSuccessful == true, "dai token transfer failed");
-        isSuccessful = ydaiToken.transfer(msg.sender, shareAmount);
+        isSuccessful = ydaiToken.transfer(msg.sender, amount);
         require(isSuccessful == true, "ydai token transfer failed");
     }
 
@@ -67,18 +64,13 @@ contract DaiLendingService {
 
         require(sharesAmount == allowance, "amount mismatch");
 
-        uint256 pricePerFullShare = _getPricePerFullShare();
-        uint256 daiAmount = pricePerFullShare.mul(sharesAmount).div(
-            10**uint256(18)
-        );
-
         bool isSuccessful = ydaiToken.transferFrom(
             msg.sender,
             address(this),
             allowance
         );
         require(isSuccessful == true, "ydai token transfer failed");
-        isSuccessful = daiToken.transfer(msg.sender, daiAmount);
+        isSuccessful = daiToken.transfer(msg.sender, sharesAmount);
         require(isSuccessful == true, "dai token transfer failed");
     }
 }
