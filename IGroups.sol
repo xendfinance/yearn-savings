@@ -63,7 +63,7 @@ interface IGroups is IGroupSchema {
     function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
         external
         view
-        returns (uint256 index);
+        returns (bool exists, uint256 index);
 
     function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)
         external

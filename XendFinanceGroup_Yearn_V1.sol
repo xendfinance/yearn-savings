@@ -201,14 +201,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
             groupStorage.createGroupMember(groupId, depositor);
         }
 
-        uint256 index = groupStorage.getGroupMembersDeepIndexer(
-            groupId,
-            depositor
-        );
-        (address payable _address, uint256 groupId) = groupStorage
-            .getGroupMember(index);
-
-        return GroupMember(true, _address, groupId);
+        return GroupMember(true, depositor, groupId);
     }
 
     function doesGroupExist(uint256 groupId) internal view returns (bool) {

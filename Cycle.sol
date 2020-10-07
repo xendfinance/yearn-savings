@@ -1,5 +1,6 @@
 pragma solidity ^0.6.0;
 
+
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
 
@@ -48,8 +49,10 @@ contract Cycles is IGroupSchema, StorageOwners {
             uint256 stakesClaimed,
             CycleStatus cycleStatus,
             uint256 stakesClaimedBeforeMaturity
+
         )
     {
+
         Cycle memory cycle = Cycles[index];
 
         return (
@@ -67,7 +70,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             cycle.stakesClaimedBeforeMaturity
         );
     }
-
+    
     function getCycleInfoById(uint256 cycleId)
         external
         view
@@ -84,6 +87,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             uint256 stakesClaimed,
             CycleStatus cycleStatus,
             uint256 stakesClaimedBeforeMaturity
+
         )
     {
         uint256 index = _getCycleIndex(cycleId);
@@ -103,6 +107,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             cycle.stakesClaimed,
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
+
         );
     }
 
@@ -110,7 +115,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         external
         view
         returns (
-            uint256 cycleId,
+        uint cycleId,
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
@@ -131,8 +136,8 @@ contract Cycles is IGroupSchema, StorageOwners {
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
-
-    function getCycleFinancialsByCycleId(uint256 cycleId)
+    
+    function getCycleFinancialsByCycleId(uint cycleId)
         external
         view
         returns (
@@ -142,10 +147,12 @@ contract Cycles is IGroupSchema, StorageOwners {
             uint256 derivativeBalance,
             uint256 underylingBalanceClaimedBeforeMaturity,
             uint256 derivativeBalanceClaimedBeforeMaturity
+
         )
     {
-        uint256 index = _getCycleFinancialIndex(cycleId);
+        uint index = _getCycleFinancialIndex(cycleId);
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
+
 
         return (
             cycleFinancial.underlyingTotalDeposits,
@@ -154,6 +161,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             cycleFinancial.derivativeBalance,
             cycleFinancial.underylingBalanceClaimedBeforeMaturity,
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity
+
         );
     }
 
@@ -191,7 +199,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 numberOfCycleStakes,
         uint256 stakesClaimed,
         bool hasWithdrawn
-    ) external onlyStorageOracle {
+    ) onlyStorageOracle external {
         bool exist = _doesCycleMemberExist(cycleId, depositor);
         require(exist == false, "Cycle member already exist");
 
@@ -208,7 +216,8 @@ contract Cycles is IGroupSchema, StorageOwners {
         RecordIndex memory recordIndex = RecordIndex(true, CycleMembers.length);
 
         CycleMembers.push(cycleMember);
-        CycleIndexer[lastCycleId] = recordIndex;
+        CycleIndexer[cycleId] = recordIndex;
+        CycleMembersIndexer[cycleId].push(recordIndex);
         CycleMembersIndexerByDepositor[depositor].push(recordIndex);
 
         CycleMembersDeepIndexer[groupId][depositor] = recordIndex;
@@ -244,7 +253,8 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 stakesClaimed,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
-    ) external onlyStorageOracle returns (uint256) {
+
+    ) onlyStorageOracle external returns (uint){
         lastCycleId += 1;
         Cycle memory cycle = Cycle(
             true,
@@ -260,6 +270,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             stakesClaimed,
             cycleStatus,
             stakesClaimedBeforeMaturity
+
         );
 
         RecordIndex memory recordIndex = RecordIndex(true, Cycles.length);
@@ -272,15 +283,16 @@ contract Cycles is IGroupSchema, StorageOwners {
 
     function createCycleFinancials(
         uint256 cycleId,
-        uint256 groupId,
+        uint groupId,
         uint256 underlyingTotalDeposits,
         uint256 underlyingTotalWithdrawn,
         uint256 underlyingBalance,
         uint256 derivativeBalance,
         uint256 underylingBalanceClaimedBeforeMaturity,
         uint256 derivativeBalanceClaimedBeforeMaturity
-    ) external onlyStorageOracle {
+    ) onlyStorageOracle external {
         RecordIndex memory recordIndex = CycleIndexer[cycleId];
+        require(recordIndex.exists==true,"Cycle not found");
         CycleFinancial memory cycleFinancial = CycleFinancial(
             true,
             cycleId,
@@ -290,6 +302,7 @@ contract Cycles is IGroupSchema, StorageOwners {
             derivativeBalance,
             underylingBalanceClaimedBeforeMaturity,
             derivativeBalanceClaimedBeforeMaturity
+            
         );
         CycleFinancials.push(cycleFinancial);
         CycleFinancialsIndexer[cycleId] = recordIndex;
@@ -308,7 +321,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 stakesClaimed,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
-    ) external onlyStorageOracle {
+    ) onlyStorageOracle external {
         Cycle memory cycle = _getCycle(cycleId);
         cycle.numberOfDepositors = numberOfDepositors;
         cycle.cycleStartTimeStamp = startTimeStamp;
@@ -321,7 +334,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         cycle.stakesClaimed = stakesClaimed;
         cycle.cycleStatus = cycleStatus;
         cycle.stakesClaimedBeforeMaturity = stakesClaimedBeforeMaturity;
-
+        
         _updateCycle(cycle);
     }
 
@@ -333,7 +346,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 derivativeBalance,
         uint256 underylingBalanceClaimedBeforeMaturity,
         uint256 derivativeBalanceClaimedBeforeMaturity
-    ) external onlyStorageOracle {
+    ) onlyStorageOracle external {
         uint256 index = _getCycleFinancialIndex(cycleId);
 
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
@@ -341,10 +354,8 @@ contract Cycles is IGroupSchema, StorageOwners {
         cycleFinancial.underlyingTotalWithdrawn = underlyingTotalWithdrawn;
         cycleFinancial.underlyingBalance = underlyingBalance;
         cycleFinancial.derivativeBalance = derivativeBalance;
-        cycleFinancial
-            .underylingBalanceClaimedBeforeMaturity = underylingBalanceClaimedBeforeMaturity;
-        cycleFinancial
-            .derivativeBalanceClaimedBeforeMaturity = derivativeBalanceClaimedBeforeMaturity;
+        cycleFinancial.underylingBalanceClaimedBeforeMaturity = underylingBalanceClaimedBeforeMaturity;
+        cycleFinancial.derivativeBalanceClaimedBeforeMaturity = derivativeBalanceClaimedBeforeMaturity;
         _updateCycleFinancial(cycleFinancial);
     }
 
@@ -373,7 +384,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     function getRecordIndexForCycleMembersIndexerByDepositor(
         uint256 cycleId,
         uint256 recordIndexLocation
-    ) external view returns (bool, uint256) {
+    ) external view  returns (bool, uint256) {
 
             RecordIndex memory recordIndex
          = CycleMembersIndexer[cycleId][recordIndexLocation];
@@ -395,10 +406,10 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (uint256)
     {
-        return CycleMembersIndexer[cycleId].length;
+      s  return CycleMembersIndexer[cycleId].length;
     }
-
-    function getRecordIndexLengthForGroupCycleIndexer(uint256 groupId)
+    
+     function getRecordIndexLengthForGroupCycleIndexer(uint256 groupId)
         external
         view
         returns (uint256)

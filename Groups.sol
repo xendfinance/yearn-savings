@@ -241,12 +241,12 @@ contract Groups is IGroupSchema, StorageOwners {
     function getGroupMembersDeepIndexer(uint256 groupId, address depositor)
         external
         view
-        returns (uint256 index)
+        returns (bool exists, uint256 index)
     {
 
             RecordIndex memory recordIndex
          = GroupMembersDeepIndexer[groupId][depositor];
-        return (recordIndex.index);
+        return (recordIndex.exists, recordIndex.index);
     }
 
     function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)
