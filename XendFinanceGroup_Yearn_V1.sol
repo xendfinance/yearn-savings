@@ -92,57 +92,6 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
 
     bool isDeprecated = false;
-    bool isInitialized = false;
-
-    /*
-   constructor(address lendingAdapterAddress,
-        address lendingServiceAddress,
-        address tokenAddress,
-        address groupStorageAddress,
-        address cycleStorageAddress,
-        address treasuryAddress,
-        address savingsConfigAddress,
-        address rewardConfigAddress,
-        address xendTokenAddress,
-        address derivativeTokenAddress) public {
-        
-        initializeTokenDependency(lendingAdapterAddress);
-      
-    }
-    
-    
-
-  function initializeTokenDependency( address lendingAdapterAddress,
-        address lendingServiceAddress,
-        address tokenAddress,
-        address groupStorageAddress,
-        address cycleStorageAddress,
-        address treasuryAddress,
-        address savingsConfigAddress,
-        address rewardConfigAddress,
-        address xendTokenAddress,
-        address derivativeTokenAddress) external{
-            
-        require(isInitialized==false,"Contract has already been initialized");
-         
-        lendingService = IDaiLendingService(lendingServiceAddress);
-        daiToken = IERC20(tokenAddress);
-        groupStorage = IGroups(groupStorageAddress);
-        cycleStorage = ICycles(cycleStorageAddress);
-        treasury = ITreasury(treasuryAddress);
-        savingsConfig = ISavingsConfig(savingsConfigAddress);
-        rewardConfig = IRewardConfig(rewardConfigAddress);
-        xendToken = IXendToken(xendTokenAddress);
-        derivativeToken = IERC20(derivativeTokenAddress);
-        LendingAdapterAddress = lendingAdapterAddress;
-        TokenAddress = tokenAddress;
-        TreasuryAddress = treasuryAddress;
-        
-        isInitialized = true;
-
-    }
-    
-    */
 
     modifier onlyNonDeprecatedCalls() {
         require(isDeprecated == false, "Service contract has been deprecated");
@@ -875,11 +824,6 @@ contract XendFinanceGroup_Yearn_V1 is
         address xendTokenAddress,
         address derivativeTokenAddress
     ) public {
-        require(
-            isInitialized == false,
-            "Contract has already been initialized"
-        );
-
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
         groupStorage = IGroups(groupStorageAddress);
@@ -892,8 +836,6 @@ contract XendFinanceGroup_Yearn_V1 is
         LendingAdapterAddress = lendingAdapterAddress;
         TokenAddress = tokenAddress;
         TreasuryAddress = treasuryAddress;
-
-        isInitialized = true;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -1335,6 +1277,8 @@ contract XendFinanceGroup_Yearn_V1 is
             CycleStatus.NOT_STARTED,
             0
         );
+
+        cycleStorage.createCycleFinancials(cycleId, groupId, 0, 0, 0, 0, 0, 0);
 
         emit CycleCreated(
             cycleId,
