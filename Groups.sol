@@ -221,9 +221,12 @@ contract Groups is IGroupSchema, StorageOwners {
 
         RecordIndex memory recordIndex = RecordIndex(true, GroupMembers.length);
 
+        GroupMember memory groupMember = GroupMember(true, depositor, groupId);
+
         GroupMembersIndexer[groupId].push(recordIndex);
         GroupMembersIndexerByDepositor[depositor].push(recordIndex);
         GroupMembersDeepIndexer[groupId][depositor] = recordIndex;
+        GroupMembers.push(groupMember);
     }
 
     function getGroupMember(uint256 index)
