@@ -212,7 +212,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         CycleMembersIndexer[cycleId].push(recordIndex);
         CycleMembersIndexerByDepositor[depositor].push(recordIndex);
 
-        CycleMembersDeepIndexer[groupId][depositor] = recordIndex;
+        CycleMembersDeepIndexer[cycleId][depositor] = recordIndex;
     }
 
     function updateCycleMember(
