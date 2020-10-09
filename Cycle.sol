@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.6;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
@@ -205,10 +205,12 @@ contract Cycles is IGroupSchema, StorageOwners {
             stakesClaimed,
             hasWithdrawn
         );
-        RecordIndex memory recordIndex = RecordIndex(true, CycleMembers.length);
+
+        uint256 index = CycleMembers.length;
+
+        RecordIndex memory recordIndex = RecordIndex(true, index);
 
         CycleMembers.push(cycleMember);
-        CycleIndexer[cycleId] = recordIndex;
         CycleMembersIndexer[cycleId].push(recordIndex);
         CycleMembersIndexerByDepositor[depositor].push(recordIndex);
 
@@ -263,7 +265,8 @@ contract Cycles is IGroupSchema, StorageOwners {
             stakesClaimedBeforeMaturity
         );
 
-        RecordIndex memory recordIndex = RecordIndex(true, Cycles.length);
+        uint256 index = Cycles.length;
+        RecordIndex memory recordIndex = RecordIndex(true, index);
 
         Cycles.push(cycle);
         CycleIndexer[lastCycleId] = recordIndex;

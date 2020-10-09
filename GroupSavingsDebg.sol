@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-//pragma experimental ABIEncoderV2;
+pragma experimental ABIEncoderV2;
 
 pragma solidity ^0.6.0;
 import "./ISavingsConfig.sol";
@@ -200,6 +200,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
             groupStorage.createGroupMember(groupId, depositor);
         }
 
+       
         return GroupMember(true, depositor, groupId);
     }
 
@@ -250,6 +251,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     using SafeMath for uint256;
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
+        
         (
             uint256 cycleId,
             address payable depositor,
@@ -289,6 +291,14 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         }
     }
 
+    //todo: Remove later on
+    function getCycleGroup(uint256 cycleId) external
+        view
+        returns (Group memory)
+    {
+        return _getCycleGroup(cycleId);
+    }
+
     function _getCycleGroup(uint256 cycleId)
         internal
         view
@@ -298,6 +308,16 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         return _getGroupById(cycle.groupId);
     }
+
+    //todo: Remove later on
+     function getCycleById(uint256 cycleId)
+        external
+        view
+        returns (Cycle memory)
+    {
+        return _getCycleById(cycleId);
+    }
+    
 
     function _getCycleById(uint256 cycleId)
         internal
@@ -443,37 +463,32 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return cycleStorage.getCycleMemberIndex(cycleId, memberAddress);
     }
 
-    function _getCycleMember(address payable depositor, uint256 _cycleId)
-        internal
-        returns (CycleMember memory)
-    {
+    function _getCycleMember(
+        address payable depositor,
+        uint256 _cycleId
+    ) internal returns (CycleMember memory) {
         bool cycleMemberExists = cycleStorage.doesCycleMemberExist(
             _cycleId,
             depositor
         );
 
         require(cycleMemberExists == true, "Cycle Member not found");
-
-        uint256 index = _getCycleMemberIndex(_cycleId, depositor);
-
-        CycleMember memory cycleMember = _getCycleMember(index);
+        
+        uint index = _getCycleMemberIndex(_cycleId,depositor);
+        
+         CycleMember memory cycleMember = _getCycleMember(index);
         return cycleMember;
     }
-
-    function _CreateCycleMember(CycleMember memory cycleMember)
-        internal
-        returns (CycleMember memory)
-    {
-        cycleStorage.createCycleMember(
-            cycleMember.cycleId,
-            cycleMember.groupId,
-            cycleMember._address,
-            cycleMember.totalLiquidityAsPenalty,
-            cycleMember.numberOfCycleStakes,
-            cycleMember.stakesClaimed,
-            cycleMember.hasWithdrawn
-        );
-    }
+    
+    function _CreateCycleMember( CycleMember memory cycleMember ) internal returns (CycleMember memory) {
+          
+            cycleStorage.createCycleMember(cycleMember.cycleId, cycleMember.groupId, cycleMember._address, 
+                                           cycleMember.totalLiquidityAsPenalty, cycleMember.numberOfCycleStakes, 
+                                           cycleMember.stakesClaimed, cycleMember.hasWithdrawn);
+            
+        }
+    
+    
 
     function _getCycleMember(uint256 index)
         internal
@@ -512,6 +527,14 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         cycle.cycleStatus = CycleStatus.ENDED;
         _updateCycle(cycle);
     }
+    
+    
+    //todo: remove this function later, just using it for debugging
+     function updateCycle(Cycle calldata cycle) external {
+        _updateCycle(cycle);
+    }
+    
+    
 
     function _updateCycle(Cycle memory cycle) internal {
         cycleStorage.updateCycle(
@@ -526,6 +549,21 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycle.stakesClaimed,
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
+        );
+    }
+    
+    //todo: remove this function later, just using it for debugging
+     function updateCycleFinancials(CycleFinancial calldata cycleFinancial)
+        external
+    {
+        cycleStorage.updateCycleFinancials(
+            cycleFinancial.cycleId,
+            cycleFinancial.underlyingTotalDeposits,
+            cycleFinancial.underlyingTotalWithdrawn,
+            cycleFinancial.underlyingBalance,
+            cycleFinancial.derivativeBalance,
+            cycleFinancial.underylingBalanceClaimedBeforeMaturity,
+            cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
 
@@ -576,8 +614,11 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             numberOfStakes,
             depositorAddress
         );
-
+        
+        
         cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
+        
+        /*
         emit UnderlyingAssetDeposited(
             cycle.id,
             depositorAddress,
@@ -585,25 +626,40 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             result.underlyingAmountDeposited,
             TokenAddress
         );
+        */
 
         if (!didCycleMemberExistBeforeNow) {
             cycle.numberOfDepositors += 1;
 
-            emit MemberJoinedCycle(cycleId, depositorAddress, result.group.id);
+            //emit MemberJoinedCycle(cycleId, depositorAddress, result.group.id);
         }
+        
+
 
         if (!didGroupMemberExistBeforeNow) {
-            emit MemberJoinedGroup(depositorAddress, result.group.id);
+            //emit MemberJoinedGroup(depositorAddress, result.group.id);
         }
-
+        
         _updateCycle(cycle);
+
     }
+
+    //todo: remove this function later, just using it for debugging
+   function updateCycleStakeDeposit(
+        Cycle calldata cycle,
+        CycleFinancial calldata cycleFinancial,
+        uint256 numberOfCycleStakes
+    ) external returns (Cycle memory){
+       return _updateCycleStakeDeposit(cycle,cycleFinancial,numberOfCycleStakes);
+    }
+    
+   
 
     function _updateCycleStakeDeposit(
         Cycle memory cycle,
         CycleFinancial memory cycleFinancial,
         uint256 numberOfCycleStakes
-    ) internal returns (Cycle memory) {
+    ) internal returns (Cycle memory){
         cycle.totalStakes += numberOfCycleStakes;
         uint256 depositAmount = cycle.cycleStakeAmount.mul(numberOfCycleStakes);
         cycleFinancial.underlyingTotalDeposits += depositAmount;
@@ -612,10 +668,37 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return cycle;
     }
 
+    //todo: remove this function later, just using it for debugging
+     function updateTotalTokenDepositAmount(uint256 amount) external {
+        _updateTotalTokenDepositAmount(amount);
+    }
+    
+
     function _updateTotalTokenDepositAmount(uint256 amount) internal {
         groupStorage.incrementTokenDeposit(TokenAddress, amount);
     }
+    
+    
+    //todo: remove this function later, just using it for debugging
+     function validateCycleDepositCriteriaAreMet(
+        Cycle calldata cycle,
+        bool didCycleMemberExistBeforeNow
+    ) external view {
+        bool hasMaximumSlots = cycle.hasMaximumSlots;
+        if (hasMaximumSlots == true && didCycleMemberExistBeforeNow == false) {
+            require(
+                cycle.numberOfDepositors < cycle.maximumSlots,
+                "Maximum slot for depositors has been reached"
+            );
+        }
 
+        require(
+            cycle.cycleStatus == CycleStatus.NOT_STARTED,
+            "This cycle is not accepting deposits anymore"
+        );
+    }
+    
+    
     function _validateCycleDepositCriteriaAreMet(
         Cycle memory cycle,
         bool didCycleMemberExistBeforeNow
@@ -633,6 +716,17 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             "This cycle is not accepting deposits anymore"
         );
     }
+    
+    //todo: remove this function later, just using it for debugging
+    function addDepositorToCycle(
+        uint256 cycleId,
+        uint256 cycleAmountForStake,
+        uint256 numberOfStakes,
+        address payable depositorAddress
+    ) external {
+        
+        _addDepositorToCycle(cycleId,cycleAmountForStake,numberOfStakes,depositorAddress);
+    }
 
     function _addDepositorToCycle(
         uint256 cycleId,
@@ -641,32 +735,23 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         address payable depositorAddress
     ) internal returns (CycleDepositResult memory) {
         Group memory group = _getCycleGroup(cycleId);
-
+        
         Member memory member = _createMemberIfNotExist(depositorAddress);
         GroupMember memory groupMember = _createGroupMemberIfNotExist(
             depositorAddress,
             group.id
         );
+        
+        bool doesCycleMemberExist = cycleStorage.doesCycleMemberExist(cycleId,depositorAddress);
 
-        bool doesCycleMemberExist = cycleStorage.doesCycleMemberExist(
-            cycleId,
-            depositorAddress
-        );
-
-        CycleMember memory cycleMember = CycleMember(
-            true,
-            cycleId,
-            group.id,
-            depositorAddress,
-            0,
-            0,
-            0,
-            false
-        );
-
-        if (doesCycleMemberExist) {
-            cycleMember = _getCycleMember(depositorAddress, cycleId);
+        
+        CycleMember memory cycleMember = CycleMember(true, cycleId, group.id, depositorAddress, 0, 0, 0, false);
+        
+        if(doesCycleMemberExist){
+            cycleMember = _getCycleMember(depositorAddress,cycleId);
         }
+       
+        
 
         uint256 underlyingAmount = _processMemberDeposit(
             numberOfStakes,
@@ -674,11 +759,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             depositorAddress
         );
 
-        cycleMember = _saveMemberDeposit(
-            doesCycleMemberExist,
-            cycleMember,
-            numberOfStakes
-        );
+        cycleMember = _saveMemberDeposit(doesCycleMemberExist, cycleMember, numberOfStakes);
 
         CycleDepositResult memory result = CycleDepositResult(
             group,
@@ -691,17 +772,21 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return result;
     }
 
+   
+
     function _saveMemberDeposit(
         bool didCycleMemberExistBeforeNow,
         CycleMember memory cycleMember,
         uint256 numberOfCycleStakes
     ) internal returns (CycleMember memory) {
         cycleMember.numberOfCycleStakes += numberOfCycleStakes;
-
-        if (didCycleMemberExistBeforeNow == true)
+        
+        if(didCycleMemberExistBeforeNow==true)
             _updateCycleMember(cycleMember);
-        else _CreateCycleMember(cycleMember);
-
+        else
+            _CreateCycleMember(cycleMember);
+        
+        
         return cycleMember;
     }
 
@@ -751,11 +836,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance -
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
-
-        derivativeToken.approve(
-            LendingAdapterAddress,
-            derivativeBalanceToWithdraw
-        );
+            
+        derivativeToken.approve(LendingAdapterAddress,derivativeBalanceToWithdraw);
 
         uint256 underlyingAmount = _redeemLending(derivativeBalanceToWithdraw);
 
