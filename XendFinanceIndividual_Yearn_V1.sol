@@ -2,10 +2,12 @@
 
 pragma solidity ^0.6.0;
 
+import "./IClientRecordSchema.sol";
+import "./IGroupSchema.sol";
+
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
-import "./IClientRecordSchema.sol";
 import "./IClientRecord.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
@@ -37,6 +39,8 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     IERC20 derivativeToken;
 
     bool isDeprecated = false;
+
+    address LendingAdapterAddress;
 
     constructor(
         address lendingAdapterAddress,
@@ -81,7 +85,6 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         onlyNonDeprecatedCalls
         returns (
             address payable _address,
-            string memory email,
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 derivativeBalance,
@@ -89,12 +92,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             uint256 derivativeTotalWithdrawn
         )
     {
-        RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
-        require(
-            recordIndex.exists == true,
-            "Savings information not found for this wallet address"
-        );
-        ClientRecord clientRecord = _getClientRecordByIndex(recordIndex.index);
+        ClientRecord memory clientRecord = _getClientRecordByAddress(depositor);
         return (
             clientRecord._address,
             clientRecord.underlyingTotalDeposits,
@@ -110,7 +108,6 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         onlyNonDeprecatedCalls
         returns (
             address payable _address,
-            string memory email,
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 derivativeBalance,
@@ -118,12 +115,10 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             uint256 derivativeTotalWithdrawn
         )
     {
-        RecordIndex memory recordIndex = ClientRecordIndexer[msg.sender];
-        require(
-            recordIndex.exists == true,
-            "Savings information not found for this wallet address"
+        ClientRecord memory clientRecord = _getClientRecordByAddress(
+            msg.sender
         );
-        ClientRecord clientRecord = _getClientRecordByIndex(recordIndex.index);
+
         return (
             clientRecord._address,
             clientRecord.underlyingTotalDeposits,
@@ -146,7 +141,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             uint256 derivativeTotalWithdrawn
         )
     {
-        ClientRecord clientRecord = _getClientRecordByIndex(index);
+        ClientRecord memory clientRecord = _getClientRecordByIndex(index);
         return (
             clientRecord._address,
             clientRecord.underlyingTotalDeposits,
@@ -183,6 +178,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
     function _getClientRecordByAddress(address member)
         internal
+        view
         returns (ClientRecord memory)
     {
         (
@@ -255,10 +251,9 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         address payable recipient,
         uint256 derivativeAmount
     ) internal view returns (uint256) {
-        RecordIndex memory recordIndex = ClientRecordIndexer[recipient];
-        ClientRecord storage record = ClientRecords[recordIndex.index];
+        ClientRecord memory clientRecord = _getClientRecordByAddress(recipient);
 
-        uint256 derivativeBalance = record.derivativeBalance;
+        uint256 derivativeBalance = clientRecord.derivativeBalance;
 
         require(
             derivativeBalance >= derivativeAmount,
@@ -266,21 +261,20 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         );
     }
 
-    function deposit(string calldata email) external onlyNonDeprecatedCalls {
+    function deposit() external onlyNonDeprecatedCalls {
         address payable depositor = msg.sender;
-        _deposit(depositor, email);
+        _deposit(depositor);
     }
 
-    function depositDelegate(
-        address payable depositorAddress,
-        string calldata email
-    ) external onlyNonDeprecatedCalls onlyOwner {
-        _deposit(depositorAddress, email);
-    }
-
-    function _deposit(address payable depositorAddress, string memory email)
-        internal
+    function depositDelegate(address payable depositorAddress)
+        external
+        onlyNonDeprecatedCalls
+        onlyOwner
     {
+        _deposit(depositorAddress);
+    }
+
+    function _deposit(address payable depositorAddress) internal {
         address recipient = address(this);
         uint256 amountTransferrable = daiToken.allowance(
             depositorAddress,
@@ -312,11 +306,25 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
         ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
             depositorAddress,
-            email,
             amountTransferrable,
             amountOfyDai
         );
-        _updateClientRecord(clientRecord);
+
+        bool exists = clientRecordStorage.doesClientRecordExist(
+            depositorAddress
+        );
+
+        if (exists) _updateClientRecord(clientRecord);
+        else {
+            clientRecordStorage.createClientRecord(
+                clientRecord._address,
+                clientRecord.underlyingTotalDeposits,
+                clientRecord.underlyingTotalWithdrawn,
+                clientRecord.derivativeBalance,
+                clientRecord.derivativeTotalDeposits,
+                clientRecord.derivativeTotalWithdrawn
+            );
+        }
 
         emit UnderlyingAssetDeposited(
             depositorAddress,
@@ -328,18 +336,14 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
     function _updateClientRecordAfterDeposit(
         address payable client,
-        string memory email,
         uint256 underlyingAmountDeposited,
         uint256 derivativeAmountDeposited
     ) internal returns (ClientRecord memory) {
-        bool exists = ClientRecordIndexer[client].exists;
+        bool exists = clientRecordStorage.doesClientRecordExist(client);
         if (!exists) {
-            uint256 arrayLength = ClientRecords.length;
-
             ClientRecord memory record = ClientRecord(
                 true,
                 client,
-                email,
                 underlyingAmountDeposited,
                 underlyingAmountDeposited,
                 derivativeAmountDeposited,
@@ -360,9 +364,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
 
             return record;
         } else {
-            RecordIndex memory recordIndex = ClientRecordIndexer[client];
-
-            ClientRecord storage record = ClientRecords[recordIndex.index];
+            ClientRecord memory record = _getClientRecordByAddress(client);
 
             record.underlyingTotalDeposits = record.underlyingTotalDeposits.add(
                 underlyingAmountDeposited
@@ -383,13 +385,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         uint256 underlyingAmountWithdrawn,
         uint256 derivativeAmountWithdrawn
     ) internal returns (ClientRecord memory) {
-        bool exists = ClientRecordIndexer[client].exists;
-
-        require(exists == true, "User record not found in contract");
-
-        RecordIndex memory recordIndex = ClientRecordIndexer[client];
-
-        ClientRecord storage record = ClientRecords[recordIndex.index];
+        ClientRecord memory record = _getClientRecordByAddress(client);
 
         record.underlyingTotalWithdrawn = record.underlyingTotalWithdrawn.add(
             underlyingAmountWithdrawn
@@ -405,7 +401,7 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
         return record;
     }
 
-    function _updateClientRecord(ClientRecord memory clientRecord) {
+    function _updateClientRecord(ClientRecord memory clientRecord) internal {
         clientRecordStorage.updateClientRecord(
             clientRecord._address,
             clientRecord.underlyingTotalDeposits,
