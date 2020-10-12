@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
-import "./IClientRecordShema.sol";
+import "./IClientRecordSchema.sol";
 
-interface IClientRecord is IClientRecordShema {
+interface IClientRecord is IClientRecordSchema {
     function doesClientRecordExist(address depositor)
         external
         view
@@ -52,4 +52,10 @@ interface IClientRecord is IClientRecordShema {
             uint256 derivativeTotalDeposits,
             uint256 derivativeTotalWithdrawn
         );
+
+    function activateStorageOracle(address oracle) external;
+
+    function deactivateStorageOracle(address oracle) external;
+
+    function reAssignStorageOracle(address newOracle) external;
 }

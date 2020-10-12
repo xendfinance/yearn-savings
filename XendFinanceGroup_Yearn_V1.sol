@@ -1,5 +1,4 @@
 // SPDX-License-Identifier: MIT
-pragma experimental ABIEncoderV2;
 
 pragma solidity ^0.6.6;
 import "./ISavingsConfig.sol";
@@ -287,14 +286,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         if (hasMaximumSlots == true) {
             require(maximumsSlots > 0, "Maximum slot settings cannot be empty");
         }
-    }
-
-    function getCycleGroup(uint256 cycleId)
-        external
-        view
-        returns (Group memory)
-    {
-        return _getCycleGroup(cycleId);
     }
 
     function _getCycleGroup(uint256 cycleId)
@@ -1588,6 +1579,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
+    //
     function createCycle(
         uint256 groupId,
         uint256 startTimeStamp,
