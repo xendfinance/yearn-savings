@@ -37,7 +37,11 @@ contract DaiLendingService {
     }
 
     function userShares() external view returns (uint256) {
-        ydaiToken.balanceOf(msg.sender);
+        return ydaiToken.balanceOf(msg.sender);
+    }
+
+    function getUserShares(address account) external view returns (uint256) {
+        return ydaiToken.balanceOf(account);
     }
 
     function userDaiBalance() external pure returns (uint256) {

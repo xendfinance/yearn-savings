@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
-//pragma experimental ABIEncoderV2;
+pragma experimental ABIEncoderV2;
 
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.6;
 import "./ISavingsConfig.sol";
 import "./ITreasury.sol";
 import "./Ownable.sol";
@@ -289,6 +289,15 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         }
     }
 
+    //todo: Remove later on
+    function getCycleGroup(uint256 cycleId)
+        external
+        view
+        returns (Group memory)
+    {
+        return _getCycleGroup(cycleId);
+    }
+
     function _getCycleGroup(uint256 cycleId)
         internal
         view
@@ -297,6 +306,15 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         Cycle memory cycle = _getCycleById(cycleId);
 
         return _getGroupById(cycle.groupId);
+    }
+
+    //todo: Remove later on
+    function getCycleById(uint256 cycleId)
+        external
+        view
+        returns (Cycle memory)
+    {
+        return _getCycleById(cycleId);
     }
 
     function _getCycleById(uint256 cycleId)
@@ -513,6 +531,11 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         _updateCycle(cycle);
     }
 
+    //todo: remove this function later, just using it for debugging
+    function updateCycle(Cycle calldata cycle) external {
+        _updateCycle(cycle);
+    }
+
     function _updateCycle(Cycle memory cycle) internal {
         cycleStorage.updateCycle(
             cycle.id,
@@ -526,6 +549,21 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycle.stakesClaimed,
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
+        );
+    }
+
+    //todo: remove this function later, just using it for debugging
+    function updateCycleFinancials(CycleFinancial calldata cycleFinancial)
+        external
+    {
+        cycleStorage.updateCycleFinancials(
+            cycleFinancial.cycleId,
+            cycleFinancial.underlyingTotalDeposits,
+            cycleFinancial.underlyingTotalWithdrawn,
+            cycleFinancial.underlyingBalance,
+            cycleFinancial.derivativeBalance,
+            cycleFinancial.underylingBalanceClaimedBeforeMaturity,
+            cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
 
@@ -578,6 +616,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         );
 
         cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
+
         emit UnderlyingAssetDeposited(
             cycle.id,
             depositorAddress,
@@ -587,7 +626,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         );
 
         if (!didCycleMemberExistBeforeNow) {
-            cycle.numberOfDepositors += 1;
+            cycle.numberOfDepositors = cycle.numberOfDepositors.add(1);
 
             emit MemberJoinedCycle(cycleId, depositorAddress, result.group.id);
         }
@@ -599,21 +638,62 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         _updateCycle(cycle);
     }
 
+    //todo: remove this function later, just using it for debugging
+    function updateCycleStakeDeposit(
+        Cycle calldata cycle,
+        CycleFinancial calldata cycleFinancial,
+        uint256 numberOfCycleStakes
+    ) external returns (Cycle memory) {
+        return
+            _updateCycleStakeDeposit(
+                cycle,
+                cycleFinancial,
+                numberOfCycleStakes
+            );
+    }
+
     function _updateCycleStakeDeposit(
         Cycle memory cycle,
         CycleFinancial memory cycleFinancial,
         uint256 numberOfCycleStakes
     ) internal returns (Cycle memory) {
-        cycle.totalStakes += numberOfCycleStakes;
+        cycle.totalStakes = cycle.totalStakes.add(numberOfCycleStakes);
+
         uint256 depositAmount = cycle.cycleStakeAmount.mul(numberOfCycleStakes);
-        cycleFinancial.underlyingTotalDeposits += depositAmount;
+        cycleFinancial.underlyingTotalDeposits = cycleFinancial
+            .underlyingTotalDeposits
+            .add(depositAmount);
         _updateCycleFinancials(cycleFinancial);
         _updateTotalTokenDepositAmount(depositAmount);
         return cycle;
     }
 
+    //todo: remove this function later, just using it for debugging
+    function updateTotalTokenDepositAmount(uint256 amount) external {
+        _updateTotalTokenDepositAmount(amount);
+    }
+
     function _updateTotalTokenDepositAmount(uint256 amount) internal {
         groupStorage.incrementTokenDeposit(TokenAddress, amount);
+    }
+
+    //todo: remove this function later, just using it for debugging
+    function validateCycleDepositCriteriaAreMet(
+        Cycle calldata cycle,
+        bool didCycleMemberExistBeforeNow
+    ) external view {
+        bool hasMaximumSlots = cycle.hasMaximumSlots;
+        if (hasMaximumSlots == true && didCycleMemberExistBeforeNow == false) {
+            require(
+                cycle.numberOfDepositors < cycle.maximumSlots,
+                "Maximum slot for depositors has been reached"
+            );
+        }
+
+        require(
+            cycle.cycleStatus == CycleStatus.NOT_STARTED,
+            "This cycle is not accepting deposits anymore"
+        );
     }
 
     function _validateCycleDepositCriteriaAreMet(
@@ -631,6 +711,21 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         require(
             cycle.cycleStatus == CycleStatus.NOT_STARTED,
             "This cycle is not accepting deposits anymore"
+        );
+    }
+
+    //todo: remove this function later, just using it for debugging
+    function addDepositorToCycle(
+        uint256 cycleId,
+        uint256 cycleAmountForStake,
+        uint256 numberOfStakes,
+        address payable depositorAddress
+    ) external {
+        _addDepositorToCycle(
+            cycleId,
+            cycleAmountForStake,
+            numberOfStakes,
+            depositorAddress
         );
     }
 
@@ -696,7 +791,9 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         CycleMember memory cycleMember,
         uint256 numberOfCycleStakes
     ) internal returns (CycleMember memory) {
-        cycleMember.numberOfCycleStakes += numberOfCycleStakes;
+        cycleMember.numberOfCycleStakes = cycleMember.numberOfCycleStakes.add(
+            numberOfCycleStakes
+        );
 
         if (didCycleMemberExistBeforeNow == true)
             _updateCycleMember(cycleMember);
@@ -759,7 +856,10 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         uint256 underlyingAmount = _redeemLending(derivativeBalanceToWithdraw);
 
-        cycleFinancial.underlyingBalance += underlyingAmount;
+        cycleFinancial.underlyingBalance = cycleFinancial.underlyingBalance.add(
+            underlyingAmount
+        );
+
         cycle.cycleStatus = CycleStatus.ENDED;
 
         _updateCycle(cycle);
@@ -934,8 +1034,9 @@ contract XendFinanceGroup_Yearn_V1 is
             );
 
             if (worthOfMemberDepositNow > maxAmountUserCanBePaid) {
-                uint256 amountToSendToTreasury = worthOfMemberDepositNow -
-                    maxAmountUserCanBePaid;
+                uint256 amountToSendToTreasury = worthOfMemberDepositNow.sub(
+                    maxAmountUserCanBePaid
+                );
                 return
                     WithdrawalResolution(
                         maxAmountUserCanBePaid,
@@ -1146,8 +1247,14 @@ contract XendFinanceGroup_Yearn_V1 is
             "Cycle start time has not been reached"
         );
 
-        uint256 derivativeAmount = lendCycleDeposit(cycleFinancial);
-        cycleFinancial.derivativeBalance += derivativeAmount;
+        uint256 derivativeAmount = _lendCycleDeposit(
+            cycleFinancial.underlyingTotalDeposits
+        );
+
+        cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
+            derivativeAmount
+        );
+
         cycle.cycleStartTimeStamp = currentTimeStamp;
         _startCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
@@ -1168,18 +1275,15 @@ contract XendFinanceGroup_Yearn_V1 is
         _endCycle(cycleId);
     }
 
-    function lendCycleDeposit(CycleFinancial memory cycleFinancial)
+    function _lendCycleDeposit(uint256 underlyingTotalDeposits)
         internal
         returns (uint256)
     {
-        daiToken.approve(
-            LendingAdapterAddress,
-            cycleFinancial.underlyingTotalDeposits
-        );
+        daiToken.approve(LendingAdapterAddress, underlyingTotalDeposits);
 
         uint256 balanceBeforeDeposit = lendingService.userShares();
 
-        lendingService.save(cycleFinancial.underlyingTotalDeposits);
+        lendingService.save(underlyingTotalDeposits);
 
         uint256 balanceAfterDeposit = lendingService.userShares();
 
