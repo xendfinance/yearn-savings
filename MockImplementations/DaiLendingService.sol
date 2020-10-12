@@ -44,9 +44,8 @@ contract DaiLendingService {
         return ydaiToken.balanceOf(account);
     }
 
-    function userDaiBalance() external pure returns (uint256) {
-        uint256 base = 1;
-        return base.mul(10**uint256(18));
+    function userDaiBalance() external view returns (uint256) {
+        return daiToken.balanceOf(msg.sender);
     }
 
     function GetUserGrossRevenue() external pure returns (uint256) {

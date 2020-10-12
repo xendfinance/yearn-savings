@@ -289,7 +289,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         }
     }
 
-    //todo: Remove later on
     function getCycleGroup(uint256 cycleId)
         external
         view
@@ -306,15 +305,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         Cycle memory cycle = _getCycleById(cycleId);
 
         return _getGroupById(cycle.groupId);
-    }
-
-    //todo: Remove later on
-    function getCycleById(uint256 cycleId)
-        external
-        view
-        returns (Cycle memory)
-    {
-        return _getCycleById(cycleId);
     }
 
     function _getCycleById(uint256 cycleId)
@@ -531,11 +521,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         _updateCycle(cycle);
     }
 
-    //todo: remove this function later, just using it for debugging
-    function updateCycle(Cycle calldata cycle) external {
-        _updateCycle(cycle);
-    }
-
     function _updateCycle(Cycle memory cycle) internal {
         cycleStorage.updateCycle(
             cycle.id,
@@ -549,21 +534,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycle.stakesClaimed,
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
-        );
-    }
-
-    //todo: remove this function later, just using it for debugging
-    function updateCycleFinancials(CycleFinancial calldata cycleFinancial)
-        external
-    {
-        cycleStorage.updateCycleFinancials(
-            cycleFinancial.cycleId,
-            cycleFinancial.underlyingTotalDeposits,
-            cycleFinancial.underlyingTotalWithdrawn,
-            cycleFinancial.underlyingBalance,
-            cycleFinancial.derivativeBalance,
-            cycleFinancial.underylingBalanceClaimedBeforeMaturity,
-            cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
 
@@ -638,20 +608,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         _updateCycle(cycle);
     }
 
-    //todo: remove this function later, just using it for debugging
-    function updateCycleStakeDeposit(
-        Cycle calldata cycle,
-        CycleFinancial calldata cycleFinancial,
-        uint256 numberOfCycleStakes
-    ) external returns (Cycle memory) {
-        return
-            _updateCycleStakeDeposit(
-                cycle,
-                cycleFinancial,
-                numberOfCycleStakes
-            );
-    }
-
     function _updateCycleStakeDeposit(
         Cycle memory cycle,
         CycleFinancial memory cycleFinancial,
@@ -668,32 +624,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return cycle;
     }
 
-    //todo: remove this function later, just using it for debugging
-    function updateTotalTokenDepositAmount(uint256 amount) external {
-        _updateTotalTokenDepositAmount(amount);
-    }
-
     function _updateTotalTokenDepositAmount(uint256 amount) internal {
         groupStorage.incrementTokenDeposit(TokenAddress, amount);
-    }
-
-    //todo: remove this function later, just using it for debugging
-    function validateCycleDepositCriteriaAreMet(
-        Cycle calldata cycle,
-        bool didCycleMemberExistBeforeNow
-    ) external view {
-        bool hasMaximumSlots = cycle.hasMaximumSlots;
-        if (hasMaximumSlots == true && didCycleMemberExistBeforeNow == false) {
-            require(
-                cycle.numberOfDepositors < cycle.maximumSlots,
-                "Maximum slot for depositors has been reached"
-            );
-        }
-
-        require(
-            cycle.cycleStatus == CycleStatus.NOT_STARTED,
-            "This cycle is not accepting deposits anymore"
-        );
     }
 
     function _validateCycleDepositCriteriaAreMet(
@@ -711,21 +643,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         require(
             cycle.cycleStatus == CycleStatus.NOT_STARTED,
             "This cycle is not accepting deposits anymore"
-        );
-    }
-
-    //todo: remove this function later, just using it for debugging
-    function addDepositorToCycle(
-        uint256 cycleId,
-        uint256 cycleAmountForStake,
-        uint256 numberOfStakes,
-        address payable depositorAddress
-    ) external {
-        _addDepositorToCycle(
-            cycleId,
-            cycleAmountForStake,
-            numberOfStakes,
-            depositorAddress
         );
     }
 
@@ -837,7 +754,10 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return expectedAmount;
     }
 
-    function _endCycle(uint256 cycleId) internal {
+    function _endCycle(uint256 cycleId)
+        internal
+        returns (Cycle memory, CycleFinancial memory)
+    {
         bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
         require(isCycleReadyToBeEnded == true, "Cycle is still ongoing");
 
@@ -862,7 +782,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         cycle.cycleStatus = CycleStatus.ENDED;
 
-        _updateCycle(cycle);
+        return (cycle, cycleFinancial);
     }
 
     function _isCycleReadyToBeEnded(uint256 cycleId)
@@ -892,8 +812,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
 
-        uint256 amountOfUnderlyingAssetWithdrawn = balanceBeforeWithdraw.sub(
-            balanceAfterWithdraw
+        uint256 amountOfUnderlyingAssetWithdrawn = balanceAfterWithdraw.sub(
+            balanceBeforeWithdraw
         );
 
         return amountOfUnderlyingAssetWithdrawn;
@@ -902,10 +822,16 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     modifier onlyCycleCreator(uint256 cycleId) {
         Group memory group = _getCycleGroup(cycleId);
 
-        require(
-            msg.sender == group.creatorAddress,
-            "unauthorized access to contract"
-        );
+        bool isCreatorOrMember = (msg.sender == group.creatorAddress);
+
+        if (isCreatorOrMember == false) {
+            uint256 index = _getCycleMemberIndex(cycleId, msg.sender);
+            CycleMember memory cycleMember = _getCycleMember(index);
+
+            isCreatorOrMember = (cycleMember._address == msg.sender);
+        }
+
+        require(isCreatorOrMember == true, "unauthorized access to contract");
         _;
     }
 }
@@ -945,6 +871,294 @@ contract XendFinanceGroup_Yearn_V1 is
         TreasuryAddress = treasuryAddress;
     }
 
+    function withdrawFromCycleWhileItIsOngoing(uint256 cycleId)
+        external
+        onlyNonDeprecatedCalls
+    {
+        address payable memberAddress = msg.sender;
+        _withdrawFromCycleWhileItIsOngoing(cycleId, memberAddress);
+    }
+
+    function _withdrawFromCycleWhileItIsOngoing(
+        uint256 cycleId,
+        address payable memberAddress
+    ) internal {
+        bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
+
+        require(
+            isCycleReadyToBeEnded == false,
+            "Cycle has already ended, use normal withdrawl route"
+        );
+
+        Cycle memory cycle = _getCycleById(cycleId);
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
+            cycleId
+        );
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
+            cycleId,
+            memberAddress
+        );
+
+        require(
+            memberExistInCycle == true,
+            "You are not a member of this cycle"
+        );
+
+        uint256 index = _getCycleMemberIndex(cycle.id, memberAddress);
+
+        CycleMember memory cycleMember = _getCycleMember(index);
+
+        require(
+            cycleMember.hasWithdrawn == false,
+            "Funds have already been withdrawn"
+        );
+
+        uint256 numberOfStakesByMember = cycleMember.numberOfCycleStakes;
+        //uint256 pricePerFullShare = lendingService.getPricePerFullShare();
+
+        // get's the worth of one stake of the cycle in the derivative amount e.g yDAI
+        uint256 derivativeAmountForStake = cycleFinancial.derivativeBalance.div(
+            cycle.totalStakes
+        );
+
+        //get's how much of a crypto asset the user has deposited. e.g yDAI
+        uint256 derivativeBalanceForMember = derivativeAmountForStake.mul(
+            numberOfStakesByMember
+        );
+
+        derivativeToken.approve(
+            LendingAdapterAddress,
+            derivativeBalanceForMember
+        );
+
+        //get's the crypto equivalent of a members derivative balance. Crytpo here refers to DAI. this is gotten after the user's ydai balance has been converted to dai
+        uint256 underlyingAmountThatMemberDepositIsWorth = _redeemLending(
+            derivativeBalanceForMember
+        );
+
+        uint256 initialUnderlyingDepositByMember = numberOfStakesByMember.mul(
+            cycle.cycleStakeAmount
+        );
+
+        //deduct charges for early withdrawal
+        uint256 amountToChargeAsPenalites = _computeAmountToChargeAsPenalites(
+            underlyingAmountThatMemberDepositIsWorth
+        );
+
+        underlyingAmountThatMemberDepositIsWorth -= amountToChargeAsPenalites;
+
+
+            WithdrawalResolution memory withdrawalResolution
+         = _computeAmountToSendToParties(
+            initialUnderlyingDepositByMember,
+            underlyingAmountThatMemberDepositIsWorth
+        );
+
+        withdrawalResolution
+            .amountToSendToTreasury += amountToChargeAsPenalites;
+
+        if (withdrawalResolution.amountToSendToTreasury > 0) {
+            daiToken.approve(
+                TreasuryAddress,
+                withdrawalResolution.amountToSendToTreasury
+            );
+            treasury.depositToken(TokenAddress);
+        }
+
+        require(
+            withdrawalResolution.amountToSendToMember > 0,
+            "After deducting early withdrawal penalties, there's nothing left for you"
+        );
+        if (withdrawalResolution.amountToSendToMember > 0) {
+            daiToken.transfer(
+                cycleMember._address,
+                withdrawalResolution.amountToSendToMember
+            );
+        }
+
+        uint256 totalUnderlyingAmountSentOut = withdrawalResolution
+            .amountToSendToTreasury + withdrawalResolution.amountToSendToMember;
+
+        cycle.stakesClaimedBeforeMaturity += numberOfStakesByMember;
+        cycleFinancial
+            .underylingBalanceClaimedBeforeMaturity += totalUnderlyingAmountSentOut;
+        cycleFinancial
+            .derivativeBalanceClaimedBeforeMaturity += derivativeBalanceForMember;
+
+        cycleMember.hasWithdrawn = true;
+        cycleMember.stakesClaimed += numberOfStakesByMember;
+
+        _updateCycle(cycle);
+        _updateCycleMember(cycleMember);
+        _updateCycleFinancials(cycleFinancial);
+    }
+
+    function getDerivativeAmountForUserStake(
+        uint256 cycleId,
+        address payable memberAddress
+    ) external view returns (uint256) {
+        Cycle memory cycle = _getCycleById(cycleId);
+        CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
+            cycleId
+        );
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
+            cycleId,
+            memberAddress
+        );
+
+        require(
+            memberExistInCycle == true,
+            "You are not a member of this cycle"
+        );
+
+        uint256 index = _getCycleMemberIndex(cycle.id, memberAddress);
+
+        CycleMember memory cycleMember = _getCycleMember(index);
+
+        uint256 numberOfStakesByMember = cycleMember.numberOfCycleStakes;
+
+        // get's the worth of one stake of the cycle in the derivative amount e.g yDAI
+        uint256 derivativeAmountForStake = cycleFinancial.derivativeBalance.div(
+            cycle.totalStakes
+        );
+
+        //get's how much of a crypto asset the user has deposited. e.g yDAI
+        uint256 derivativeBalanceForMember = derivativeAmountForStake.mul(
+            numberOfStakesByMember
+        );
+        return derivativeBalanceForMember;
+    }
+
+    function withdrawFromCycle(uint256 cycleId)
+        external
+        onlyNonDeprecatedCalls
+    {
+        address payable memberAddress = msg.sender;
+        uint256 amountToSendToMember = _withdrawFromCycle(
+            cycleId,
+            memberAddress
+        );
+        emit DerivativeAssetWithdrawn(
+            cycleId,
+            memberAddress,
+            amountToSendToMember,
+            TokenAddress
+        );
+    }
+
+    function withdrawFromCycle(uint256 cycleId, address payable memberAddress)
+        external
+        onlyNonDeprecatedCalls
+    {
+        uint256 amountToSendToMember = _withdrawFromCycle(
+            cycleId,
+            memberAddress
+        );
+
+        emit DerivativeAssetWithdrawn(
+            cycleId,
+            memberAddress,
+            amountToSendToMember,
+            TokenAddress
+        );
+    }
+
+    function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
+        internal
+        returns (uint256 amountToSendToMember)
+    {
+        Cycle memory cycle;
+        CycleFinancial memory cycleFinancial;
+
+        if (_isCycleReadyToBeEnded(cycleId)) {
+            (cycle, cycleFinancial) = _endCycle(cycleId);
+        } else {
+            cycle = _getCycleById(cycleId);
+            cycleFinancial = _getCycleFinancialByCycleId(cycleId);
+        }
+
+        bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
+            cycleId,
+            memberAddress
+        );
+
+        require(
+            memberExistInCycle == true,
+            "You are not a member of this cycle"
+        );
+
+        uint256 index = _getCycleMemberIndex(cycleId, memberAddress);
+        CycleMember memory cycleMember = _getCycleMember(index);
+
+        require(
+            cycleMember.hasWithdrawn == false,
+            "Funds have already been withdrawn"
+        );
+
+        //how many stakes a cycle member has
+        uint256 stakesHoldings = cycleMember.numberOfCycleStakes;
+
+        //getting the underlying asset amount that backs 1 stake amount
+        uint256 totalStakesLeftWhenTheCycleEnded = cycle.totalStakes -
+            cycle.stakesClaimedBeforeMaturity;
+        uint256 underlyingAssetForStake = cycleFinancial.underlyingBalance.div(
+            totalStakesLeftWhenTheCycleEnded
+        );
+
+        //cycle members stake amount current worth
+
+
+            uint256 underlyingAmountThatMemberDepositIsWorth
+         = underlyingAssetForStake.mul(stakesHoldings);
+
+        uint256 initialUnderlyingDepositByMember = stakesHoldings.mul(
+            cycle.cycleStakeAmount
+        );
+
+
+            WithdrawalResolution memory withdrawalResolution
+         = _computeAmountToSendToParties(
+            initialUnderlyingDepositByMember,
+            underlyingAmountThatMemberDepositIsWorth
+        );
+
+        if (withdrawalResolution.amountToSendToTreasury > 0) {
+            daiToken.approve(
+                TreasuryAddress,
+                withdrawalResolution.amountToSendToTreasury
+            );
+            treasury.depositToken(TokenAddress);
+        }
+
+        if (withdrawalResolution.amountToSendToMember > 0) {
+            daiToken.transfer(
+                cycleMember._address,
+                withdrawalResolution.amountToSendToMember
+            );
+        }
+
+        uint256 totalUnderlyingAmountSentOut = withdrawalResolution
+            .amountToSendToTreasury + withdrawalResolution.amountToSendToMember;
+
+        cycle.stakesClaimed += stakesHoldings;
+        cycleFinancial.underlyingTotalWithdrawn += totalUnderlyingAmountSentOut;
+
+        cycleMember.hasWithdrawn = true;
+        cycleMember.stakesClaimed += stakesHoldings;
+        uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
+        _rewardUserWithTokens(
+            cycle.cycleDuration,
+            amountDeposited,
+            cycleMember._address
+        );
+
+        _updateCycle(cycle);
+        _updateCycleFinancials(cycleFinancial);
+        _updateCycleMember(cycleMember);
+
+        return withdrawalResolution.amountToSendToMember;
+    }
+
     function deprecateContract(address newServiceAddress)
         external
         onlyOwner
@@ -969,7 +1183,10 @@ contract XendFinanceGroup_Yearn_V1 is
             totalCycleTimeInSeconds,
             amountDeposited
         );
-        xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
+
+        if (numberOfRewardTokens > 0) {
+            xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
+        }
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)
@@ -1150,7 +1367,9 @@ contract XendFinanceGroup_Yearn_V1 is
             uint256 underlyingTotalDeposits,
             uint256 underlyingTotalWithdrawn,
             uint256 underlyingBalance,
-            uint256 derivativeBalance
+            uint256 derivativeBalance,
+            uint256 underylingBalanceClaimedBeforeMaturity,
+            uint256 derivativeBalanceClaimedBeforeMaturity
         )
     {
         CycleFinancial memory cycleFinancial = _getCycleFinancialByIndex(index);
@@ -1159,7 +1378,9 @@ contract XendFinanceGroup_Yearn_V1 is
             cycleFinancial.underlyingTotalDeposits,
             cycleFinancial.underlyingTotalWithdrawn,
             cycleFinancial.underlyingBalance,
-            cycleFinancial.derivativeBalance
+            cycleFinancial.derivativeBalance,
+            cycleFinancial.underylingBalanceClaimedBeforeMaturity,
+            cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
 
@@ -1178,7 +1399,8 @@ contract XendFinanceGroup_Yearn_V1 is
             uint256 cycleStakeAmount,
             uint256 totalStakes,
             uint256 stakesClaimed,
-            CycleStatus cycleStatus
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
         )
     {
         Cycle memory cycle = _getCycleByIndex(index);
@@ -1194,7 +1416,8 @@ contract XendFinanceGroup_Yearn_V1 is
             cycle.cycleStakeAmount,
             cycle.totalStakes,
             cycle.stakesClaimed,
-            cycle.cycleStatus
+            cycle.cycleStatus,
+            cycle.stakesClaimedBeforeMaturity
         );
     }
 
@@ -1226,7 +1449,11 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
-    function activateCycle(uint256 cycleId) external onlyCycleCreator(cycleId) {
+    function activateCycle(uint256 cycleId)
+        external
+        onlyNonDeprecatedCalls
+        onlyCycleCreator(cycleId)
+    {
         Cycle memory cycle = _getCycleById(cycleId);
         CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
             cycleId
