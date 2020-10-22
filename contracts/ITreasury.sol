@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
 import "./SafeMath.sol";
 import "./Ownable.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "./IERC20.sol";
 
 interface ITreasury {
     function depositToken(address token) external;

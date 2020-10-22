@@ -1,5 +1,5 @@
 pragma solidity ^0.6.6;
-import "./IClientRecordSchema.sol";
+import "./IClientRecordShema.sol";
 
 interface IClientRecord is IClientRecordSchema {
     function doesClientRecordExist(address depositor)
