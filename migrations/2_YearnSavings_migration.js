@@ -7,11 +7,11 @@ module.exports = function (deployer) {
     
       await deployer.deploy(GroupsContract);
 
-      // console.log("GroupsContract address: " + GroupsContract.address);
+      console.log("GroupsContract address: " + GroupsContract.address);
   
       await deployer.deploy(TreasuryContract);
   
-     // console.log("TreasuryContract address: " + TreasuryContract.address);
+     console.log("TreasuryContract address: " + TreasuryContract.address);
     
     
     })
