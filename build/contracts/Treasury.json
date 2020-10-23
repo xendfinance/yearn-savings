@@ -56,7 +56,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -73,7 +74,8 @@
     },
     {
       "stateMutability": "payable",
-      "type": "receive"
+      "type": "receive",
+      "payable": true
     },
     {
       "inputs": [
@@ -86,7 +88,8 @@
       "name": "depositToken",
       "outputs": [],
       "stateMutability": "payable",
-      "type": "function"
+      "type": "function",
+      "payable": true
     },
     {
       "inputs": [],
@@ -99,7 +102,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -118,7 +122,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -7622,9 +7627,62 @@
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0x30e14d5113d9ab3a10a50ea98540f5dfcec5d41711ad872e83890631823dfe17": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "depositorAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "EtherDepositEvent",
+          "type": "event"
+        },
+        "0xcd380d2a56d9af6a0f073364fb8db33de43698899cb08d5283da5258ee550cab": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "depositorAddress",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenContractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "TokenDepositEvent",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x8A371a92B186c3cBD43C794bbe852F35aFCAC8b2",
+      "transactionHash": "0x7273b3d8131cd4a80b237078157a2df63654297f60987998939b98e4e8269112"
+    }
+  },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-22T15:36:11.992Z",
+  "updatedAt": "2020-10-23T12:26:24.876Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
