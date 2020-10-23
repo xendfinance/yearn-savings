@@ -1,24 +1,31 @@
-const TreasuryContract = artifacts.require("Treasury")
+const TreasuryContract = artifacts.require("Treasury");
 
-let treasuryContract;
 
 contract("TreasuryContract", (accounts) => {
-    beforeEach(async () => {
-        console.log(TreasuryContract)
-        treasuryContract = await TreasuryContract.deployed();
-    });
 
+  let contractInstance;
 
-   // deploy the contract correctly
-    it("Should deploy the Treasury smart contracts", async () => {
-        console.log(treasuryContract)
-        // assert(treasuryContract.address !== "");
-    });
+  beforeEach(async () => {
+      
+    contractInstance = await TreasuryContract.new();
 
-    it("should deposit token", async () => {
-        const result = await treasuryContract.depositToken(accounts[0]);
+    console.log("contract instance address", contractInstance.address)
+     
 
-        console.log(result)
-    })
+  });
+  
+  // deploy the contract correctly
+  it("Should deploy the Treasury smart contracts", async () => {
 
-})
+    assert(contractInstance.address !== "");
+
+  });
+
+  it("should deposit token", async () => {
+
+    const result = await contractInstance.depositToken(accounts[0]);
+
+    console.log(result);
+  });
+
+});
