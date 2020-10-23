@@ -1,0 +1,513 @@
+{
+  "contractName": "ISavingsConfigSchema",
+  "abi": [],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/ISavingsConfigSchema.sol\":\"ISavingsConfigSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/ISavingsConfigSchema.sol\":{\"keccak256\":\"0x553eae6019bf849920c8c31e6ae9c0ebcc2410a14a031928119dafe0b2bc3183\",\"urls\":[\"bzz-raw://d77a7ae99b14920c4623e15a1a2a679df92c8fc88e36715b3314f2759ae6e67c\",\"dweb:/ipfs/QmPsydY2PARERVqMyJApDDT5eq1Qvo4wyAa9KYnu8PsT4c\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "pragma solidity ^0.6.6;\n\ninterface ISavingsConfigSchema {\n    struct RuleSet {\n        bool exists;\n        uint256 minimum;\n        uint256 maximum;\n        uint256 exact;\n        bool applies;\n        RuleDefinition ruleDefinition;\n    }\n\n    enum RuleDefinition {RANGE, VALUE}\n}\n",
+  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/ISavingsConfigSchema.sol",
+  "ast": {
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/ISavingsConfigSchema.sol",
+    "exportedSymbols": {
+      "ISavingsConfigSchema": [
+        6654
+      ]
+    },
+    "id": 6655,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6637,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:14"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 6654,
+        "linearizedBaseContracts": [
+          6654
+        ],
+        "name": "ISavingsConfigSchema",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "ISavingsConfigSchema.RuleSet",
+            "id": 6650,
+            "members": [
+              {
+                "constant": false,
+                "id": 6639,
+                "mutability": "mutable",
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "87:11:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 6638,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "87:4:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6641,
+                "mutability": "mutable",
+                "name": "minimum",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "108:15:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6640,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "108:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6643,
+                "mutability": "mutable",
+                "name": "maximum",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "133:15:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6642,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "133:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6645,
+                "mutability": "mutable",
+                "name": "exact",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "158:13:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6644,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "158:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6647,
+                "mutability": "mutable",
+                "name": "applies",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "181:12:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 6646,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "181:4:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6649,
+                "mutability": "mutable",
+                "name": "ruleDefinition",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "203:29:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_RuleDefinition_$6653",
+                  "typeString": "enum ISavingsConfigSchema.RuleDefinition"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 6648,
+                  "name": "RuleDefinition",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 6653,
+                  "src": "203:14:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_RuleDefinition_$6653",
+                    "typeString": "enum ISavingsConfigSchema.RuleDefinition"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "RuleSet",
+            "nodeType": "StructDefinition",
+            "scope": 6654,
+            "src": "62:177:14",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ISavingsConfigSchema.RuleDefinition",
+            "id": 6653,
+            "members": [
+              {
+                "id": 6651,
+                "name": "RANGE",
+                "nodeType": "EnumValue",
+                "src": "266:5:14"
+              },
+              {
+                "id": 6652,
+                "name": "VALUE",
+                "nodeType": "EnumValue",
+                "src": "273:5:14"
+              }
+            ],
+            "name": "RuleDefinition",
+            "nodeType": "EnumDefinition",
+            "src": "245:34:14"
+          }
+        ],
+        "scope": 6655,
+        "src": "25:256:14"
+      }
+    ],
+    "src": "0:282:14"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/ISavingsConfigSchema.sol",
+    "exportedSymbols": {
+      "ISavingsConfigSchema": [
+        6654
+      ]
+    },
+    "id": 6655,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 6637,
+        "literals": [
+          "solidity",
+          "^",
+          "0.6",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:23:14"
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 6654,
+        "linearizedBaseContracts": [
+          6654
+        ],
+        "name": "ISavingsConfigSchema",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "canonicalName": "ISavingsConfigSchema.RuleSet",
+            "id": 6650,
+            "members": [
+              {
+                "constant": false,
+                "id": 6639,
+                "mutability": "mutable",
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "87:11:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 6638,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "87:4:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6641,
+                "mutability": "mutable",
+                "name": "minimum",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "108:15:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6640,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "108:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6643,
+                "mutability": "mutable",
+                "name": "maximum",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "133:15:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6642,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "133:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6645,
+                "mutability": "mutable",
+                "name": "exact",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "158:13:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 6644,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "158:7:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6647,
+                "mutability": "mutable",
+                "name": "applies",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "181:12:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 6646,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "181:4:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 6649,
+                "mutability": "mutable",
+                "name": "ruleDefinition",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 6650,
+                "src": "203:29:14",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_enum$_RuleDefinition_$6653",
+                  "typeString": "enum ISavingsConfigSchema.RuleDefinition"
+                },
+                "typeName": {
+                  "contractScope": null,
+                  "id": 6648,
+                  "name": "RuleDefinition",
+                  "nodeType": "UserDefinedTypeName",
+                  "referencedDeclaration": 6653,
+                  "src": "203:14:14",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_enum$_RuleDefinition_$6653",
+                    "typeString": "enum ISavingsConfigSchema.RuleDefinition"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "RuleSet",
+            "nodeType": "StructDefinition",
+            "scope": 6654,
+            "src": "62:177:14",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "ISavingsConfigSchema.RuleDefinition",
+            "id": 6653,
+            "members": [
+              {
+                "id": 6651,
+                "name": "RANGE",
+                "nodeType": "EnumValue",
+                "src": "266:5:14"
+              },
+              {
+                "id": 6652,
+                "name": "VALUE",
+                "nodeType": "EnumValue",
+                "src": "273:5:14"
+              }
+            ],
+            "name": "RuleDefinition",
+            "nodeType": "EnumDefinition",
+            "src": "245:34:14"
+          }
+        ],
+        "scope": 6655,
+        "src": "25:256:14"
+      }
+    ],
+    "src": "0:282:14"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.6+commit.6c089d02.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.2.5",
+  "updatedAt": "2020-10-23T18:25:18.991Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {}
+  }
+}
