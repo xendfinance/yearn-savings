@@ -21,11 +21,11 @@ contract('Treasury', () => {
 
   });
 
-  // it("should deposit token", async () => {
+  it("should deposit token", async () => {
 
-  //   const result = await contractInstance.depositToken(accounts[0]);
+    const result = await contractInstance.depositToken(accounts[0]);
 
-  //   console.log(result);
-  // });
+    console.log(result);
+  });
 
 });
