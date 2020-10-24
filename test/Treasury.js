@@ -1,7 +1,9 @@
 const TreasuryContract = artifacts.require('Treasury');
+const Web3 = require('web3');
+const web3 = new Web3("HTTP://127.0.0.1:8545");
 
 
-contract('Treasury', () => {
+contract('Treasury', (accounts) => {
 
   let contractInstance = null;
 
@@ -20,12 +22,6 @@ contract('Treasury', () => {
     assert(contractInstance.address !== "");
 
   });
-
-  it("should deposit token", async () => {
-
-    const result = await contractInstance.depositToken(accounts[0]);
-
-    console.log(result);
-  });
+  //call aprrove function on token address then deposit token
 
 });
