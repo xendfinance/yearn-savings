@@ -13,7 +13,7 @@ contract("Groups", async (accounts) => {
 
  
 
-    it("Should deploy the Treasury smart contracts", async () => {
+    it("Should deploy the group smart contracts", async () => {
         
         assert(contractInstance.address !== "");
     });

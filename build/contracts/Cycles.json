@@ -125,7 +125,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -199,7 +200,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -248,7 +250,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -292,7 +295,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -341,7 +345,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -664,7 +669,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -683,7 +689,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -712,7 +719,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -741,7 +749,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -760,7 +769,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -779,7 +789,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -798,7 +809,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -822,7 +834,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -846,7 +859,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"activateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfDepositors\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"startTimeStamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maximumSlots\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasMaximumSlots\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"cycleStakeAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"enum IGroupSchema.CycleStatus\",\"name\":\"cycleStatus\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"name\":\"createCycle\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underylingBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"name\":\"createCycleFinancials\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"totalLiquidityAsPenalty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfCycleStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasWithdrawn\",\"type\":\"bool\"}],\"name\":\"createCycleMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"deactivateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesCycleMemberExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"}],\"name\":\"getCycleFinancialIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"}],\"name\":\"getCycleFinancialsByCycleId\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underylingBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getCycleFinancialsByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underylingBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"}],\"name\":\"getCycleIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"}],\"name\":\"getCycleInfoById\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfDepositors\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"cycleStartTimeStamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"cycleDuration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maximumSlots\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasMaximumSlots\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"cycleStakeAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"enum IGroupSchema.CycleStatus\",\"name\":\"cycleStatus\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getCycleInfoByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfDepositors\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"cycleStartTimeStamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"cycleDuration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maximumSlots\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasMaximumSlots\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"cycleStakeAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"enum IGroupSchema.CycleStatus\",\"name\":\"cycleStatus\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getCycleMember\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"totalLiquidityAsPenalty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfCycleStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasWithdrawn\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"memberAddress\",\"type\":\"address\"}],\"name\":\"getCycleMemberIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositorAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"recordIndexLocation\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexForCycleMembersIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"recordIndexLocation\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexForCycleMembersIndexerByDepositor\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexLengthForCycleMembers\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositorAddress\",\"type\":\"address\"}],\"name\":\"getRecordIndexLengthForCycleMembersByDepositor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexLengthForGroupCycleIndexer\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"reAssignStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfDepositors\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"startTimeStamp\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"duration\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"maximumSlots\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasMaximumSlots\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"cycleStakeAmount\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"totalStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"enum IGroupSchema.CycleStatus\",\"name\":\"cycleStatus\",\"type\":\"uint8\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"name\":\"updateCycle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underylingBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalanceClaimedBeforeMaturity\",\"type\":\"uint256\"}],\"name\":\"updateCycleFinancials\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"cycleId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"totalLiquidityAsPenalty\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"numberOfCycleStakes\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"stakesClaimed\",\"type\":\"uint256\"},{\"internalType\":\"bool\",\"name\":\"hasWithdrawn\",\"type\":\"bool\"}],\"name\":\"updateCycleMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Cycle.sol\":\"Cycles\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Cycle.sol\":{\"keccak256\":\"0x348aaea09ee0c346d9106b863e0c9e04d608ac193c08f6d1e031fbd7ba5e3bf5\",\"urls\":[\"bzz-raw://3961d02170486e513c8164fb99f2bafa861fcb994b5d95ba2a77bc1910773116\",\"dweb:/ipfs/QmTxCwLjodiJKBGVeEVvytQuHs2hgptz29ifgVqynyDjeu\"]},\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/IGroupSchema.sol\":{\"keccak256\":\"0x6a181fbc3fbf7b38adbb19dea1576bec36fbd48f12e195570554387b942bea9c\",\"urls\":[\"bzz-raw://888c9d70ae45cfc721dc10abd589a36926c252d000bc79230f8aa286851a1e3a\",\"dweb:/ipfs/QmaD6LBAu1JKowSpsYMWPiupfErwVx9p67f22EnbisZ5wK\"]},\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/StorageOwners.sol\":{\"keccak256\":\"0x68a125811456d1b20c916672b66066fa9af742ee5c91b372141087e1b5e34331\",\"urls\":[\"bzz-raw://92e0c23367b089936f060e5b0d1d7eec135b66d3336cbf0572aba5b450e9e6fc\",\"dweb:/ipfs/QmdKqoCHX1f7hmxPi97pXoD2iCqjg4BvLDQnRWWXYnW3R7\"]}},\"version\":1}",
@@ -32085,9 +32099,17 @@
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {},
+      "links": {},
+      "address": "0xE9c3e11D026ed27349aF094a4A9B55b9A9F0a5B0",
+      "transactionHash": "0x07f8ab5d6e40c10de7ec84ad3b0a8208f863cfccc582e41d503b9807ce3da492"
+    }
+  },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-23T18:25:18.715Z",
+  "updatedAt": "2020-10-24T15:09:47.168Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },
