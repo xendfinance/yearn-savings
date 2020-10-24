@@ -1,4 +1,3 @@
-const { create } = require("combined-stream");
 const { assert } = require("console");
 
 const Groups = artifacts.require("Groups")
@@ -27,8 +26,38 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.activateStorageOracle(accounts[1], {from :accounts[0]});
 
-       return assert(result.receipt.status == true, "tx reciept status is true")
+        assert(result.receipt.status == true, "tx reciept status is true")
         
+    })
+
+    it("should deactivate storage oracle", async () => {
+
+        const instance = await Groups.new();
+
+        await instance.activateStorageOracle(accounts[1], {from :accounts[0]});
+
+        const result = await instance.deactivateStorageOracle(accounts[1], {from :accounts[0]});
+
+        assert(result.receipt.status == true)
+    })
+
+    it("should reassign storage oracle", async () => {
+
+        const instance = await Groups.new();
+
+        await instance.activateStorageOracle(accounts[1], {from :accounts[0]});
+
+        const result = await instance.reAssignStorageOracle(accounts[3], {from : accounts[1]});
+
+        assert(result.receipt.status == true)
+    })
+
+    it("should transfer ownership", async () => {
+
+        const result =  await contractInstance.transferOwnership(accounts[3], {from : accounts[0]});
+
+        assert(result.receipt.status == true)
+
     })
 
     it("should create a group", async () => {
