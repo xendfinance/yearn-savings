@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
-import "./Ownable.sol";
+import "./OwnableService.sol";
 import "./IEsusuService.sol";
-import "./IGroups.sol";
+import "../IGroups.sol";
 
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -63,12 +63,12 @@ library SafeMath {
     7. This contract can be replaced at anytime and updated in calling contracts 
 
 */
-contract RewardConfig is Ownable {
+contract RewardConfig is OwnableService {
     
     using SafeMath for uint256;
 
     
-    constructor(address esusuServiceContract, address groupServiceContract) public Ownable(serviceContract){
+    constructor(address esusuServiceContract, address groupServiceContract) public OwnableService(serviceContract){
         
         iEsusuService = IEsusuService(esusuServiceContract);
         

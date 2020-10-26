@@ -10,6 +10,7 @@ const XendFinanceIndividual_Yearn_V1Contract = artifacts.require(
 );
 const RewardConfigContract = artifacts.require("RewardConfig");
 const xendTokenContract = artifacts.require("XendToken");
+const yxendTokenContract = artifacts.require("YXendToken");
 const EsusuServiceContract = artifacts.require("EsusuService");
 
 
@@ -35,14 +36,6 @@ module.exports = function (deployer) {
 
     console.log("Savings config address", SavingsConfigContract.address);
 
-    await deployer.deploy(DaiLendingServiceContract);
-
-    await deployer.deploy(
-      DaiLendingAdapterContract,
-      DaiLendingServiceContract.address,
-      TestContractArtifact.address
-    );
-
     await deployer.deploy(EsusuServiceContract);
 
     console.log("EsusuServiceContract address: " + EsusuServiceContract.address);
@@ -57,6 +50,15 @@ module.exports = function (deployer) {
   
     await deployer.deploy(xendTokenContract, "Xend Token", "XTK", 18, 2000000);
 
+    await deployer.deploy(yxendTokenContract, "YXend Token", "XTK", 18, 2000000);
+
+    await deployer.deploy(DaiLendingServiceContract);
+
+    await deployer.deploy(
+      DaiLendingAdapterContract,
+      DaiLendingServiceContract.address,
+    );
+
     console.log(
       "DaiLendingService Contract address: " + DaiLendingServiceContract.address
     );
@@ -69,10 +71,12 @@ module.exports = function (deployer) {
       XendFinanceIndividual_Yearn_V1Contract,
       DaiLendingAdapterContract.address,
       DaiLendingServiceContract.address,
-      DaiTokenContract.address,
+      xendTokenContract.address,
       ClientRecordContract.address,
       RewardConfigContract.address,
-      YDaiTokenContract.address
+      yxendTokenContract.address
     );
+
+    console.log("Xend finance individual", XendFinanceIndividual_Yearn_V1Contract.address)
   });
 };

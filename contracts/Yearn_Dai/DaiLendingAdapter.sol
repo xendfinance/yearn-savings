@@ -1,8 +1,8 @@
 pragma solidity ^0.6.6;
 
-import "./IDaiToken.sol";
-import "./IYDaiToken.sol";
-import "./Ownable.sol";
+import "../Esusu/IDaiToken.sol";
+import "../Esusu/IYDaiToken.sol";
+import "./YearnOwnable.sol";
 
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {
@@ -68,7 +68,7 @@ library SafeMath {
     }
 }
 
-contract DaiLendingAdapter is Ownable {
+contract DaiLendingAdapter is YearnOwnable {
     using SafeMath for uint256;
 
     IDaiToken dai = IDaiToken(0x6B175474E89094C44Da98b954EedeAC495271d0F);
@@ -79,7 +79,7 @@ contract DaiLendingAdapter is Ownable {
 
     constructor(address payable serviceContract)
         public
-        Ownable(serviceContract)
+        YearnOwnable(serviceContract)
     {}
 
     function GetPricePerFullShare() public view returns (uint256) {

@@ -8,7 +8,7 @@ import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
-import "./IERC20.sol";
+import "./XendToken/IERC20.sol";
 import "./Address.sol";
 import "./IRewardConfig.sol";
 
