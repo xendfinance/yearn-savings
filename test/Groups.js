@@ -15,7 +15,7 @@ contract("Groups", async (accounts) => {
 
     it("Should deploy the group smart contracts", async () => {
         
-        assert(contractInstance.address !== "");
+        assert(contractInstance.address !== "", "contract address does not exist");
     });
 
     
@@ -38,7 +38,7 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.deactivateStorageOracle(accounts[1], {from :accounts[0]});
 
-        assert(result.receipt.status == true)
+        assert(result.receipt.status == true, "tx reciept is true")
     })
 
     it("should reassign storage oracle", async () => {
@@ -49,14 +49,14 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.reAssignStorageOracle(accounts[3], {from : accounts[1]});
 
-        assert(result.receipt.status == true)
+        assert(result.receipt.status == true, "tx reciept is true")
     })
 
     it("should transfer ownership", async () => {
 
         const result =  await contractInstance.transferOwnership(accounts[3], {from : accounts[0]});
 
-        assert(result.receipt.status == true)
+        assert(result.receipt.status == true, "tx reciept is true")
 
     })
 
@@ -71,14 +71,26 @@ contract("Groups", async (accounts) => {
 
         const getGroup = await instance.getGroupById(1, {from: accounts[1]});
 
-        assert(getGroup[3] !== "")
+        assert(getGroup[3] !== "", "group does not exist")
 
         //assert
         const groupIndexerResult = await instance.getGroupIndexer(1);
-        
-        assert(groupIndexerResult.exist == true, "tx reciept status is true")
 
-        assert(groupIndexerResult.index.length === 1, "tx reciept status is true")
+        assert(groupIndexerResult.exist == true)
+
+        assert(groupIndexerResult.index.length !== null, "tx reciept status is true")
+        
+        const getRecordIndexLengthForCreatorResult = await instance.getRecordIndexLengthForCreator(accounts[1])
+
+        assert(getRecordIndexLengthForCreatorResult.length !== null, "index record length is null");
+
+        // const getGroupForCreatorIndexer = await instance.getGroupForCreatorIndexer(accounts[1], 1);
+
+        // console.log(getGroupForCreatorIndexer)
+
+        const getGroupIndexerByName = await instance.getGroupIndexerByName("njokuAkawo");
+
+        assert(getGroupIndexerByName.exist == true, "indexer does not exist");
 
     })
 
@@ -100,21 +112,29 @@ contract("Groups", async (accounts) => {
         
           const doesGroupMemberExistResult = await instance.doesGroupMemberExist(1, depositorAddress);
 
-          assert(doesGroupMemberExistResult == true);
+          assert(doesGroupMemberExistResult == true, "group member does not exist");
 
-          assert(depositorAddress !== "");
+          assert(depositorAddress !== "", "depositor address is empty");
 
           assert(createMemberResult.receipt.status == true, "tx reciept status is true");
   
+         const getGroupMembersDeepIndexerResult = await instance.getGroupMembersDeepIndexer(1, depositorAddress)
 
+         assert(getGroupMembersDeepIndexerResult.exists == true, "member deep indexer result does not exist");
+
+         const getRecordIndexLengthForGroupMembersIndexerResult = await instance.getRecordIndexLengthForGroupMembersIndexer(1)
+
+         assert(getRecordIndexLengthForGroupMembersIndexerResult.length !== null, "index length for group member indexer is null");
+
+         const getRecordIndexLengthForGroupMembersIndexerByDepositorResult = await instance.getRecordIndexLengthForGroupMembersIndexerByDepositor(depositorAddress);
+
+         assert(getRecordIndexLengthForGroupMembersIndexerByDepositorResult.length !== null, "indexer length by depositor is null");
     })
 
     it("should check length of token address used in deposit", async () => {
         const result = await contractInstance.getLengthOfTokenAddressesUsedInDeposit({from: accounts[1]});
 
-        assert(result.length !== null);
-
-        console.log("check length of token",  result)
+        assert(result.length !== null, "token address is null");
     })
 
     it("should increment token deposit", async () => {
@@ -127,7 +147,7 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.incrementTokenDeposit(accounts[2], 10, {from : accounts[1]})
 
-        assert(result.receipt.status == true);
+        assert(result.receipt.status == true, "tx reciept status is true");
 
     })
 
@@ -142,7 +162,7 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.decrementTokenDeposit(accounts[2], 5, {from : accounts[1]})
 
-        assert(result.receipt.status == true);
+        assert(result.receipt.status == true, "tx reciept status is true");
 
     })
 
@@ -156,7 +176,7 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.incrementEtherDeposit(15, {from : accounts[1]})
 
-        assert(result.receipt.status == true);
+        assert(result.receipt.status == true, "tx reciept status is true");
 
     })
 
@@ -172,7 +192,7 @@ contract("Groups", async (accounts) => {
 
         const result = await instance.decrementEtherDeposit(5, {from : accounts[1]})
 
-        assert(result.receipt.status == true);
+        assert(result.receipt.status == true, "tx reciept status is true");
 
     })
 
