@@ -1,6 +1,7 @@
 const GroupsContract = artifacts.require("Groups");
 const TreasuryContract = artifacts.require("Treasury")
 const CyclesContract = artifacts.require("Cycles")
+const ClientRecordContract = artifacts.require("ClientRecord")
 
 module.exports = function (deployer) {
     
@@ -17,6 +18,10 @@ module.exports = function (deployer) {
       await deployer.deploy(CyclesContract);
 
       console.log(CyclesContract.address);
+
+      await deployer.deploy(ClientRecordContract);
+
+      console.log(ClientRecordContract.address)
 
     
     })
