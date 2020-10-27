@@ -50,7 +50,7 @@ module.exports = function (deployer) {
   
     await deployer.deploy(xendTokenContract, "Xend Token", "XTK", 18, 2000000);
 
-    await deployer.deploy(yxendTokenContract, "YXend Token", "XTK", 18, 2000000);
+    await deployer.deploy(yxendTokenContract, "YXend Token", "YXTK", 18, 2000000);
 
     await deployer.deploy(DaiLendingServiceContract);
 
@@ -66,6 +66,9 @@ module.exports = function (deployer) {
     console.log(
       "DaiLendingAdapterContract address: " + DaiLendingAdapterContract.address
     );
+
+    console.log("yxend", yxendTokenContract.address)
+    console.log("xendt", xendTokenContract.address)
 
     await deployer.deploy(
       XendFinanceIndividual_Yearn_V1Contract,
