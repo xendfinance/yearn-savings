@@ -1,7 +1,7 @@
 const Web3 = require('web3');
 
-const DaiContractABI = require('./build/contracts/DAIABI.json');
-const YDaiContractABI = require('./build/contracts/YDAIABI.json');
+const DaiContractABI = require('./test/abi/DaiContract.json');
+const YDaiContractABI = require('./test/abi/YDaiContractABI.json');
 
 const DaiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const yDaiContractAddress = "0xC2cB1040220768554cf699b0d863A3cd4324ce32";
@@ -38,7 +38,7 @@ async function run() {
     if (true) {
         var amountToSend = BigInt(10000000000000000000000); //   10000 Dai
         // sendDai(amountToSend, "0x7A3068a9fec005aF90E35DA2d8c8620Ebb7a1F39");
-        sendDai(amountToSend, "0x3a0D8085A5D183d601b2644f58f2e6AdC35B436A");
+        sendDai(amountToSend, "0x4e07662BED487bB0426b85e466E51F3A3D9150c6");
 
 
     }
@@ -47,14 +47,14 @@ async function run() {
     if (true) {
         var approvedAmountToSpend = BigInt(5000000000000000000); //   100000 Dai
         //approve("0xF6B58F437C5E40a0817dB3c5570e06380b4f860B", "0xFf3BC1b5be0a717b02eb24DCd1DC8E9Eefe910B1", approvedAmountToSpend);
-        approve("0x32B69b9086b0b117B3E02B4c6Dc576E65F2eC1E8", "0x3a0D8085A5D183d601b2644f58f2e6AdC35B436A", approvedAmountToSpend);
+        approve("0x0F17DE5eaFc13BDe723e06Ad884936E40ee37f16", "0x4e07662BED487bB0426b85e466E51F3A3D9150c6", approvedAmountToSpend);
 
     }
 
     //  Approve a contract-address or normal address to spend amount in YDai
     if (false) {
         var approvedAmountToSpend = BigInt(100000000000000000000000); //   100000 YDai
-        approveYDai("0x05fd1Add42DEF24AfcbD461495d4527925649fE8", "0xe22653088394A7283cEa78e4389D863053DE96A3", approvedAmountToSpend);
+        approveYDai("0x0F17DE5eaFc13BDe723e06Ad884936E40ee37f16", "0x4e07662BED487bB0426b85e466E51F3A3D9150c6", approvedAmountToSpend);
 
     }
 
@@ -76,7 +76,7 @@ async function sendDai(amount, recipient) {
 
     console.log(`Sending  ${amountToSend} x 10^-18 Dai to  ${recipient}`);
 
-    await daiContract.methods.transfer(recipient, amountToSend).send({ from: unlockedAddress });
+    await daiContract.methods.transfer(recipient, amountToSend).send({ from: unlockedYDaiSenderAddress });
 
     let recipientBalance = await daiContract.methods.balanceOf(recipient).call();
 

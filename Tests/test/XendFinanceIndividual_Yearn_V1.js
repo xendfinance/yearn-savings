@@ -44,6 +44,8 @@ const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
     
 const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
 
+const unlockedAddress = "0x1eC32Bfdbdbd40C0D3ec0fe420EBCfEEb2D56917";
+
 
 //  Approve a smart contract address or normal address to spend on behalf of the owner
 async function approveDai(spender,  owner,  amount){
@@ -55,10 +57,28 @@ async function approveDai(spender,  owner,  amount){
 };
 
 
+   
+//  Send Dai from our constant unlocked address to any recipient
+async function sendDai(amount, recipient){
+    
+  var amountToSend = BigInt(amount); //  1000 Dai
+
+  console.log(`Sending  ${ amountToSend } x 10^-18 Dai to  ${recipient}`);
+
+  await daiContract.methods.transfer(recipient,amountToSend).send({from: unlockedAddress});
+
+  let recipientBalance = await daiContract.methods.balanceOf(recipient).call();
+  
+  console.log(`Recipient: ${recipient} DAI Balance: ${recipientBalance}`);
+
+
+}
+
+
 
 contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
   let contractInstance;
-
+ 
 
   beforeEach(async () => {
 
@@ -156,78 +176,6 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
   assert(getClientRecordByIndexResult.receipt.status == true, "tx reciept status is true");
 
    });
-
-
-
-   it("should deposit amount", async () => {
-    let clientRecord = await ClientRecordContract.deployed();
-
-    let savingsConfig =  await SavingsConfigContract.deployed();
-  
-    let groups = await GroupsContract.deployed();
-  
-    let esusuService = await EsusuServiceContract.deployed();
-  
-    let rewardConfig = await RewardConfigContract.deployed(
-      esusuService.address,
-      groups.address
-    );
-  
-    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
-  
-    let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
-  
-    let daiLendingService = await DaiLendingServiceContract.deployed();
-  
-    let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
-  
-      const instance = await XendFinanceIndividual_Yearn_V1.new(
-        daiLendingAdapter.address,
-        daiLendingService.address,
-        xendToken.address,
-        clientRecord.address,
-        rewardConfig.address,
-        yXend.address
-      );
-  
-      console.log(instance.address);
-  
-    await clientRecord.activateStorageOracle(accounts[3], {from :accounts[0]});
-
-    let account1 = accounts[2];
-
-    web3.eth.getBalance(account1, function(err, result) {
-      if (err) {
-          console.log(err)
-      } else {
-          account1Balance = web3.utils.fromWei(result, "ether");
-          console.log("Account 1: "+ accounts[2] + "  Balance: " + account1Balance + " ETH");
-
-      }
-  });
-
-    var approvedAmountToSpend = BigInt(10000000000000000000000); //   10,000 Dai
-
-    const approveResult = await approveDai(instance.address, accounts[2], approvedAmountToSpend);
-
-    console.log(approveResult);
-
-  
-    // await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]});
-
-    const depositResult = await instance.deposit({from : accounts[2]});
-
-    console.log(depositResult)
-   })
-
-
-
-  //  it("should withdraw derivate amount", async () => {
-
-  //   const withdrawResult = await contractInstance.withdraw(10, {from : accounts[1]});
-
-  //   console.log(withdrawResult)
-  //  })
 
 
 });

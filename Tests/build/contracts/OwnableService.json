@@ -65,16 +65,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_serviceContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"serviceContract\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newServiceContract\",\"type\":\"address\"}],\"name\":\"transferContractOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Esusu/OwnableService.sol\":\"OwnableService\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Esusu/OwnableService.sol\":{\"keccak256\":\"0x2020668d462c85ab133190681896f14290df0e6d8ea0c1fe626207ee73119a89\",\"urls\":[\"bzz-raw://f69d91e39dc267c6c3c039c8b23b230dfb68d9ccabe7f91318762d5b45ac8649\",\"dweb:/ipfs/QmUgRJFermCsv1TGsxt9njcUcjrYfBcScQ5xS2xyTnrwsu\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_serviceContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"serviceContract\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newServiceContract\",\"type\":\"address\"}],\"name\":\"transferContractOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/Esusu/OwnableService.sol\":\"OwnableService\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/Esusu/OwnableService.sol\":{\"keccak256\":\"0x2020668d462c85ab133190681896f14290df0e6d8ea0c1fe626207ee73119a89\",\"urls\":[\"bzz-raw://f69d91e39dc267c6c3c039c8b23b230dfb68d9ccabe7f91318762d5b45ac8649\",\"dweb:/ipfs/QmUgRJFermCsv1TGsxt9njcUcjrYfBcScQ5xS2xyTnrwsu\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\n\n/*\n * Ownable\n *\n * Base contract with an owner.\n * Provides onlyOwner modifier, which prevents function from running if it is called by anyone other than the owner.\n */\ncontract OwnableService {\n    address payable public owner;\n    address payable public serviceContract;\n\n    constructor(address payable _serviceContract) internal {\n        owner = msg.sender;\n        serviceContract = _serviceContract;\n    }\n\n    modifier onlyOwner() {\n        require(msg.sender == owner, \"Unauthorized access to contract\");\n        _;\n    }\n\n    modifier onlyOwnerAndServiceContract() {\n        require(\n            msg.sender == owner || msg.sender == serviceContract,\n            \"Unauthorized access to contract\"\n        );\n        _;\n    }\n\n    function transferOwnership(address payable newOwner) public onlyOwner {\n        if (newOwner != address(0)) {\n            owner = newOwner;\n        }\n    }\n\n    function transferContractOwnership(address payable newServiceContract)\n        public\n        onlyOwnerAndServiceContract\n    {\n        if (newServiceContract != address(0)) {\n            serviceContract = newServiceContract;\n        }\n    }\n}\n",
-  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Esusu/OwnableService.sol",
+  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/Esusu/OwnableService.sol",
   "ast": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Esusu/OwnableService.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/Esusu/OwnableService.sol",
     "exportedSymbols": {
       "OwnableService": [
         4366
@@ -1224,7 +1224,7 @@
     "src": "0:1170:8"
   },
   "legacyAST": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/contracts/Esusu/OwnableService.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/Esusu/OwnableService.sol",
     "exportedSymbols": {
       "OwnableService": [
         4366
@@ -2379,7 +2379,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-26T11:59:07.373Z",
+  "updatedAt": "2020-10-27T19:23:53.003Z",
   "devdoc": {
     "methods": {}
   },

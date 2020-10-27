@@ -68,7 +68,9 @@ contract ERC20 is Context, XendTokenMinters, IERC20 {
         _totalSupply = totalSupply;
 
         _totalSupply = _totalSupply.add(totalSupply);
-        _balances[address(this)] = _balances[address(this)].add(totalSupply);
+        //_balances[address(this)] = _balances[address(this)].add(totalSupply);
+        _balances[msg.sender] = _balances[msg.sender].add(totalSupply);
+
     }
 
     /**
