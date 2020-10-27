@@ -40,6 +40,20 @@ const DaiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 
 const yDaiContractAddress = "0xC2cB1040220768554cf699b0d863A3cd4324ce32";
 
+const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
+    
+const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
+
+
+//  Approve a smart contract address or normal address to spend on behalf of the owner
+async function approveDai(spender,  owner,  amount){
+
+  await daiContract.methods.approve(spender,amount).send({from: owner});
+
+  console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 Dai by Owner:  ${owner}`);
+
+};
+
 
 
 contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
@@ -177,20 +191,31 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
       );
   
       console.log(instance.address);
-
-
-
-    const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
-    
-    const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
   
     await clientRecord.activateStorageOracle(accounts[3], {from :accounts[0]});
 
-    await daiContract.methods.approve(instance.address, 100).send({from: accounts[2]});
+    let account1 = accounts[2];
+
+    web3.eth.getBalance(account1, function(err, result) {
+      if (err) {
+          console.log(err)
+      } else {
+          account1Balance = web3.utils.fromWei(result, "ether");
+          console.log("Account 1: "+ accounts[2] + "  Balance: " + account1Balance + " ETH");
+
+      }
+  });
+
+    var approvedAmountToSpend = BigInt(10000000000000000000000); //   10,000 Dai
+
+    const approveResult = await approveDai(instance.address, accounts[2], approvedAmountToSpend);
+
+    console.log(approveResult);
+
   
     // await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]});
 
-    const depositResult = await instance.deposit({from : [accounts[2]]});
+    const depositResult = await instance.deposit({from : accounts[2]});
 
     console.log(depositResult)
    })
