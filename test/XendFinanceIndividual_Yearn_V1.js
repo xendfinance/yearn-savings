@@ -54,4 +54,11 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
   it("Should deploy the XendFinanceIndividual_Yearn_V1 smart contracts", async () => {
     assert(contractInstance.address !== "");
   });
+
+  it("should get client records", async () => {
+      
+      const getClientRecordResult = await contractInstance.getClientRecord(accounts[1]);
+
+      console.log(getClientRecordResult)
+  })
 });
