@@ -1,19 +1,46 @@
 const { assert } = require("console");
+
+const Web3 = require('web3');
+
+const web3 = new Web3("HTTP://127.0.0.1:8545");
+
 const GroupsContract = artifacts.require("Groups");
+
 const TreasuryContract = artifacts.require("Treasury");
+
 const CyclesContract = artifacts.require("Cycles");
+
 const utils = require("./helpers/utils");
+
 const ClientRecordContract = artifacts.require("ClientRecord");
+
 const SavingsConfigContract = artifacts.require("SavingsConfig");
+
 const DaiLendingAdapterContract = artifacts.require("DaiLendingAdapter");
+
 const DaiLendingServiceContract = artifacts.require("DaiLendingService");
+
 const XendFinanceIndividual_Yearn_V1 = artifacts.require(
   "XendFinanceIndividual_Yearn_V1"
 );
+
 const RewardConfigContract = artifacts.require("RewardConfig");
+
 const xendTokenContract = artifacts.require("XendToken");
+
 const yxendTokenContract = artifacts.require("YXendToken");
+
 const EsusuServiceContract = artifacts.require("EsusuService");
+
+const DaiContractABI = require('./abi/DaiContract.json');
+
+const YDaiContractABI = require('./abi/YDaiContractABI.json');
+
+const DaiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
+
+const yDaiContractAddress = "0xC2cB1040220768554cf699b0d863A3cd4324ce32";
+
+
 
 contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
   let contractInstance;
@@ -99,14 +126,83 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
       yXend.address
     );
 
+    console.log(instance.address);
 
-  await clientRecord.activateStorageOracle(instance.address, {from :accounts[0]});
 
-  const getClientRecordResult = await instance.getClientRecord(accounts[2], {from : instance.address})
+  await clientRecord.activateStorageOracle(accounts[3], {from :accounts[0]});
 
-  console.log(getClientRecordResult)
+  await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]});
 
-  })
+  const getClientRecordResult = await instance.getClientRecord(accounts[2])
+
+  assert(getClientRecordResult.receipt.status == true, "tx reciept status is true");
+
+  const getClientRecordByIndexResult = await instance.getClientRecordByIndex(0);
+
+  assert(getClientRecordByIndexResult.receipt.status == true, "tx reciept status is true");
+
+   });
+
+
+
+   it("should deposit amount", async () => {
+    let clientRecord = await ClientRecordContract.deployed();
+
+    let savingsConfig =  await SavingsConfigContract.deployed();
+  
+    let groups = await GroupsContract.deployed();
+  
+    let esusuService = await EsusuServiceContract.deployed();
+  
+    let rewardConfig = await RewardConfigContract.deployed(
+      esusuService.address,
+      groups.address
+    );
+  
+    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
+  
+    let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
+  
+    let daiLendingService = await DaiLendingServiceContract.deployed();
+  
+    let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
+  
+      const instance = await XendFinanceIndividual_Yearn_V1.new(
+        daiLendingAdapter.address,
+        daiLendingService.address,
+        xendToken.address,
+        clientRecord.address,
+        rewardConfig.address,
+        yXend.address
+      );
+  
+      console.log(instance.address);
+
+
+
+    const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
+    
+    const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
+  
+    await clientRecord.activateStorageOracle(accounts[3], {from :accounts[0]});
+
+    await daiContract.methods.approve(instance.address, 100).send({from: accounts[2]});
+  
+    // await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]});
+
+    const depositResult = await instance.deposit({from : [accounts[2]]});
+
+    console.log(depositResult)
+   })
+
+
+
+  //  it("should withdraw derivate amount", async () => {
+
+  //   const withdrawResult = await contractInstance.withdraw(10, {from : accounts[1]});
+
+  //   console.log(withdrawResult)
+  //  })
 
 
 });
