@@ -2,15 +2,14 @@
 
 pragma solidity ^0.6.0;
 
-import "./IClientRecordSchema.sol";
+import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
-
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/Address.sol";
+import "./Tests/contracts/XendToken/IERC20.sol";
+import "./Address.sol";
 import "./IRewardConfig.sol";
 
 contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {

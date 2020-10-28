@@ -1,6 +1,7 @@
 pragma solidity ^0.6.0;
 
-import "./IClientRecordSchema.sol";
+
+import "./IClientRecordShema.sol";
 import "./StorageOwners.sol";
 
 contract ClientRecord is IClientRecordSchema, StorageOwners {
