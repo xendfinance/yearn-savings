@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
 import "./OwnableService.sol";
 import "./IEsusuService.sol";
-import "../IGroups.sol";
+import "../../../IGroups.sol";
 
 library SafeMath {
     function add(uint256 a, uint256 b) internal pure returns (uint256) {

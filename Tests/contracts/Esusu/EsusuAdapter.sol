@@ -3,15 +3,15 @@ pragma solidity ^0.6.6;
 import "./IDaiToken.sol";
 import "./IYDaiToken.sol";
 
-import "../IDaiLendingService.sol";
+import "../../../IDaiLendingService.sol";
 import "./OwnableService.sol";
-import "../ITreasury.sol";
-import "../ISavingsConfig.sol";
-import "../ISavingsConfigSchema.sol";
-import "../IGroups.sol";
-import "../IRewardConfig.sol";
-import "../IXendToken.sol";
-import "../SafeMath.sol";
+import "../../../ITreasury.sol";
+import "../../../ISavingsConfig.sol";
+import "../../../ISavingsConfigSchema.sol";
+import "../../../IGroups.sol";
+import "../../../IRewardConfig.sol";
+import "../../../IXendToken.sol";
+import "../../../SafeMath.sol";
 
 
 

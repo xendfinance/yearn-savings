@@ -9,7 +9,7 @@ import "./IGroups.sol";
 import "./ICycle.sol";
 import "./IGroupSchema.sol";
 import "./IDaiLendingService.sol";
-import "./XendToken/IERC20.sol";
+import "./Tests/contracts/XendToken/IERC20.sol";
 import "./Address.sol";
 import "./IRewardConfig.sol";
 import "./SafeMath.sol";

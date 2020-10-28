@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
 import "./SafeMath.sol";
 import "./Ownable.sol";
-import "./XendToken/IERC20.sol";
+import "./Tests/contracts/XendToken/IERC20.sol";
 
 contract Treasury is Ownable {
     using SafeMath for uint256;

@@ -1,6 +1,6 @@
 pragma solidity ^0.6.6;
-import "../SafeMath.sol";
-import "../IERC20.sol";
+import "../../../SafeMath.sol";
+import "../../../IERC20.sol";
 
 contract DaiLendingService {
     IERC20 ydaiToken;
