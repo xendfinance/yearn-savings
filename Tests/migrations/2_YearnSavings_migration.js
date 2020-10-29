@@ -17,6 +17,7 @@ const XendFinanceGroup_Yearn_V1Contract = artifacts.require(
 const RewardConfigContract = artifacts.require("RewardConfig");
 const xendTokenContract = artifacts.require("XendToken");
 const yxendTokenContract = artifacts.require("YXendToken");
+const yyxendTokenContract = artifacts.require("YYXendToken")
 const EsusuServiceContract = artifacts.require("EsusuService");
 
 // const web3 = new Web3("HTTP://127.0.0.1:8545");
@@ -70,6 +71,14 @@ module.exports = function (deployer) {
       2000000
     );
 
+    await deployer.deploy(
+      yyxendTokenContract,
+      "YYXend Token",
+      "YYXTK",
+      18,
+      2000000
+    );
+
     await deployer.deploy(DaiLendingServiceContract);
 
     await deployer.deploy(
@@ -98,19 +107,19 @@ module.exports = function (deployer) {
       yxendTokenContract.address
     );
 
-    // await deployer.deploy(
-    //   XendFinanceGroup_Yearn_V1Contract,
-    //   daiContract.address,
-    //   DaiLendingServiceContract.address,
-    //   YDaiContractABI.address,
-    //   GroupsContract.address,
-    //   CyclesContract.address,
-    //   TreasuryContract.address,
-    //   SavingsConfigContract.address,
-    //   RewardConfigContract.address,
-    //   xendTokenContract.address,
-    //   yxendTokenContract.address
-    // );
+    await deployer.deploy(
+      XendFinanceGroup_Yearn_V1Contract,
+      DaiLendingAdapterContract.address,
+      DaiLendingServiceContract.address,
+      yyxendTokenContract.address,
+      GroupsContract.address,
+      CyclesContract.address,
+      TreasuryContract.address,
+      SavingsConfigContract.address,
+      RewardConfigContract.address,
+      xendTokenContract.address,
+      yxendTokenContract.address
+    );
 
     console.log(
       "Xend finance individual",
