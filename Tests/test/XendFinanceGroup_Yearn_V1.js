@@ -182,7 +182,7 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
     assert(joinCycleResult.logs[0].logIndex === 1);
   });
 
-  it("should withdraw from cycle while it's ongoing", async () => {
+  xit("should withdraw from cycle while it's ongoing", async () => {
 
     let treasury = await TreasuryContract.new();
 
@@ -249,7 +249,86 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
 
     const withdrawFromCycleWhileItIsOngoingResult = await instance.withdrawFromCycleWhileItIsOngoing(1, {from : accounts[0]});
 
-    console.log(withdrawFromCycleWhileItIsOngoingResult);
+    assert(withdrawFromCycleWhileItIsOngoingResult.receipt.status == true)
+  })
+
+
+  it("should activate a cycle ", async () => {
+
+    let treasury = await TreasuryContract.new();
+
+  let cycles = await CyclesContract.new();
+
+  let savingsConfig =  await SavingsConfigContract.new();
+
+  let groups = await GroupsContract.new();
+
+  let esusuService = await EsusuServiceContract.new();
+
+  let rewardConfig = await RewardConfigContract.new(
+    esusuService.address,
+    groups.address
+  );
+
+  let xendToken = await xendTokenContract.new("Xend Token", "XTK", 18, 2000000);
+
+  let yXend = await yxendTokenContract.new("YXend Token", "YXTK", 18, 2000000);
+
+  let yyxend = await yyxendTokenContract.new("YYXend Token", "YYXTK", 18, 2000000)
+
+  let daiLendingService = await DaiLendingServiceContract.new();
+
+  let daiLendingAdapter = await DaiLendingAdapterContract.new(daiLendingService.address);
+
+   const instance = await XendFinanceGroup_Yearn_V1.new(
+      daiLendingAdapter.address,
+      daiLendingService.address,
+      DaiContractAddress,
+      groups.address,
+      cycles.address,
+      treasury.address,
+      savingsConfig.address,
+      rewardConfig.address,
+      xendToken.address,
+      yXend.address
+
+    );
+
+    await groups.activateStorageOracle(instance.address);
+
+    await cycles.activateStorageOracle(instance.address)
+
+    await instance.createGroup("njokuAkawo", "N9");
+    
+    let startTimeStamp = 4 * 86400;
+
+    let duration = 100 * 86400;
+
+    let amountToApprove = BigInt(100000000000000000000000);
+
+    let amountToSend = BigInt(100000000000000000000000);
+
+    await sendDai(amountToSend, accounts[0]);
+
+   const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
+
+   console.log(approveResult)
+    
+    await instance.createCycle(1, startTimeStamp, duration, 10, true, 100)
+
+    await instance.joinCycle(1, 2, {from: accounts[0]});
+
+    const activateCycleResult = await instance.activateCycle(1, {from: accounts[0]});
+
+    assert(activateCycleResult.receipt.status == true, 'tx receipt status is true');
+
+    const getSecondsLeftForCycleToStartResult = await instance.getSecondsLeftForCycleToStart(1);
+
+    const getSecondsLeftForCycleToEndResult = await instance.getSecondsLeftForCycleToEnd(1);
+
+    assert(getSecondsLeftForCycleToEndResult.typeOf == Number)
+
+    assert(getSecondsLeftForCycleToStartResult.typeOf === Number)
   })
 
 });
