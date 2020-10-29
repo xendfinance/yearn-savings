@@ -1,26 +1,26 @@
 {
   "contractName": "ISavingsConfigSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/ISavingsConfigSchema.sol\":\"ISavingsConfigSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/ISavingsConfigSchema.sol\":{\"keccak256\":\"0x553eae6019bf849920c8c31e6ae9c0ebcc2410a14a031928119dafe0b2bc3183\",\"urls\":[\"bzz-raw://d77a7ae99b14920c4623e15a1a2a679df92c8fc88e36715b3314f2759ae6e67c\",\"dweb:/ipfs/QmPsydY2PARERVqMyJApDDT5eq1Qvo4wyAa9KYnu8PsT4c\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/ISavingsConfigSchema.sol\":\"ISavingsConfigSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/ISavingsConfigSchema.sol\":{\"keccak256\":\"0x553eae6019bf849920c8c31e6ae9c0ebcc2410a14a031928119dafe0b2bc3183\",\"urls\":[\"bzz-raw://d77a7ae99b14920c4623e15a1a2a679df92c8fc88e36715b3314f2759ae6e67c\",\"dweb:/ipfs/QmPsydY2PARERVqMyJApDDT5eq1Qvo4wyAa9KYnu8PsT4c\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\n\ninterface ISavingsConfigSchema {\n    struct RuleSet {\n        bool exists;\n        uint256 minimum;\n        uint256 maximum;\n        uint256 exact;\n        bool applies;\n        RuleDefinition ruleDefinition;\n    }\n\n    enum RuleDefinition {RANGE, VALUE}\n}\n",
-  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/ISavingsConfigSchema.sol",
+  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn-savings/ISavingsConfigSchema.sol",
   "ast": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/ISavingsConfigSchema.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/ISavingsConfigSchema.sol",
     "exportedSymbols": {
       "ISavingsConfigSchema": [
-        9895
+        619
       ]
     },
-    "id": 9896,
+    "id": 620,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 9878,
+        "id": 602,
         "literals": [
           "solidity",
           "^",
@@ -28,7 +28,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:21"
+        "src": "0:23:6"
       },
       {
         "abstract": false,
@@ -37,26 +37,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 9895,
+        "id": 619,
         "linearizedBaseContracts": [
-          9895
+          619
         ],
         "name": "ISavingsConfigSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "ISavingsConfigSchema.RuleSet",
-            "id": 9891,
+            "id": 615,
             "members": [
               {
                 "constant": false,
-                "id": 9880,
+                "id": 604,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "87:11:21",
+                "scope": 615,
+                "src": "87:11:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -64,10 +64,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 9879,
+                  "id": 603,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "87:4:21",
+                  "src": "87:4:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -78,13 +78,13 @@
               },
               {
                 "constant": false,
-                "id": 9882,
+                "id": 606,
                 "mutability": "mutable",
                 "name": "minimum",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "108:15:21",
+                "scope": 615,
+                "src": "108:15:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -92,10 +92,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9881,
+                  "id": 605,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "108:7:21",
+                  "src": "108:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -106,13 +106,13 @@
               },
               {
                 "constant": false,
-                "id": 9884,
+                "id": 608,
                 "mutability": "mutable",
                 "name": "maximum",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "133:15:21",
+                "scope": 615,
+                "src": "133:15:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -120,10 +120,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9883,
+                  "id": 607,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "133:7:21",
+                  "src": "133:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -134,13 +134,13 @@
               },
               {
                 "constant": false,
-                "id": 9886,
+                "id": 610,
                 "mutability": "mutable",
                 "name": "exact",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "158:13:21",
+                "scope": 615,
+                "src": "158:13:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -148,10 +148,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9885,
+                  "id": 609,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "158:7:21",
+                  "src": "158:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -162,13 +162,13 @@
               },
               {
                 "constant": false,
-                "id": 9888,
+                "id": 612,
                 "mutability": "mutable",
                 "name": "applies",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "181:12:21",
+                "scope": 615,
+                "src": "181:12:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -176,10 +176,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 9887,
+                  "id": 611,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "181:4:21",
+                  "src": "181:4:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -190,28 +190,28 @@
               },
               {
                 "constant": false,
-                "id": 9890,
+                "id": 614,
                 "mutability": "mutable",
                 "name": "ruleDefinition",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "203:29:21",
+                "scope": 615,
+                "src": "203:29:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_RuleDefinition_$9894",
+                  "typeIdentifier": "t_enum$_RuleDefinition_$618",
                   "typeString": "enum ISavingsConfigSchema.RuleDefinition"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 9889,
+                  "id": 613,
                   "name": "RuleDefinition",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 9894,
-                  "src": "203:14:21",
+                  "referencedDeclaration": 618,
+                  "src": "203:14:6",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_RuleDefinition_$9894",
+                    "typeIdentifier": "t_enum$_RuleDefinition_$618",
                     "typeString": "enum ISavingsConfigSchema.RuleDefinition"
                   }
                 },
@@ -221,50 +221,50 @@
             ],
             "name": "RuleSet",
             "nodeType": "StructDefinition",
-            "scope": 9895,
-            "src": "62:177:21",
+            "scope": 619,
+            "src": "62:177:6",
             "visibility": "public"
           },
           {
             "canonicalName": "ISavingsConfigSchema.RuleDefinition",
-            "id": 9894,
+            "id": 618,
             "members": [
               {
-                "id": 9892,
+                "id": 616,
                 "name": "RANGE",
                 "nodeType": "EnumValue",
-                "src": "266:5:21"
+                "src": "266:5:6"
               },
               {
-                "id": 9893,
+                "id": 617,
                 "name": "VALUE",
                 "nodeType": "EnumValue",
-                "src": "273:5:21"
+                "src": "273:5:6"
               }
             ],
             "name": "RuleDefinition",
             "nodeType": "EnumDefinition",
-            "src": "245:34:21"
+            "src": "245:34:6"
           }
         ],
-        "scope": 9896,
-        "src": "25:256:21"
+        "scope": 620,
+        "src": "25:256:6"
       }
     ],
-    "src": "0:282:21"
+    "src": "0:282:6"
   },
   "legacyAST": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/ISavingsConfigSchema.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/ISavingsConfigSchema.sol",
     "exportedSymbols": {
       "ISavingsConfigSchema": [
-        9895
+        619
       ]
     },
-    "id": 9896,
+    "id": 620,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 9878,
+        "id": 602,
         "literals": [
           "solidity",
           "^",
@@ -272,7 +272,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:21"
+        "src": "0:23:6"
       },
       {
         "abstract": false,
@@ -281,26 +281,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 9895,
+        "id": 619,
         "linearizedBaseContracts": [
-          9895
+          619
         ],
         "name": "ISavingsConfigSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "ISavingsConfigSchema.RuleSet",
-            "id": 9891,
+            "id": 615,
             "members": [
               {
                 "constant": false,
-                "id": 9880,
+                "id": 604,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "87:11:21",
+                "scope": 615,
+                "src": "87:11:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -308,10 +308,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 9879,
+                  "id": 603,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "87:4:21",
+                  "src": "87:4:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -322,13 +322,13 @@
               },
               {
                 "constant": false,
-                "id": 9882,
+                "id": 606,
                 "mutability": "mutable",
                 "name": "minimum",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "108:15:21",
+                "scope": 615,
+                "src": "108:15:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -336,10 +336,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9881,
+                  "id": 605,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "108:7:21",
+                  "src": "108:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -350,13 +350,13 @@
               },
               {
                 "constant": false,
-                "id": 9884,
+                "id": 608,
                 "mutability": "mutable",
                 "name": "maximum",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "133:15:21",
+                "scope": 615,
+                "src": "133:15:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -364,10 +364,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9883,
+                  "id": 607,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "133:7:21",
+                  "src": "133:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -378,13 +378,13 @@
               },
               {
                 "constant": false,
-                "id": 9886,
+                "id": 610,
                 "mutability": "mutable",
                 "name": "exact",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "158:13:21",
+                "scope": 615,
+                "src": "158:13:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -392,10 +392,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 9885,
+                  "id": 609,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "158:7:21",
+                  "src": "158:7:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -406,13 +406,13 @@
               },
               {
                 "constant": false,
-                "id": 9888,
+                "id": 612,
                 "mutability": "mutable",
                 "name": "applies",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "181:12:21",
+                "scope": 615,
+                "src": "181:12:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -420,10 +420,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 9887,
+                  "id": 611,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "181:4:21",
+                  "src": "181:4:6",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -434,28 +434,28 @@
               },
               {
                 "constant": false,
-                "id": 9890,
+                "id": 614,
                 "mutability": "mutable",
                 "name": "ruleDefinition",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 9891,
-                "src": "203:29:21",
+                "scope": 615,
+                "src": "203:29:6",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
-                  "typeIdentifier": "t_enum$_RuleDefinition_$9894",
+                  "typeIdentifier": "t_enum$_RuleDefinition_$618",
                   "typeString": "enum ISavingsConfigSchema.RuleDefinition"
                 },
                 "typeName": {
                   "contractScope": null,
-                  "id": 9889,
+                  "id": 613,
                   "name": "RuleDefinition",
                   "nodeType": "UserDefinedTypeName",
-                  "referencedDeclaration": 9894,
-                  "src": "203:14:21",
+                  "referencedDeclaration": 618,
+                  "src": "203:14:6",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_enum$_RuleDefinition_$9894",
+                    "typeIdentifier": "t_enum$_RuleDefinition_$618",
                     "typeString": "enum ISavingsConfigSchema.RuleDefinition"
                   }
                 },
@@ -465,37 +465,37 @@
             ],
             "name": "RuleSet",
             "nodeType": "StructDefinition",
-            "scope": 9895,
-            "src": "62:177:21",
+            "scope": 619,
+            "src": "62:177:6",
             "visibility": "public"
           },
           {
             "canonicalName": "ISavingsConfigSchema.RuleDefinition",
-            "id": 9894,
+            "id": 618,
             "members": [
               {
-                "id": 9892,
+                "id": 616,
                 "name": "RANGE",
                 "nodeType": "EnumValue",
-                "src": "266:5:21"
+                "src": "266:5:6"
               },
               {
-                "id": 9893,
+                "id": 617,
                 "name": "VALUE",
                 "nodeType": "EnumValue",
-                "src": "273:5:21"
+                "src": "273:5:6"
               }
             ],
             "name": "RuleDefinition",
             "nodeType": "EnumDefinition",
-            "src": "245:34:21"
+            "src": "245:34:6"
           }
         ],
-        "scope": 9896,
-        "src": "25:256:21"
+        "scope": 620,
+        "src": "25:256:6"
       }
     ],
-    "src": "0:282:21"
+    "src": "0:282:6"
   },
   "compiler": {
     "name": "solc",
@@ -503,7 +503,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-27T19:23:53.565Z",
+  "updatedAt": "2020-10-28T20:11:57.147Z",
   "devdoc": {
     "methods": {}
   },

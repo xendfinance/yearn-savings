@@ -279,7 +279,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -329,7 +330,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -392,7 +394,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -411,7 +414,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -430,7 +434,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -449,7 +454,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -468,7 +474,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -487,7 +494,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -506,7 +514,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -525,7 +534,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -569,7 +579,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -643,7 +654,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -697,7 +709,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -780,7 +793,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -819,7 +833,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -91959,9 +91974,228 @@
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {
+        "0xf96edfc25affd2688d73aadf915306e068d058da76d34014ee2a20ec51c3db6b": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "cycleId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "maximumSlots",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "bool",
+              "name": "hasMaximumSlots",
+              "type": "bool"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "stakeAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "expectedCycleStartTimeStamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "cycleDuration",
+              "type": "uint256"
+            }
+          ],
+          "name": "CycleCreated",
+          "type": "event"
+        },
+        "0xe887e888ebc2708eec778295ebb2b590f4befddcdb123d575b0efd4c78f28dfa": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "cycleId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "blockTimeStamp",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "blockNumber",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalDerivativeAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "totalUnderlyingAmount",
+              "type": "uint256"
+            }
+          ],
+          "name": "CycleStartedEvent",
+          "type": "event"
+        },
+        "0x9666952144a70d28b8d3b8782b5f9f8808d718e1608c7358491f4d4a0b1aea79": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "cycleId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address payable",
+              "name": "memberAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "underlyingAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "DerivativeAssetWithdrawn",
+          "type": "event"
+        },
+        "0x6958b51b54d963fa8eeeea5b61b83a9ad28f9ee9d5a2f1b8495e6866cb534bb1": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "groupId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address payable",
+              "name": "groupCreator",
+              "type": "address"
+            }
+          ],
+          "name": "GroupCreated",
+          "type": "event"
+        },
+        "0x73c61e3d5495248b5207cdd6c573ae2a3329308bff6ee898880fc5c7a8052137": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "cycleId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address payable",
+              "name": "memberAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "groupId",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemberJoinedCycle",
+          "type": "event"
+        },
+        "0x5196901f8282c65403cbc45564c1af0364bfd00ab36b7a1f2cb0d4790c8c6b1c": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": false,
+              "internalType": "address payable",
+              "name": "memberAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "groupId",
+              "type": "uint256"
+            }
+          ],
+          "name": "MemberJoinedGroup",
+          "type": "event"
+        },
+        "0x73014dadeb0d9bbfd9194b642967fb7b82f3d73d8f0824c97a8675e0268735c9": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "uint256",
+              "name": "cycleId",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address payable",
+              "name": "memberAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "groupId",
+              "type": "uint256"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "underlyingAmount",
+              "type": "uint256"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenAddress",
+              "type": "address"
+            }
+          ],
+          "name": "UnderlyingAssetDeposited",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x52E45791F5357287b3864C0DD392dC0e60D38203",
+      "transactionHash": "0x619bbdb06e583fff1f14957928164ab9919573b6eaca2d72ed70889abd53be8d"
+    }
+  },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-27T19:44:53.360Z",
+  "updatedAt": "2020-10-28T20:26:14.619Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
