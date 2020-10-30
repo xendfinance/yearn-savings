@@ -1,7 +1,7 @@
 const { assert } = require("console");
 
 const Web3 = require('web3');
-
+const utils = require("./helpers/Utils")
 const web3 = new Web3("HTTP://127.0.0.1:8545");
 
 const GroupsContract = artifacts.require("Groups");
@@ -109,11 +109,11 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
     );
   });
 
-  it("Should deploy the XendFinanceIndividual_Yearn_V1 smart contracts", async () => {
+  xit("Should deploy the XendFinanceIndividual_Yearn_V1 smart contracts", async () => {
     assert(contractInstance.address !== "");
   });
 
-  it("should join a cycle", async () => {
+  xit("should join a cycle", async () => {
 
 
     let treasury = await TreasuryContract.new();
@@ -182,7 +182,8 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
     assert(joinCycleResult.logs[0].logIndex === 1);
   });
 
-  xit("should withdraw from cycle while it's ongoing", async () => {
+
+  xit("should activate a cycle ", async () => {
 
     let treasury = await TreasuryContract.new();
 
@@ -247,88 +248,109 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
 
     await instance.joinCycle(1, 2, {from: accounts[0]});
 
-    const withdrawFromCycleWhileItIsOngoingResult = await instance.withdrawFromCycleWhileItIsOngoing(1, {from : accounts[0]});
+    await utils.shouldThrow(instance.activateCycle(1, {from: accounts[0]}));
 
-    assert(withdrawFromCycleWhileItIsOngoingResult.receipt.status == true)
-  })
+  });
 
-
-  it("should activate a cycle ", async () => {
-
+  it("should withdraw from a cycle while it's ongoing", async () => {
     let treasury = await TreasuryContract.new();
 
-  let cycles = await CyclesContract.new();
-
-  let savingsConfig =  await SavingsConfigContract.new();
-
-  let groups = await GroupsContract.new();
-
-  let esusuService = await EsusuServiceContract.new();
-
-  let rewardConfig = await RewardConfigContract.new(
-    esusuService.address,
-    groups.address
-  );
-
-  let xendToken = await xendTokenContract.new("Xend Token", "XTK", 18, 2000000);
-
-  let yXend = await yxendTokenContract.new("YXend Token", "YXTK", 18, 2000000);
-
-  let yyxend = await yyxendTokenContract.new("YYXend Token", "YYXTK", 18, 2000000)
-
-  let daiLendingService = await DaiLendingServiceContract.new();
-
-  let daiLendingAdapter = await DaiLendingAdapterContract.new(daiLendingService.address);
-
-   const instance = await XendFinanceGroup_Yearn_V1.new(
-      daiLendingAdapter.address,
-      daiLendingService.address,
-      DaiContractAddress,
-      groups.address,
-      cycles.address,
-      treasury.address,
-      savingsConfig.address,
-      rewardConfig.address,
-      xendToken.address,
-      yXend.address
-
+    let cycles = await CyclesContract.new();
+  
+    let savingsConfig =  await SavingsConfigContract.new();
+  
+    let groups = await GroupsContract.new();
+  
+    let esusuService = await EsusuServiceContract.new();
+  
+    let rewardConfig = await RewardConfigContract.new(
+      esusuService.address,
+      groups.address
     );
+  
+    let xendToken = await xendTokenContract.new("Xend Token", "XTK", 18, 2000000);
+  
+    let yXend = await yxendTokenContract.new("YXend Token", "YXTK", 18, 2000000);
+  
+    let yyxend = await yyxendTokenContract.new("YYXend Token", "YYXTK", 18, 2000000)
+  
+    let daiLendingService = await DaiLendingServiceContract.new();
+  
+    let daiLendingAdapter = await DaiLendingAdapterContract.new(daiLendingService.address);
+  
+     const instance = await XendFinanceGroup_Yearn_V1.new(
+        daiLendingAdapter.address,
+        daiLendingService.address,
+        DaiContractAddress,
+        groups.address,
+        cycles.address,
+        treasury.address,
+        savingsConfig.address,
+        rewardConfig.address,
+        xendToken.address,
+        yXend.address
+  
+      );
+  
+      await groups.activateStorageOracle(instance.address);
+  
+      await cycles.activateStorageOracle(instance.address);
+  
+      await instance.createGroup("njokuAkawo", "N9");
+      
+      let startTimeStamp = 4 * 86400;
+  
+      let duration = 100 * 86400;
+  
+      let amountToApprove = BigInt(100000000000000000000000);
+  
+      let amountToSend = BigInt(100000000000000000000000);
+  
+      await sendDai(amountToSend, accounts[0]);
+  
+     const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
+  
+     console.log(approveResult)
+      
+      await instance.createCycle(1, startTimeStamp, duration, 10, true, 100);
 
-    await groups.activateStorageOracle(instance.address);
+      //should throw error cause cycle member does not exist
+       await utils.shouldThrow(instance.getCycleMember(1));
 
-    await cycles.activateStorageOracle(instance.address)
+      await cycles.activateStorageOracle(accounts[3], {from : accounts[0]});
 
-    await instance.createGroup("njokuAkawo", "N9");
-    
-    let startTimeStamp = 4 * 86400;
+      let numberOfCycleStakes = 3;
 
-    let duration = 100 * 86400;
+      await cycles.createCycleMember(1, 1, accounts[1], 0, numberOfCycleStakes, 0, false, {from : accounts[3]});
 
-    let amountToApprove = BigInt(100000000000000000000000);
+      let stakesClaimedBeforeMaturity = numberOfCycleStakes;
+      
+      //increase cycle stake
+      const result = await cycles.updateCycle(1, 0, startTimeStamp, duration, 10, true, 100, 0, 0, 0, stakesClaimedBeforeMaturity, {from: accounts[3]});
 
-    let amountToSend = BigInt(100000000000000000000000);
+      assert(result.receipt.status == true, "tx reciept is true");
 
-    await sendDai(amountToSend, accounts[0]);
+      // increase derivative balance
+      let totalDerivativeBalance = 1000;
 
-   const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
+      let numberOfStakes = 10;
 
-   console.log(approveResult)
-    
-    await instance.createCycle(1, startTimeStamp, duration, 10, true, 100)
+      let numberOfDepositorStakes = 3;
 
-    await instance.joinCycle(1, 2, {from: accounts[0]});
+      let derivativeBalanceClaimedBeforeMaturity = (totalDerivativeBalance / numberOfStakes ) * numberOfDepositorStakes;
 
-    const activateCycleResult = await instance.activateCycle(1, {from: accounts[0]});
+      const updateCycleFinancialsResultA = await cycles.updateCycleFinancials(1, 0, 0, 0, totalDerivativeBalance, 0, derivativeBalanceClaimedBeforeMaturity, {from : accounts[3]});
 
-    assert(activateCycleResult.receipt.status == true, 'tx receipt status is true');
+      assert(updateCycleFinancialsResultA.receipt.status == true, 'tx receipt status is true')
+      
+      // increase underlying total withdrawn
+      let underlyingBalance = totalDerivativeBalance;
 
-    const getSecondsLeftForCycleToStartResult = await instance.getSecondsLeftForCycleToStart(1);
+      let underlyingTotalWithdrawn = underlyingBalance;
 
-    const getSecondsLeftForCycleToEndResult = await instance.getSecondsLeftForCycleToEnd(1);
+      const updateCycleFinancialsResultB = await cycles.updateCycleFinancials(1, 0, underlyingTotalWithdrawn, underlyingBalance, totalDerivativeBalance, 0, derivativeBalanceClaimedBeforeMaturity, {from : accounts[3]});
 
-    assert(getSecondsLeftForCycleToEndResult.typeOf == Number)
-
-    assert(getSecondsLeftForCycleToStartResult.typeOf === Number)
+      assert(updateCycleFinancialsResultB.receipt.status == true, 'tx receipt status is true')
   })
 
 });
