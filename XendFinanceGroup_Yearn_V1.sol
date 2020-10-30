@@ -90,6 +90,9 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
 
+    string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
+    string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
+
     bool isDeprecated = false;
 
     modifier onlyNonDeprecatedCalls() {
@@ -936,7 +939,16 @@ contract XendFinanceGroup_Yearn_V1 is
             underlyingAmountThatMemberDepositIsWorth
         );
 
-        underlyingAmountThatMemberDepositIsWorth -= amountToChargeAsPenalites;
+        //deduct xend finance fees
+        uint256 amountToChargeAsFees = _computeXendFinanceCommisions(
+            underlyingAmountThatMemberDepositIsWorth
+        );
+
+        uint256 totalDeductible = amountToChargeAsPenalites.add(
+            amountToChargeAsFees
+        );
+
+        underlyingAmountThatMemberDepositIsWorth -= totalDeductible;
 
 
             WithdrawalResolution memory withdrawalResolution
@@ -945,8 +957,9 @@ contract XendFinanceGroup_Yearn_V1 is
             underlyingAmountThatMemberDepositIsWorth
         );
 
-        withdrawalResolution
-            .amountToSendToTreasury += amountToChargeAsPenalites;
+        withdrawalResolution.amountToSendToTreasury = withdrawalResolution
+            .amountToSendToTreasury
+            .add(totalDeductible);
 
         if (withdrawalResolution.amountToSendToTreasury > 0) {
             daiToken.approve(
@@ -958,7 +971,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
         require(
             withdrawalResolution.amountToSendToMember > 0,
-            "After deducting early withdrawal penalties, there's nothing left for you"
+            "After deducting early withdrawal penalties and fees, there's nothing left for you"
         );
         if (withdrawalResolution.amountToSendToMember > 0) {
             daiToken.transfer(
@@ -1106,12 +1119,24 @@ contract XendFinanceGroup_Yearn_V1 is
             cycle.cycleStakeAmount
         );
 
+        //deduct xend finance fees
+        uint256 amountToChargeAsFees = _computeXendFinanceCommisions(
+            underlyingAmountThatMemberDepositIsWorth
+        );
+
+        underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
+            .sub(amountToChargeAsFees);
+
 
             WithdrawalResolution memory withdrawalResolution
          = _computeAmountToSendToParties(
             initialUnderlyingDepositByMember,
             underlyingAmountThatMemberDepositIsWorth
         );
+
+        withdrawalResolution.amountToSendToTreasury = withdrawalResolution
+            .amountToSendToTreasury
+            .add(amountToChargeAsFees);
 
         if (withdrawalResolution.amountToSendToTreasury > 0) {
             daiToken.approve(
@@ -1208,6 +1233,63 @@ contract XendFinanceGroup_Yearn_V1 is
             .mul(exact)
             .div(100);
         return amountToChargeAsPenalites;
+    }
+
+    function _computeXendFinanceCommisions(uint256 worthOfMemberDepositNow)
+        internal
+        returns (uint256)
+    {
+        uint256 dividend = _getDividend();
+        uint256 divisor = _getDivisor();
+
+        require(
+            worthOfMemberDepositNow > 0,
+            "member deposit really isn't worth much"
+        );
+
+        return worthOfMemberDepositNow.mul(dividend).div(divisor).div(100);
+    }
+
+    function _getDivisor() internal returns (uint256) {
+        (
+            uint256 minimumDivisor,
+            uint256 maximumDivisor,
+            uint256 exactDivisor,
+            bool appliesDivisor,
+            RuleDefinition ruleDefinitionDivisor
+        ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
+
+        require(
+            appliesDivisor == true,
+            "unsupported rule defintion for rule set"
+        );
+
+        require(
+            ruleDefinitionDivisor == RuleDefinition.VALUE,
+            "unsupported rule defintion for penalty percentage rule set"
+        );
+        return exactDivisor;
+    }
+
+    function _getDividend() internal returns (uint256) {
+        (
+            uint256 minimumDividend,
+            uint256 maximumDividend,
+            uint256 exactDividend,
+            bool appliesDividend,
+            RuleDefinition ruleDefinitionDividend
+        ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
+
+        require(
+            appliesDividend == true,
+            "unsupported rule defintion for rule set"
+        );
+
+        require(
+            ruleDefinitionDividend == RuleDefinition.VALUE,
+            "unsupported rule defintion for penalty percentage rule set"
+        );
+        return exactDividend;
     }
 
     //Determines how much we send to the treasury and how much we send to the member

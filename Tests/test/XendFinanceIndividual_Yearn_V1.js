@@ -88,6 +88,8 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
 
   let groups = await GroupsContract.deployed();
 
+  let treasury = await TreasuryContract.deployed();
+
   let esusuService = await EsusuServiceContract.deployed();
 
   let rewardConfig = await RewardConfigContract.deployed(
@@ -108,8 +110,9 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
       daiLendingService.address,
       xendToken.address,
       clientRecord.address,
-      rewardConfig.address,
-      yXend.address
+      savingsConfig.address,
+      yXend.address,
+      treasury.address
     );
   });
 
@@ -138,6 +141,8 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
 
   let esusuService = await EsusuServiceContract.deployed();
 
+  let treasury = await TreasuryContract.deployed();
+
   let rewardConfig = await RewardConfigContract.deployed(
     esusuService.address,
     groups.address
@@ -156,8 +161,9 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
       daiLendingService.address,
       xendToken.address,
       clientRecord.address,
-      rewardConfig.address,
-      yXend.address
+      savingsConfig.address,
+      yXend.address,
+      treasury.address
     );
 
     console.log(instance.address);
@@ -175,7 +181,68 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
 
   assert(getClientRecordByIndexResult.receipt.status == true, "tx reciept status is true");
 
+
+
    });
+
+   it("should deposit and withdraw", async () => {
+
+    let clientRecord = await ClientRecordContract.deployed();
+
+    let savingsConfig =  await SavingsConfigContract.deployed();
+  
+    let groups = await GroupsContract.deployed();
+  
+    let esusuService = await EsusuServiceContract.deployed();
+  
+    let treasury = await TreasuryContract.deployed();
+  
+    let rewardConfig = await RewardConfigContract.deployed(
+      esusuService.address,
+      groups.address
+    );
+  
+    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
+  
+    let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
+  
+    let daiLendingService = await DaiLendingServiceContract.deployed();
+  
+    let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
+  
+      const instance = await XendFinanceIndividual_Yearn_V1.new(
+        daiLendingAdapter.address,
+        daiLendingService.address,
+        xendToken.address,
+        clientRecord.address,
+        savingsConfig.address,
+        yXend.address,
+        treasury.address
+      );
+  
+       
+     let amountToApprove = BigInt(100000000000000000000000);
+  
+       let amountToSend = BigInt(100000000000000000000000);
+      
+        await sendDai(amountToSend, accounts[0]);
+      
+        await approveDai(instance.address, accounts[0], amountToApprove);
+
+        await clientRecord.activateStorageOracle(instance.address, {from :accounts[0]});
+
+        await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]})
+
+        const depositResult = await instance.deposit({from : accounts[0]});
+
+        assert(depositResult.receipt.status == true, "tx receipt status is true")
+
+        const withdrawResult = await instance.withdraw(10);
+
+        assert(withdrawResult.receipt.status == true, "tx receipt status is true")
+
+
+   })
 
 
 });
