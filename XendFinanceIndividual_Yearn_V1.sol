@@ -10,9 +10,15 @@ import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
 import "./Tests/contracts/XendToken/IERC20.sol";
 import "./Address.sol";
-import "./IRewardConfig.sol";
+import "./ISavingsConfig.sol";
+import "./ISavingsConfigSchema.sol";
+import "./ITreasury.sol";
 
-contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
+contract XendFinanceIndividual_Yearn_V1 is
+    Ownable,
+    IClientRecordSchema,
+    ISavingsConfigSchema
+{
     using SafeMath for uint256;
 
     using Address for address payable;
@@ -34,27 +40,37 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
     IDaiLendingService lendingService;
     IERC20 daiToken;
     IClientRecord clientRecordStorage;
-    IRewardConfig rewardConfig;
+    ISavingsConfig savingsConfig;
     IERC20 derivativeToken;
+    ITreasury treasury;
 
     bool isDeprecated = false;
 
     address LendingAdapterAddress;
+    address TreasuryAddress;
+    address TokenAddress;
+
+    string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
+    string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
 
     constructor(
         address lendingAdapterAddress,
         address lendingServiceAddress,
         address tokenAddress,
         address clientRecordStorageAddress,
-        address rewardConfigAddress,
-        address derivativeTokenAddress
+        address savingsConfigAddress,
+        address derivativeTokenAddress,
+        address treasuryAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
         LendingAdapterAddress = lendingAdapterAddress;
-        rewardConfig = IRewardConfig(rewardConfigAddress);
+        savingsConfig = ISavingsConfig(savingsConfigAddress);
         derivativeToken = IERC20(derivativeTokenAddress);
+        treasury = ITreasury(treasuryAddress);
+        TreasuryAddress = treasuryAddress;
+        TokenAddress = tokenAddress;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -231,6 +247,26 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             balanceAfterWithdraw
         );
 
+        uint256 commissionFees = _computeXendFinanceCommisions(
+            amountOfUnderlyingAssetWithdrawn
+        );
+
+        uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
+            commissionFees
+        );
+
+        bool isSuccessful = daiToken.transfer(
+            recipient,
+            amountToSendToDepositor
+        );
+
+        require(isSuccessful == true, "Could not complete withdrawal");
+
+        if (commissionFees > 0) {
+            daiToken.approve(TreasuryAddress, commissionFees);
+            treasury.depositToken(TokenAddress);
+        }
+
         ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
             recipient,
             amountOfUnderlyingAssetWithdrawn,
@@ -258,6 +294,63 @@ contract XendFinanceIndividual_Yearn_V1 is Ownable, IClientRecordSchema {
             derivativeBalance >= derivativeAmount,
             "Withdrawal cannot be processes, reason: Insufficient Balance"
         );
+    }
+
+    function _computeXendFinanceCommisions(uint256 worthOfMemberDepositNow)
+        internal
+        returns (uint256)
+    {
+        uint256 dividend = _getDividend();
+        uint256 divisor = _getDivisor();
+
+        require(
+            worthOfMemberDepositNow > 0,
+            "member deposit really isn't worth much"
+        );
+
+        return worthOfMemberDepositNow.mul(dividend).div(divisor).div(100);
+    }
+
+    function _getDivisor() internal returns (uint256) {
+        (
+            uint256 minimumDivisor,
+            uint256 maximumDivisor,
+            uint256 exactDivisor,
+            bool appliesDivisor,
+            RuleDefinition ruleDefinitionDivisor
+        ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
+
+        require(
+            appliesDivisor == true,
+            "unsupported rule defintion for rule set"
+        );
+
+        require(
+            ruleDefinitionDivisor == RuleDefinition.VALUE,
+            "unsupported rule defintion for penalty percentage rule set"
+        );
+        return exactDivisor;
+    }
+
+    function _getDividend() internal returns (uint256) {
+        (
+            uint256 minimumDividend,
+            uint256 maximumDividend,
+            uint256 exactDividend,
+            bool appliesDividend,
+            RuleDefinition ruleDefinitionDividend
+        ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
+
+        require(
+            appliesDividend == true,
+            "unsupported rule defintion for rule set"
+        );
+
+        require(
+            ruleDefinitionDividend == RuleDefinition.VALUE,
+            "unsupported rule defintion for penalty percentage rule set"
+        );
+        return exactDividend;
     }
 
     function deposit() external onlyNonDeprecatedCalls {
