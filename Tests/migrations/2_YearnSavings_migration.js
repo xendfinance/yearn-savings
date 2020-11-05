@@ -37,8 +37,6 @@ module.exports = function (deployer) {
 
     console.log("CyclesContract address", CyclesContract.address);
 
-    await deployer.deploy(ClientRecordContract);
-
     console.log("ClientRecordContract address", ClientRecordContract.address);
 
     await deployer.deploy(SavingsConfigContract);
@@ -121,8 +119,10 @@ module.exports = function (deployer) {
       yxendTokenContract.address
     );
 
+    const instance = await ClientRecordContract.new();
+
     // Activate the storage oracle in clientRecord.sol with the Address of the individual savings contract
-    await  ClientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+    await instance.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
     console.log("5->Xend finance Address Updated In client contract ...");
 
     console.log(
