@@ -121,6 +121,10 @@ module.exports = function (deployer) {
       yxendTokenContract.address
     );
 
+    // Activate the storage oracle in clientRecord.sol with the Address of the individual savings contract
+    await  ClientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+    console.log("5->Xend finance Address Updated In client contract ...");
+
     console.log(
       "Xend finance individual",
       XendFinanceIndividual_Yearn_V1Contract.address
