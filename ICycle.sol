@@ -2,6 +2,8 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface ICycles is IGroupSchema {
+    function getCyclesLength() external view returns (uint256);
+
     function getCycleInfoByIndex(uint256 index)
         external
         view
@@ -161,6 +163,11 @@ interface ICycles is IGroupSchema {
         uint256 recordIndexLocation
     ) external view returns (bool, uint256);
 
+    function getRecordIndexForGroupCycle(
+        uint256 groupId,
+        uint256 recordIndexLocation
+    ) external view returns (bool, uint256);
+
     function getRecordIndexLengthForCycleMembers(uint256 cycleId)
         external
         view
@@ -179,6 +186,8 @@ interface ICycles is IGroupSchema {
         external
         view
         returns (uint256);
+
+    function getCycleMembersLength() external view returns (uint256);
 
     function doesCycleMemberExist(uint256 cycleId, address depositor)
         external

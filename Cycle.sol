@@ -157,6 +157,10 @@ contract Cycles is IGroupSchema, StorageOwners {
         );
     }
 
+    function getCycleMembersLength() external view returns (uint256) {
+        return CycleMembers.length;
+    }
+
     function getCycleMember(uint256 index)
         external
         view
@@ -233,6 +237,10 @@ contract Cycles is IGroupSchema, StorageOwners {
         cycleMember.hasWithdrawn = hasWithdrawn;
 
         _updateCycleMember(cycleMember);
+    }
+
+    function getCyclesLength() external view returns (uint256) {
+        return Cycles.length;
     }
 
     function createCycle(
@@ -409,6 +417,16 @@ contract Cycles is IGroupSchema, StorageOwners {
         returns (uint256)
     {
         return GroupCycleIndexer[groupId].length;
+    }
+
+    function getRecordIndexForGroupCycle(
+        uint256 groupId,
+        uint256 recordIndexLocation
+    ) external view returns (bool, uint256) {
+
+            RecordIndex memory recordIndex
+         = GroupCycleIndexer[groupId][recordIndexLocation];
+        return (recordIndex.exists, recordIndex.index);
     }
 
     function getRecordIndexLengthForCycleMembersByDepositor(

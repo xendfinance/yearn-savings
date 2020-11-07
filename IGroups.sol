@@ -131,6 +131,8 @@ interface IGroups is IGroupSchema {
 
     function getGroupIndex(uint256 groupId) external view returns (uint256);
 
+    function getGroupsLength() external view returns (uint256 length);
+
     function activateStorageOracle(address oracle) external;
 
     function deactivateStorageOracle(address oracle) external;
