@@ -5,10 +5,9 @@ import "./ISavingsConfig.sol";
 import "./ITreasury.sol";
 import "./Ownable.sol";
 import "./IGroups.sol";
-import "./ICycle.sol";
+import "./ICycles.sol";
 import "./IGroupSchema.sol";
 import "./IDaiLendingService.sol";
-import "./XendToken/IERC20.sol";
 import "./Address.sol";
 import "./IRewardConfig.sol";
 import "./SafeMath.sol";
@@ -103,8 +102,6 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
 
 contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
     function _updateGroup(Group memory group) internal {
-        uint256 index = _getGroupIndex(group.id);
-
         (
             uint256 id,
             string memory name,
@@ -113,6 +110,19 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
         ) = (group.id, group.name, group.symbol, group.creatorAddress);
 
         groupStorage.updateGroup(id, name, symbol, groupCreator);
+    }
+
+    function getGroupById(uint256 _groupId)
+        external
+        view
+        returns (
+            uint256 groupId,
+            string memory name,
+            string memory symbol,
+            address payable creatorAddress
+        )
+    {
+        return groupStorage.getGroupById(_groupId);
     }
 
     function _getGroupById(uint256 _groupId)
@@ -129,6 +139,52 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
 
         Group memory group = Group(true, groupId, name, symbol, creatorAddress);
         return group;
+    }
+
+    function getGroupsCount() external view returns (uint256 length) {
+        return groupStorage.getGroupsLength();
+    }
+
+    function getGroupsByCreatorCount(address groupCreator)
+        external
+        view
+        returns (uint256 length)
+    {
+        return groupStorage.getRecordIndexLengthForCreator(groupCreator);
+    }
+
+    function getGroupsByCreator(
+        address groupCreator,
+        uint256 indexRecordPosition
+    )
+        external
+        view
+        returns (
+            uint256 groupId,
+            string memory name,
+            string memory symbol,
+            address payable creatorAddress
+        )
+    {
+        (bool exists, uint256 index) = groupStorage.getGroupForCreatorIndexer(
+            groupCreator,
+            indexRecordPosition
+        );
+        require(exists == true, "Index record location does not exist");
+        return groupStorage.getGroupByIndex(index);
+    }
+
+    function getGroupByIndex(uint256 index)
+        external
+        view
+        returns (
+            uint256 groupId,
+            string memory name,
+            string memory symbol,
+            address payable creatorAddress
+        )
+    {
+        return groupStorage.getGroupByIndex(index);
     }
 
     function _getGroupByIndex(uint256 index)
@@ -209,8 +265,8 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
         return _doesGroupExist(groupId);
     }
 
-    function doesGroupNameExist(uint256 groupName)
-        internal
+    function doesGroupNameExist(string calldata groupName)
+        external
         view
         returns (bool)
     {
@@ -301,6 +357,27 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return _getGroupById(cycle.groupId);
     }
 
+    function getCycleById(uint256 cycleId)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
+        )
+    {
+        return cycleStorage.getCycleInfoById(cycleId);
+    }
+
     function _getCycleById(uint256 cycleId)
         internal
         view
@@ -338,6 +415,27 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         );
 
         return cycleInfo;
+    }
+
+    function getCycleByIndex(uint256 index)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
+        )
+    {
+        return cycleStorage.getCycleInfoByIndex(index);
     }
 
     function _getCycleByIndex(uint256 index)
@@ -379,6 +477,68 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return cycleInfo;
     }
 
+    function getCyclesCount() external view returns (uint256 length) {
+        return cycleStorage.getCyclesLength();
+    }
+
+    function getCyclesCountForGroup(uint256 groupId)
+        external
+        view
+        returns (uint256)
+    {
+        return cycleStorage.getRecordIndexLengthForGroupCycleIndexer(groupId);
+    }
+
+    function getCycleByGroup(uint256 _groupId, uint256 indexerRecordLocation)
+        external
+        view
+        returns (
+            uint256 id,
+            uint256 groupId,
+            uint256 numberOfDepositors,
+            uint256 cycleStartTimeStamp,
+            uint256 cycleDuration,
+            uint256 maximumSlots,
+            bool hasMaximumSlots,
+            uint256 cycleStakeAmount,
+            uint256 totalStakes,
+            uint256 stakesClaimed,
+            CycleStatus cycleStatus,
+            uint256 stakesClaimedBeforeMaturity
+        )
+    {
+        uint256 index = _getIndexLocation(_groupId, indexerRecordLocation);
+        return cycleStorage.getCycleInfoByIndex(index);
+    }
+
+    function _getIndexLocation(uint256 _groupId, uint256 indexerRecordLocation)
+        internal
+        view
+        returns (uint256)
+    {
+        (bool exists, uint256 index) = cycleStorage.getRecordIndexForGroupCycle(
+            _groupId,
+            indexerRecordLocation
+        );
+        require(exists == true, "Index location record does not exist");
+        return index;
+    }
+
+    function getCycleFinancialByCycleId(uint256 cycleId)
+        external
+        view
+        returns (
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 underlyingBalance,
+            uint256 derivativeBalance,
+            uint256 underylingBalanceClaimedBeforeMaturity,
+            uint256 derivativeBalanceClaimedBeforeMaturity
+        )
+    {
+        return cycleStorage.getCycleFinancialsByCycleId(cycleId);
+    }
+
     function _getCycleFinancialByCycleId(uint256 cycleId)
         internal
         view
@@ -404,6 +564,22 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
                 underylingBalanceClaimedBeforeMaturity,
                 derivativeBalanceClaimedBeforeMaturity
             );
+    }
+
+    function getCycleFinancialByIndex(uint256 index)
+        external
+        view
+        returns (
+            uint256 cycleId,
+            uint256 underlyingTotalDeposits,
+            uint256 underlyingTotalWithdrawn,
+            uint256 underlyingBalance,
+            uint256 derivativeBalance,
+            uint256 underylingBalanceClaimedBeforeMaturity,
+            uint256 derivativeBalanceClaimedBeforeMaturity
+        )
+    {
+        return cycleStorage.getCycleFinancialsByIndex(index);
     }
 
     function _getCycleFinancialByIndex(uint256 index)
@@ -438,6 +614,43 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return cycleStorage.getCycleIndex(cycleId);
     }
 
+    function getCycleMembersCount() external view returns (uint256 length) {
+        return cycleStorage.getCycleMembersLength();
+    }
+
+    function getCycleMembersCountForCycle(uint256 cycleId)
+        external
+        view
+        returns (uint256)
+    {
+        return cycleStorage.getRecordIndexLengthForCycleMembers(cycleId);
+    }
+
+    function getCycleMemberByCycleId(
+        uint256 _cycleId,
+        uint256 indexerRecordLocation
+    )
+        external
+        view
+        returns (
+            uint256 cycleId,
+            uint256 groupId,
+            address payable _address,
+            uint256 totalLiquidityAsPenalty,
+            uint256 numberOfCycleStakes,
+            uint256 stakesClaimed,
+            bool hasWithdrawn
+        )
+    {
+        (bool exists, uint256 index) = cycleStorage
+            .getRecordIndexForCycleMembersIndexerByDepositor(
+            _cycleId,
+            indexerRecordLocation
+        );
+        require(exists == true, "Index location record does not exist");
+        return cycleStorage.getCycleMember(index);
+    }
+
     function _getCycleMemberIndex(
         uint256 cycleId,
         address payable memberAddress
@@ -447,6 +660,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
     function _getCycleMember(address payable depositor, uint256 _cycleId)
         internal
+        view
         returns (CycleMember memory)
     {
         bool cycleMemberExists = cycleStorage.doesCycleMemberExist(
@@ -475,6 +689,50 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycleMember.stakesClaimed,
             cycleMember.hasWithdrawn
         );
+    }
+
+    function getCycleMember(address payable _depositorAddress, uint256 _cycleId)
+        external
+        view
+        returns (
+            uint256 cycleId,
+            uint256 groupId,
+            address payable _address,
+            uint256 totalLiquidityAsPenalty,
+            uint256 numberOfCycleStakes,
+            uint256 stakesClaimed,
+            bool hasWithdrawn
+        )
+    {
+        CycleMember memory cycleMember = _getCycleMember(
+            _depositorAddress,
+            _cycleId
+        );
+        return (
+            cycleMember.cycleId,
+            cycleMember.groupId,
+            cycleMember._address,
+            cycleMember.totalLiquidityAsPenalty,
+            cycleMember.numberOfCycleStakes,
+            cycleMember.stakesClaimed,
+            cycleMember.hasWithdrawn
+        );
+    }
+
+    function getCycleMember(uint256 index)
+        external
+        view
+        returns (
+            uint256 cycleId,
+            uint256 groupId,
+            address payable _address,
+            uint256 totalLiquidityAsPenalty,
+            uint256 numberOfCycleStakes,
+            uint256 stakesClaimed,
+            bool hasWithdrawn
+        )
+    {
+        return cycleStorage.getCycleMember(index);
     }
 
     function _getCycleMember(uint256 index)
@@ -1457,71 +1715,6 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
-    function getCycleByIndex(uint256 index)
-        external
-        view
-        onlyNonDeprecatedCalls
-        returns (
-            uint256 id,
-            uint256 groupId,
-            uint256 numberOfDepositors,
-            uint256 cycleStartTimeStamp,
-            uint256 cycleDuration,
-            uint256 maximumSlots,
-            bool hasMaximumSlots,
-            uint256 cycleStakeAmount,
-            uint256 totalStakes,
-            uint256 stakesClaimed,
-            CycleStatus cycleStatus,
-            uint256 stakesClaimedBeforeMaturity
-        )
-    {
-        Cycle memory cycle = _getCycleByIndex(index);
-
-        return (
-            cycle.id,
-            cycle.groupId,
-            cycle.numberOfDepositors,
-            cycle.cycleStartTimeStamp,
-            cycle.cycleDuration,
-            cycle.maximumSlots,
-            cycle.hasMaximumSlots,
-            cycle.cycleStakeAmount,
-            cycle.totalStakes,
-            cycle.stakesClaimed,
-            cycle.cycleStatus,
-            cycle.stakesClaimedBeforeMaturity
-        );
-    }
-
-    function getCycleMember(uint256 index)
-        external
-        view
-        onlyNonDeprecatedCalls
-        returns (
-            bool exist,
-            uint256 cycleId,
-            uint256 groupId,
-            address payable _address,
-            uint256 totalLiquidityAsPenalty,
-            uint256 numberOfCycleStakes,
-            uint256 stakesClaimed,
-            bool hasWithdrawn
-        )
-    {
-        CycleMember memory cycleMember = _getCycleMember(index);
-        return (
-            cycleMember.exist,
-            cycleMember.cycleId,
-            cycleMember.groupId,
-            cycleMember._address,
-            cycleMember.totalLiquidityAsPenalty,
-            cycleMember.numberOfCycleStakes,
-            cycleMember.stakesClaimed,
-            cycleMember.hasWithdrawn
-        );
-    }
-
     function activateCycle(uint256 cycleId)
         external
         onlyNonDeprecatedCalls
@@ -1617,28 +1810,8 @@ contract XendFinanceGroup_Yearn_V1 is
         require(nameExist == false, "Group name has already been used");
     }
 
-    function getGroupByIndex(uint256 index)
-        external
-        view
-        onlyNonDeprecatedCalls
-        returns (
-            bool exists,
-            uint256 id,
-            string memory name,
-            string memory symbol,
-            address payable creatorAddress
-        )
-    {
-        Group memory group = _getGroupByIndex(index);
-        return (
-            group.exists,
-            group.id,
-            group.name,
-            group.symbol,
-            group.creatorAddress
-        );
-    }
-
+    /*
+    
     function getGroupById(uint256 _id)
         external
         view
@@ -1660,6 +1833,7 @@ contract XendFinanceGroup_Yearn_V1 is
             group.creatorAddress
         );
     }
+    */
 
     //
     function createCycle(

@@ -179,7 +179,6 @@ contract Groups is IGroupSchema, StorageOwners {
 
     function _doesGroupExist(uint256 groupId) internal view returns (bool) {
         bool groupExist = GroupIndexer[groupId].exists;
-
         return groupExist;
     }
 
@@ -366,6 +365,10 @@ contract Groups is IGroupSchema, StorageOwners {
         )
     {
         return _getGroupByIndex(index);
+    }
+
+    function getGroupsLength() external view returns (uint256 length) {
+        return Groups.length;
     }
 
     function _getGroupByIndex(uint256 index)

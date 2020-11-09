@@ -653,6 +653,19 @@
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getGroupsLength",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "length",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address",
@@ -692,22 +705,22 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"activateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"}],\"name\":\"createGroup\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"createGroupMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"createMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"deactivateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"decrementEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"decrementTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"doesGroupExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"doesGroupExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesGroupMemberExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesMemberExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupById\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getGroupByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupForCreatorIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"getGroupIndexerByName\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getGroupMember\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getGroupMembersDeepIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupMembersIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupMembersIndexerByDepositor\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLengthOfTokenAddressesUsedInDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"getMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"}],\"name\":\"getRecordIndexLengthForCreator\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexLengthForGroupMembersIndexer\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getRecordIndexLengthForGroupMembersIndexerByDepositor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"incrementEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"incrementTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"reAssignStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"creatorAddress0\",\"type\":\"address\"}],\"name\":\"updateGroup\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol\":\"IGroups\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroupSchema.sol\":{\"keccak256\":\"0x6a181fbc3fbf7b38adbb19dea1576bec36fbd48f12e195570554387b942bea9c\",\"urls\":[\"bzz-raw://888c9d70ae45cfc721dc10abd589a36926c252d000bc79230f8aa286851a1e3a\",\"dweb:/ipfs/QmaD6LBAu1JKowSpsYMWPiupfErwVx9p67f22EnbisZ5wK\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol\":{\"keccak256\":\"0x75e7fbca5fa6f7a393da1330f965891661a1346c2c1adf5d6f21765abb7d7a08\",\"urls\":[\"bzz-raw://5c020b664a9197ca3d6a26b63a3f1395dee8310bd432e25d213fdb1e74973789\",\"dweb:/ipfs/QmRkPFZGR3h3MCTzC5ExzDuCtL8JYdKUeHqseYBM92AvQM\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"activateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"},{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"}],\"name\":\"createGroup\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"createGroupMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"createMember\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"deactivateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"decrementEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"decrementTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"doesGroupExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"doesGroupExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesGroupMemberExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesMemberExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupById\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getGroupByIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupForCreatorIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getGroupIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"string\",\"name\":\"groupName\",\"type\":\"string\"}],\"name\":\"getGroupIndexerByName\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getGroupMember\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getGroupMembersDeepIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupMembersIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"indexerLocation\",\"type\":\"uint256\"}],\"name\":\"getGroupMembersIndexerByDepositor\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exist\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getGroupsLength\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"length\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLengthOfTokenAddressesUsedInDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"_address\",\"type\":\"address\"}],\"name\":\"getMember\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"groupCreator\",\"type\":\"address\"}],\"name\":\"getRecordIndexLengthForCreator\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"groupId\",\"type\":\"uint256\"}],\"name\":\"getRecordIndexLengthForGroupMembersIndexer\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getRecordIndexLengthForGroupMembersIndexerByDepositor\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"}],\"name\":\"getTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"incrementEtherDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"tokenAddress\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"amount\",\"type\":\"uint256\"}],\"name\":\"incrementTokenDeposit\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"reAssignStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"id\",\"type\":\"uint256\"},{\"internalType\":\"string\",\"name\":\"name\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"symbol\",\"type\":\"string\"},{\"internalType\":\"address payable\",\"name\":\"creatorAddress0\",\"type\":\"address\"}],\"name\":\"updateGroup\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol\":\"IGroups\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroupSchema.sol\":{\"keccak256\":\"0x6a181fbc3fbf7b38adbb19dea1576bec36fbd48f12e195570554387b942bea9c\",\"urls\":[\"bzz-raw://888c9d70ae45cfc721dc10abd589a36926c252d000bc79230f8aa286851a1e3a\",\"dweb:/ipfs/QmaD6LBAu1JKowSpsYMWPiupfErwVx9p67f22EnbisZ5wK\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol\":{\"keccak256\":\"0x8d36c6caa0016b98938d49e6fdafad54dc8ac2ae640cc57a7f491f92af474dca\",\"urls\":[\"bzz-raw://dd6f9d0ef754f98c4d73dacc8f82e577a5e1c65f5e947672f14b6b70cb6c7bd8\",\"dweb:/ipfs/QmNyrcTmaFsYxWLLk4X4eRMM5i2jpBFV367E51xcRizAbq\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.6;\nimport \"./IGroupSchema.sol\";\n\ninterface IGroups is IGroupSchema {\n    function getLengthOfTokenAddressesUsedInDeposit()\n        external\n        view\n        returns (uint256);\n\n    function incrementTokenDeposit(address tokenAddress, uint256 amount)\n        external\n        returns (uint256);\n\n    function decrementTokenDeposit(address tokenAddress, uint256 amount)\n        external\n        returns (uint256);\n\n    function getTokenDeposit(address tokenAddress)\n        external\n        view\n        returns (uint256);\n\n    function incrementEtherDeposit(uint256 amount) external returns (uint256);\n\n    function decrementEtherDeposit(uint256 amount) external returns (uint256);\n\n    function getEtherDeposit() external view returns (uint256);\n\n    function createMember(address payable depositor) external;\n\n    function getMember(address _address) external view returns (address);\n\n    function createGroup(\n        string calldata name,\n        string calldata symbol,\n        address groupCreator\n    ) external returns (uint256);\n\n    function updateGroup(\n        uint256 id,\n        string calldata name,\n        string calldata symbol,\n        address payable creatorAddress0\n    ) external;\n\n    function doesGroupExist(uint256 groupId) external view returns (bool);\n\n    function doesGroupExist(string calldata groupName)\n        external\n        view\n        returns (bool);\n\n    function doesMemberExist(address depositor) external view returns (bool);\n\n    function createGroupMember(uint256 groupId, address payable depositor)\n        external;\n\n    function getGroupMember(uint256 index)\n        external\n        view\n        returns (address payable _address, uint256 groupId);\n\n    function getGroupMembersDeepIndexer(uint256 groupId, address depositor)\n        external\n        view\n        returns (bool exists, uint256 index);\n\n    function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)\n        external\n        view\n        returns (uint256);\n\n    function getRecordIndexLengthForGroupMembersIndexerByDepositor(\n        address depositor\n    ) external view returns (uint256);\n\n    function getGroupMembersIndexer(uint256 groupId, uint256 indexerLocation)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getGroupMembersIndexerByDepositor(\n        address depositor,\n        uint256 indexerLocation\n    ) external view returns (bool exist, uint256 index);\n\n    function doesGroupMemberExist(uint256 groupId, address depositor)\n        external\n        view\n        returns (bool);\n\n    function getGroupIndexer(uint256 groupId)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getRecordIndexLengthForCreator(address groupCreator)\n        external\n        view\n        returns (uint256);\n\n    function getGroupForCreatorIndexer(\n        address groupCreator,\n        uint256 indexerLocation\n    ) external view returns (bool exist, uint256 index);\n\n    function getGroupIndexerByName(string calldata groupName)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getGroupById(uint256 groupId)\n        external\n        view\n        returns (\n            uint256,\n            string memory,\n            string memory,\n            address payable\n        );\n\n    function getGroupByIndex(uint256 index)\n        external\n        view\n        returns (\n            uint256,\n            string memory,\n            string memory,\n            address payable\n        );\n\n    function getGroupIndex(uint256 groupId) external view returns (uint256);\n\n    function activateStorageOracle(address oracle) external;\n\n    function deactivateStorageOracle(address oracle) external;\n\n    function reAssignStorageOracle(address newOracle) external;\n}\n",
+  "source": "pragma solidity ^0.6.6;\nimport \"./IGroupSchema.sol\";\n\ninterface IGroups is IGroupSchema {\n    function getLengthOfTokenAddressesUsedInDeposit()\n        external\n        view\n        returns (uint256);\n\n    function incrementTokenDeposit(address tokenAddress, uint256 amount)\n        external\n        returns (uint256);\n\n    function decrementTokenDeposit(address tokenAddress, uint256 amount)\n        external\n        returns (uint256);\n\n    function getTokenDeposit(address tokenAddress)\n        external\n        view\n        returns (uint256);\n\n    function incrementEtherDeposit(uint256 amount) external returns (uint256);\n\n    function decrementEtherDeposit(uint256 amount) external returns (uint256);\n\n    function getEtherDeposit() external view returns (uint256);\n\n    function createMember(address payable depositor) external;\n\n    function getMember(address _address) external view returns (address);\n\n    function createGroup(\n        string calldata name,\n        string calldata symbol,\n        address groupCreator\n    ) external returns (uint256);\n\n    function updateGroup(\n        uint256 id,\n        string calldata name,\n        string calldata symbol,\n        address payable creatorAddress0\n    ) external;\n\n    function doesGroupExist(uint256 groupId) external view returns (bool);\n\n    function doesGroupExist(string calldata groupName)\n        external\n        view\n        returns (bool);\n\n    function doesMemberExist(address depositor) external view returns (bool);\n\n    function createGroupMember(uint256 groupId, address payable depositor)\n        external;\n\n    function getGroupMember(uint256 index)\n        external\n        view\n        returns (address payable _address, uint256 groupId);\n\n    function getGroupMembersDeepIndexer(uint256 groupId, address depositor)\n        external\n        view\n        returns (bool exists, uint256 index);\n\n    function getRecordIndexLengthForGroupMembersIndexer(uint256 groupId)\n        external\n        view\n        returns (uint256);\n\n    function getRecordIndexLengthForGroupMembersIndexerByDepositor(\n        address depositor\n    ) external view returns (uint256);\n\n    function getGroupMembersIndexer(uint256 groupId, uint256 indexerLocation)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getGroupMembersIndexerByDepositor(\n        address depositor,\n        uint256 indexerLocation\n    ) external view returns (bool exist, uint256 index);\n\n    function doesGroupMemberExist(uint256 groupId, address depositor)\n        external\n        view\n        returns (bool);\n\n    function getGroupIndexer(uint256 groupId)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getRecordIndexLengthForCreator(address groupCreator)\n        external\n        view\n        returns (uint256);\n\n    function getGroupForCreatorIndexer(\n        address groupCreator,\n        uint256 indexerLocation\n    ) external view returns (bool exist, uint256 index);\n\n    function getGroupIndexerByName(string calldata groupName)\n        external\n        view\n        returns (bool exist, uint256 index);\n\n    function getGroupById(uint256 groupId)\n        external\n        view\n        returns (\n            uint256,\n            string memory,\n            string memory,\n            address payable\n        );\n\n    function getGroupByIndex(uint256 index)\n        external\n        view\n        returns (\n            uint256,\n            string memory,\n            string memory,\n            address payable\n        );\n\n    function getGroupIndex(uint256 groupId) external view returns (uint256);\n\n    function getGroupsLength() external view returns (uint256 length);\n\n    function activateStorageOracle(address oracle) external;\n\n    function deactivateStorageOracle(address oracle) external;\n\n    function reAssignStorageOracle(address newOracle) external;\n}",
   "sourcePath": "/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol",
   "ast": {
     "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol",
     "exportedSymbols": {
       "IGroups": [
-        499
+        504
       ]
     },
-    "id": 500,
+    "id": 505,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -726,7 +739,7 @@
         "file": "./IGroupSchema.sol",
         "id": 236,
         "nodeType": "ImportDirective",
-        "scope": 500,
+        "scope": 505,
         "sourceUnit": 234,
         "src": "24:28:3",
         "symbolAliases": [],
@@ -760,9 +773,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 499,
+        "id": 504,
         "linearizedBaseContracts": [
-          499,
+          504,
           233
         ],
         "name": "IGroups",
@@ -820,7 +833,7 @@
               ],
               "src": "190:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "94:106:3",
             "stateMutability": "view",
             "virtual": false,
@@ -936,7 +949,7 @@
               ],
               "src": "308:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "206:112:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1052,7 +1065,7 @@
               ],
               "src": "426:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "324:112:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1140,7 +1153,7 @@
               ],
               "src": "535:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "442:103:3",
             "stateMutability": "view",
             "virtual": false,
@@ -1227,7 +1240,7 @@
               ],
               "src": "615:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "551:74:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1314,7 +1327,7 @@
               ],
               "src": "695:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "631:74:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1372,7 +1385,7 @@
               ],
               "src": "760:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "711:59:3",
             "stateMutability": "view",
             "virtual": false,
@@ -1431,7 +1444,7 @@
               "parameters": [],
               "src": "833:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "776:58:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1520,7 +1533,7 @@
               ],
               "src": "899:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "840:69:3",
             "stateMutability": "view",
             "virtual": false,
@@ -1664,7 +1677,7 @@
               ],
               "src": "1051:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "915:146:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1807,7 +1820,7 @@
               "parameters": [],
               "src": "1225:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1067:159:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1894,7 +1907,7 @@
               ],
               "src": "1295:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1232:70:3",
             "stateMutability": "view",
             "virtual": false,
@@ -1981,7 +1994,7 @@
               ],
               "src": "1405:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1308:104:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2069,7 +2082,7 @@
               ],
               "src": "1484:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1418:73:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2156,7 +2169,7 @@
               "parameters": [],
               "src": "1584:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1497:88:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -2272,7 +2285,7 @@
               ],
               "src": "1676:43:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1591:129:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2416,7 +2429,7 @@
               ],
               "src": "1844:28:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1726:147:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2503,7 +2516,7 @@
               ],
               "src": "1994:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1879:125:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2591,7 +2604,7 @@
               ],
               "src": "2128:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2010:128:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2734,7 +2747,7 @@
               ],
               "src": "2264:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2144:148:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2878,7 +2891,7 @@
               ],
               "src": "2429:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2298:159:3",
             "stateMutability": "view",
             "virtual": false,
@@ -2994,7 +3007,7 @@
               ],
               "src": "2575:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2463:119:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3109,7 +3122,7 @@
               ],
               "src": "2676:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2588:116:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3197,7 +3210,7 @@
               ],
               "src": "2818:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2710:118:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3341,7 +3354,7 @@
               ],
               "src": "2960:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2834:154:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3456,7 +3469,7 @@
               ],
               "src": "3098:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2994:132:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3628,7 +3641,7 @@
               ],
               "src": "3217:114:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3132:200:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3800,7 +3813,7 @@
               ],
               "src": "3424:114:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3338:201:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3887,7 +3900,7 @@
               ],
               "src": "3607:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3545:72:3",
             "stateMutability": "view",
             "virtual": false,
@@ -3896,71 +3909,70 @@
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "6f583ba6",
+            "functionSelector": "6d3524f5",
             "id": 488,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "activateStorageOracle",
+            "name": "getGroupsLength",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 486,
+              "id": 484,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3647:2:3"
+            },
+            "returnParameters": {
+              "id": 487,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 485,
+                  "id": 486,
                   "mutability": "mutable",
-                  "name": "oracle",
+                  "name": "length",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 488,
-                  "src": "3654:14:3",
+                  "src": "3673:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 484,
-                    "name": "address",
+                    "id": 485,
+                    "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3654:7:3",
-                    "stateMutability": "nonpayable",
+                    "src": "3673:7:3",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
                     }
                   },
                   "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "3653:16:3"
+              "src": "3672:16:3"
             },
-            "returnParameters": {
-              "id": 487,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "3678:0:3"
-            },
-            "scope": 499,
-            "src": "3623:56:3",
-            "stateMutability": "nonpayable",
+            "scope": 504,
+            "src": "3623:66:3",
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "6041fc88",
+            "functionSelector": "6f583ba6",
             "id": 493,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "deactivateStorageOracle",
+            "name": "activateStorageOracle",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
@@ -3975,7 +3987,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 493,
-                  "src": "3718:14:3",
+                  "src": "3726:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -3986,7 +3998,7 @@
                     "id": 489,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3718:7:3",
+                    "src": "3726:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -3997,16 +4009,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3717:16:3"
+              "src": "3725:16:3"
             },
             "returnParameters": {
               "id": 492,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3742:0:3"
+              "src": "3750:0:3"
             },
-            "scope": 499,
-            "src": "3685:58:3",
+            "scope": 504,
+            "src": "3695:56:3",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -4014,12 +4026,12 @@
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "0fdf80ed",
+            "functionSelector": "6041fc88",
             "id": 498,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "reAssignStorageOracle",
+            "name": "deactivateStorageOracle",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
@@ -4030,11 +4042,11 @@
                   "constant": false,
                   "id": 495,
                   "mutability": "mutable",
-                  "name": "newOracle",
+                  "name": "oracle",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 498,
-                  "src": "3780:17:3",
+                  "src": "3790:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -4045,7 +4057,7 @@
                     "id": 494,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3780:7:3",
+                    "src": "3790:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -4056,35 +4068,94 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3779:19:3"
+              "src": "3789:16:3"
             },
             "returnParameters": {
               "id": 497,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3807:0:3"
+              "src": "3814:0:3"
             },
-            "scope": 499,
-            "src": "3749:59:3",
+            "scope": 504,
+            "src": "3757:58:3",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "0fdf80ed",
+            "id": 503,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "reAssignStorageOracle",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 501,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 500,
+                  "mutability": "mutable",
+                  "name": "newOracle",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 503,
+                  "src": "3852:17:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 499,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3852:7:3",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3851:19:3"
+            },
+            "returnParameters": {
+              "id": 502,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3879:0:3"
+            },
+            "scope": 504,
+            "src": "3821:59:3",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 500,
-        "src": "54:3756:3"
+        "scope": 505,
+        "src": "54:3828:3"
       }
     ],
-    "src": "0:3811:3"
+    "src": "0:3882:3"
   },
   "legacyAST": {
     "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/IGroups.sol",
     "exportedSymbols": {
       "IGroups": [
-        499
+        504
       ]
     },
-    "id": 500,
+    "id": 505,
     "nodeType": "SourceUnit",
     "nodes": [
       {
@@ -4103,7 +4174,7 @@
         "file": "./IGroupSchema.sol",
         "id": 236,
         "nodeType": "ImportDirective",
-        "scope": 500,
+        "scope": 505,
         "sourceUnit": 234,
         "src": "24:28:3",
         "symbolAliases": [],
@@ -4137,9 +4208,9 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": false,
-        "id": 499,
+        "id": 504,
         "linearizedBaseContracts": [
-          499,
+          504,
           233
         ],
         "name": "IGroups",
@@ -4197,7 +4268,7 @@
               ],
               "src": "190:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "94:106:3",
             "stateMutability": "view",
             "virtual": false,
@@ -4313,7 +4384,7 @@
               ],
               "src": "308:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "206:112:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4429,7 +4500,7 @@
               ],
               "src": "426:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "324:112:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4517,7 +4588,7 @@
               ],
               "src": "535:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "442:103:3",
             "stateMutability": "view",
             "virtual": false,
@@ -4604,7 +4675,7 @@
               ],
               "src": "615:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "551:74:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4691,7 +4762,7 @@
               ],
               "src": "695:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "631:74:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4749,7 +4820,7 @@
               ],
               "src": "760:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "711:59:3",
             "stateMutability": "view",
             "virtual": false,
@@ -4808,7 +4879,7 @@
               "parameters": [],
               "src": "833:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "776:58:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -4897,7 +4968,7 @@
               ],
               "src": "899:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "840:69:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5041,7 +5112,7 @@
               ],
               "src": "1051:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "915:146:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -5184,7 +5255,7 @@
               "parameters": [],
               "src": "1225:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1067:159:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -5271,7 +5342,7 @@
               ],
               "src": "1295:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1232:70:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5358,7 +5429,7 @@
               ],
               "src": "1405:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1308:104:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5446,7 +5517,7 @@
               ],
               "src": "1484:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1418:73:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5533,7 +5604,7 @@
               "parameters": [],
               "src": "1584:0:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1497:88:3",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -5649,7 +5720,7 @@
               ],
               "src": "1676:43:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1591:129:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5793,7 +5864,7 @@
               ],
               "src": "1844:28:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1726:147:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5880,7 +5951,7 @@
               ],
               "src": "1994:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "1879:125:3",
             "stateMutability": "view",
             "virtual": false,
@@ -5968,7 +6039,7 @@
               ],
               "src": "2128:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2010:128:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6111,7 +6182,7 @@
               ],
               "src": "2264:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2144:148:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6255,7 +6326,7 @@
               ],
               "src": "2429:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2298:159:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6371,7 +6442,7 @@
               ],
               "src": "2575:6:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2463:119:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6486,7 +6557,7 @@
               ],
               "src": "2676:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2588:116:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6574,7 +6645,7 @@
               ],
               "src": "2818:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2710:118:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6718,7 +6789,7 @@
               ],
               "src": "2960:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2834:154:3",
             "stateMutability": "view",
             "virtual": false,
@@ -6833,7 +6904,7 @@
               ],
               "src": "3098:27:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "2994:132:3",
             "stateMutability": "view",
             "virtual": false,
@@ -7005,7 +7076,7 @@
               ],
               "src": "3217:114:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3132:200:3",
             "stateMutability": "view",
             "virtual": false,
@@ -7177,7 +7248,7 @@
               ],
               "src": "3424:114:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3338:201:3",
             "stateMutability": "view",
             "virtual": false,
@@ -7264,7 +7335,7 @@
               ],
               "src": "3607:9:3"
             },
-            "scope": 499,
+            "scope": 504,
             "src": "3545:72:3",
             "stateMutability": "view",
             "virtual": false,
@@ -7273,71 +7344,70 @@
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "6f583ba6",
+            "functionSelector": "6d3524f5",
             "id": 488,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "activateStorageOracle",
+            "name": "getGroupsLength",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 486,
+              "id": 484,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3647:2:3"
+            },
+            "returnParameters": {
+              "id": 487,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 485,
+                  "id": 486,
                   "mutability": "mutable",
-                  "name": "oracle",
+                  "name": "length",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 488,
-                  "src": "3654:14:3",
+                  "src": "3673:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
-                    "typeIdentifier": "t_address",
-                    "typeString": "address"
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
                   },
                   "typeName": {
-                    "id": 484,
-                    "name": "address",
+                    "id": 485,
+                    "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3654:7:3",
-                    "stateMutability": "nonpayable",
+                    "src": "3673:7:3",
                     "typeDescriptions": {
-                      "typeIdentifier": "t_address",
-                      "typeString": "address"
+                      "typeIdentifier": "t_uint256",
+                      "typeString": "uint256"
                     }
                   },
                   "value": null,
                   "visibility": "internal"
                 }
               ],
-              "src": "3653:16:3"
+              "src": "3672:16:3"
             },
-            "returnParameters": {
-              "id": 487,
-              "nodeType": "ParameterList",
-              "parameters": [],
-              "src": "3678:0:3"
-            },
-            "scope": 499,
-            "src": "3623:56:3",
-            "stateMutability": "nonpayable",
+            "scope": 504,
+            "src": "3623:66:3",
+            "stateMutability": "view",
             "virtual": false,
             "visibility": "external"
           },
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "6041fc88",
+            "functionSelector": "6f583ba6",
             "id": 493,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "deactivateStorageOracle",
+            "name": "activateStorageOracle",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
@@ -7352,7 +7422,7 @@
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 493,
-                  "src": "3718:14:3",
+                  "src": "3726:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -7363,7 +7433,7 @@
                     "id": 489,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3718:7:3",
+                    "src": "3726:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -7374,16 +7444,16 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3717:16:3"
+              "src": "3725:16:3"
             },
             "returnParameters": {
               "id": 492,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3742:0:3"
+              "src": "3750:0:3"
             },
-            "scope": 499,
-            "src": "3685:58:3",
+            "scope": 504,
+            "src": "3695:56:3",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
@@ -7391,12 +7461,12 @@
           {
             "body": null,
             "documentation": null,
-            "functionSelector": "0fdf80ed",
+            "functionSelector": "6041fc88",
             "id": 498,
             "implemented": false,
             "kind": "function",
             "modifiers": [],
-            "name": "reAssignStorageOracle",
+            "name": "deactivateStorageOracle",
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
@@ -7407,11 +7477,11 @@
                   "constant": false,
                   "id": 495,
                   "mutability": "mutable",
-                  "name": "newOracle",
+                  "name": "oracle",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
                   "scope": 498,
-                  "src": "3780:17:3",
+                  "src": "3790:14:3",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -7422,7 +7492,7 @@
                     "id": 494,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "3780:7:3",
+                    "src": "3790:7:3",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -7433,26 +7503,85 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "3779:19:3"
+              "src": "3789:16:3"
             },
             "returnParameters": {
               "id": 497,
               "nodeType": "ParameterList",
               "parameters": [],
-              "src": "3807:0:3"
+              "src": "3814:0:3"
             },
-            "scope": 499,
-            "src": "3749:59:3",
+            "scope": 504,
+            "src": "3757:58:3",
+            "stateMutability": "nonpayable",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "0fdf80ed",
+            "id": 503,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "reAssignStorageOracle",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 501,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 500,
+                  "mutability": "mutable",
+                  "name": "newOracle",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 503,
+                  "src": "3852:17:3",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 499,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "3852:7:3",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "3851:19:3"
+            },
+            "returnParameters": {
+              "id": 502,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "3879:0:3"
+            },
+            "scope": 504,
+            "src": "3821:59:3",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "external"
           }
         ],
-        "scope": 500,
-        "src": "54:3756:3"
+        "scope": 505,
+        "src": "54:3828:3"
       }
     ],
-    "src": "0:3811:3"
+    "src": "0:3882:3"
   },
   "compiler": {
     "name": "solc",
@@ -7460,7 +7589,7 @@
   },
   "networks": {},
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-28T20:11:57.132Z",
+  "updatedAt": "2020-11-09T13:04:18.303Z",
   "devdoc": {
     "methods": {}
   },
