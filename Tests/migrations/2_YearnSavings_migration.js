@@ -103,8 +103,9 @@ module.exports = function (deployer) {
       DaiLendingServiceContract.address,
       xendTokenContract.address,
       ClientRecordContract.address,
-      RewardConfigContract.address,
-      yxendTokenContract.address
+      SavingsConfigContract.address,
+      yxendTokenContract.address,
+      TreasuryContract.address
     );
 
     await deployer.deploy(
