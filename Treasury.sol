@@ -1,7 +1,7 @@
 pragma solidity ^0.6.6;
 import "./SafeMath.sol";
 import "./Ownable.sol";
-import "./Tests/contracts/XendToken/IERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
 
 contract Treasury is Ownable {
     using SafeMath for uint256;

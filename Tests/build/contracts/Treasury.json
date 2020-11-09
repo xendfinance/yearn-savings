@@ -7678,10 +7678,61 @@
       "links": {},
       "address": "0x2C47617dE88C3D8c241e10D2044a9f25E4b2B52B",
       "transactionHash": "0x2627db287564fe5a3bc3b6a1d10d819285e5cb2d6f92ce3cfaf041a0f1c917f5"
+    },
+    "5777": {
+      "events": {
+        "0x30e14d5113d9ab3a10a50ea98540f5dfcec5d41711ad872e83890631823dfe17": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "depositorAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "EtherDepositEvent",
+          "type": "event"
+        },
+        "0xcd380d2a56d9af6a0f073364fb8db33de43698899cb08d5283da5258ee550cab": {
+          "anonymous": false,
+          "inputs": [
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "depositorAddress",
+              "type": "address"
+            },
+            {
+              "indexed": true,
+              "internalType": "address",
+              "name": "tokenContractAddress",
+              "type": "address"
+            },
+            {
+              "indexed": false,
+              "internalType": "uint256",
+              "name": "amount",
+              "type": "uint256"
+            }
+          ],
+          "name": "TokenDepositEvent",
+          "type": "event"
+        }
+      },
+      "links": {},
+      "address": "0x27f0f1F02c470747cA7D18c0E5B1f9183c6d822f",
+      "transactionHash": "0x779f0e8da767ff6360906e69717fc95f1bda2bf29a82bdb380bd3f3c408f6147"
     }
   },
-  "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-28T20:26:14.410Z",
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2020-11-09T10:53:13.254Z",
   "networkType": "ethereum",
   "devdoc": {
     "methods": {}
