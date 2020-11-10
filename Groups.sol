@@ -366,7 +366,8 @@ contract Groups is IGroupSchema, StorageOwners {
     }
 
     function getGroupsLength() external view returns (uint256 length) {
-        return Groups.length;
+        length = Groups.length;
+        return length;
     }
 
     function _getGroupByIndex(uint256 index)
