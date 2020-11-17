@@ -488,7 +488,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
             derivativeAmountWithdrawn
         );
-        record.derivativeBalance = record.derivativeBalance.add(
+        record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn
         );
 
