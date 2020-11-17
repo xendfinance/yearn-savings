@@ -1,16 +1,16 @@
 {
   "contractName": "IClientRecordSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0xd6bf1f518e013d2a5f2d9f6620283ffc877cbc1d136118a3f4a5b3dc8381c30c\",\"urls\":[\"bzz-raw://c39ba4f81bae117331a039a7111fb38c9c7205390c3cd605dc7bb5141079e22e\",\"dweb:/ipfs/QmVoBFUiAL2LoPgp4dwHxatwJtpS6oZc7DV1k8j9ka2ESf\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0x35ae5fa5945bc4a4c41fb711fd7092a85598176dcf6347693f438ef6cbe57538\",\"urls\":[\"bzz-raw://e6e51d8ab3b5517fd2e99b80d4fc061e004492c0cff9fc54decf73077f426cd8\",\"dweb:/ipfs/QmNn2xLU65jkDaCA3BetnXeS1DZcXwc1Umj4mgr2ATWBFm\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.6;\r\n\r\ninterface IClientRecordSchema {\r\n    struct ClientRecord {\r\n        bool exists;\r\n        address payable _address;\r\n        uint256 underlyingTotalDeposits;\r\n        uint256 underlyingTotalWithdrawn;\r\n        uint256 derivativeBalance;\r\n        uint256 derivativeTotalDeposits;\r\n        uint256 derivativeTotalWithdrawn;\r\n    }\r\n\r\n    struct RecordIndex {\r\n        bool exists;\r\n        uint256 index;\r\n    }\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\IClientRecordShema.sol",
+  "source": "pragma solidity ^0.6.6;\n\ninterface IClientRecordSchema {\n    struct ClientRecord {\n        bool exists;\n        address payable _address;\n        uint256 underlyingTotalDeposits;\n        uint256 underlyingTotalWithdrawn;\n        uint256 derivativeBalance;\n        uint256 derivativeTotalDeposits;\n        uint256 derivativeTotalWithdrawn;\n    }\n\n    struct RecordIndex {\n        bool exists;\n        uint256 index;\n    }\n}\n",
+  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
         7105
@@ -56,7 +56,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "95:11:23",
+                "src": "91:11:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -67,7 +67,7 @@
                   "id": 7085,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "95:4:23",
+                  "src": "91:4:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -84,7 +84,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "117:24:23",
+                "src": "112:24:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -95,7 +95,7 @@
                   "id": 7087,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "117:15:23",
+                  "src": "112:15:23",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -113,7 +113,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "152:31:23",
+                "src": "146:31:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -124,7 +124,7 @@
                   "id": 7089,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "152:7:23",
+                  "src": "146:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -141,7 +141,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "194:32:23",
+                "src": "187:32:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -152,7 +152,7 @@
                   "id": 7091,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "194:7:23",
+                  "src": "187:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -169,7 +169,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "237:25:23",
+                "src": "229:25:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -180,7 +180,7 @@
                   "id": 7093,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "237:7:23",
+                  "src": "229:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -197,7 +197,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "273:31:23",
+                "src": "264:31:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -208,7 +208,7 @@
                   "id": 7095,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "273:7:23",
+                  "src": "264:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -225,7 +225,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "315:32:23",
+                "src": "305:32:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -236,7 +236,7 @@
                   "id": 7097,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "315:7:23",
+                  "src": "305:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -249,7 +249,7 @@
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
             "scope": 7105,
-            "src": "64:291:23",
+            "src": "61:283:23",
             "visibility": "public"
           },
           {
@@ -264,7 +264,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7104,
-                "src": "393:11:23",
+                "src": "379:11:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -275,7 +275,7 @@
                   "id": 7100,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "393:4:23",
+                  "src": "379:4:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -292,7 +292,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7104,
-                "src": "415:13:23",
+                "src": "400:13:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -303,7 +303,7 @@
                   "id": 7102,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "415:7:23",
+                  "src": "400:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -316,18 +316,18 @@
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
             "scope": 7105,
-            "src": "363:73:23",
+            "src": "350:70:23",
             "visibility": "public"
           }
         ],
         "scope": 7106,
-        "src": "27:412:23"
+        "src": "25:397:23"
       }
     ],
-    "src": "0:441:23"
+    "src": "0:423:23"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
         7105
@@ -373,7 +373,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "95:11:23",
+                "src": "91:11:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -384,7 +384,7 @@
                   "id": 7085,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "95:4:23",
+                  "src": "91:4:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -401,7 +401,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "117:24:23",
+                "src": "112:24:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -412,7 +412,7 @@
                   "id": 7087,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "117:15:23",
+                  "src": "112:15:23",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -430,7 +430,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "152:31:23",
+                "src": "146:31:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -441,7 +441,7 @@
                   "id": 7089,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "152:7:23",
+                  "src": "146:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -458,7 +458,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "194:32:23",
+                "src": "187:32:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -469,7 +469,7 @@
                   "id": 7091,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "194:7:23",
+                  "src": "187:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -486,7 +486,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "237:25:23",
+                "src": "229:25:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -497,7 +497,7 @@
                   "id": 7093,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "237:7:23",
+                  "src": "229:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -514,7 +514,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "273:31:23",
+                "src": "264:31:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -525,7 +525,7 @@
                   "id": 7095,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "273:7:23",
+                  "src": "264:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -542,7 +542,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7099,
-                "src": "315:32:23",
+                "src": "305:32:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -553,7 +553,7 @@
                   "id": 7097,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "315:7:23",
+                  "src": "305:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -566,7 +566,7 @@
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
             "scope": 7105,
-            "src": "64:291:23",
+            "src": "61:283:23",
             "visibility": "public"
           },
           {
@@ -581,7 +581,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7104,
-                "src": "393:11:23",
+                "src": "379:11:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -592,7 +592,7 @@
                   "id": 7100,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "393:4:23",
+                  "src": "379:4:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -609,7 +609,7 @@
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
                 "scope": 7104,
-                "src": "415:13:23",
+                "src": "400:13:23",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -620,7 +620,7 @@
                   "id": 7102,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "415:7:23",
+                  "src": "400:7:23",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -633,23 +633,23 @@
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
             "scope": 7105,
-            "src": "363:73:23",
+            "src": "350:70:23",
             "visibility": "public"
           }
         ],
         "scope": 7106,
-        "src": "27:412:23"
+        "src": "25:397:23"
       }
     ],
-    "src": "0:441:23"
+    "src": "0:423:23"
   },
   "compiler": {
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.527Z",
+  "schemaVersion": "3.2.5",
+  "updatedAt": "2020-11-14T11:07:10.627Z",
   "devdoc": {
     "methods": {}
   },

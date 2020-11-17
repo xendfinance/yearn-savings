@@ -5,7 +5,6 @@ const TreasuryContract = artifacts.require("Treasury");
 const CyclesContract = artifacts.require("Cycles");
 const ClientRecordContract = artifacts.require("ClientRecord");
 const SavingsConfigContract = artifacts.require("SavingsConfig");
-const DaiLendingAdapterContract = artifacts.require("DaiLendingAdapter");
 const DaiLendingServiceContract = artifacts.require("DaiLendingService");
 const XendFinanceIndividual_Yearn_V1Contract = artifacts.require(
   "XendFinanceIndividual_Yearn_V1"
@@ -16,8 +15,8 @@ const XendFinanceGroup_Yearn_V1Contract = artifacts.require(
 );
 const RewardConfigContract = artifacts.require("RewardConfig");
 const xendTokenContract = artifacts.require("XendToken");
-const yxendTokenContract = artifacts.require("YXendToken");
-const yyxendTokenContract = artifacts.require("YYXendToken")
+const DaiToken = artifacts.require("YXendToken");
+const YDaiToken = artifacts.require("YYXendToken")
 const EsusuServiceContract = artifacts.require("EsusuService");
 
 // const web3 = new Web3("HTTP://127.0.0.1:8545");
@@ -64,67 +63,89 @@ module.exports = function (deployer) {
     await deployer.deploy(xendTokenContract, "Xend Token", "XTK", 18, 2000000);
 
     await deployer.deploy(
-      yxendTokenContract,
-      "YXend Token",
-      "YXTK",
+      DaiToken,
+      "Dai Token",
+      "DTK",
       18,
       2000000
     );
 
     await deployer.deploy(
-      yyxendTokenContract,
-      "YYXend Token",
-      "YYXTK",
+      YDaiToken,
+      "YDai Token",
+      "YDTK",
       18,
       2000000
     );
 
-    await deployer.deploy(DaiLendingServiceContract);
 
-    await deployer.deploy(
-      DaiLendingAdapterContract,
-      DaiLendingServiceContract.address
-    );
+
+    await deployer.deploy(DaiLendingServiceContract, YDaiToken.address, DaiToken.address);
+
+    // await deployer.deploy(
+    //   DaiLendingAdapterContract,
+    //   DaiLendingServiceContract.address
+    // );
 
     console.log(
       "DaiLendingService Contract address: " + DaiLendingServiceContract.address
     );
 
-    console.log(
-      "DaiLendingAdapterContract address: " + DaiLendingAdapterContract.address
-    );
+    console.log(YDaiToken.address, "y DAI token address")
 
-    console.log("yxend", yxendTokenContract.address);
+
+    console.log("dai token", DaiToken.address);
+
     console.log("xendt", xendTokenContract.address);
 
     await deployer.deploy(
       XendFinanceIndividual_Yearn_V1Contract,
-      DaiLendingAdapterContract.address,
       DaiLendingServiceContract.address,
-      xendTokenContract.address,
+      DaiLendingServiceContract.address,
+      DaiToken.address,
       ClientRecordContract.address,
       SavingsConfigContract.address,
-      yxendTokenContract.address,
+      YDaiToken.address,
       TreasuryContract.address
     );
+    console.log(
+      "Xend finance individual",
+      XendFinanceIndividual_Yearn_V1Contract.address
+    );
+
+    let ClientRecord = await ClientRecordContract.deployed();
+
+    let dai = await DaiToken.deployed();
+
+    let YDai = await YDaiToken.deployed();
+
+    await ClientRecord.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+     
+    await dai.mint('500000000000000000000');
+
+    //this is a replacement of the dai approval function
+    //await dai.approve(XendFinanceIndividual_Yearn_V1Contract.address, '30000000000000000000000');
+
+    await YDai.mint('30000000000000000000000')
+
+    //transfer to dai lending service
+    await YDai.transfer(DaiLendingServiceContract.address, '30000000000000000000000');
+    
 
     await deployer.deploy(
       XendFinanceGroup_Yearn_V1Contract,
-      DaiLendingAdapterContract.address,
       DaiLendingServiceContract.address,
-      yyxendTokenContract.address,
+      DaiLendingServiceContract.address,
+      YDaiToken.address,
       GroupsContract.address,
       CyclesContract.address,
       TreasuryContract.address,
       SavingsConfigContract.address,
       RewardConfigContract.address,
       xendTokenContract.address,
-      yxendTokenContract.address
+      DaiToken.address
     );
 
-    console.log(
-      "Xend finance individual",
-      XendFinanceIndividual_Yearn_V1Contract.address
-    );
+   
   });
 };

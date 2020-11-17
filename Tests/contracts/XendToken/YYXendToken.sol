@@ -50,7 +50,8 @@ contract YYXendToken is ERC20Pausable {
     }
 
     function mint(uint256 amount) public virtual onlyOwner {
-        address account = address(this);
+         //address account = address(this);
+        address account = msg.sender;
         _mint(account, amount);
     }
 

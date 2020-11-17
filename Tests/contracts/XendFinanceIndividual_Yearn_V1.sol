@@ -255,6 +255,8 @@ contract XendFinanceIndividual_Yearn_V1 is
             commissionFees
         );
 
+        daiToken.approve(recipient, amountToSendToDepositor);
+
         bool isSuccessful = daiToken.transfer(
             recipient,
             amountToSendToDepositor
