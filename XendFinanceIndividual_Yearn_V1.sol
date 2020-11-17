@@ -8,7 +8,7 @@ import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC20/IERC20.sol";
+import "./IERC20.sol";
 import "./Address.sol";
 import "./ISavingsConfig.sol";
 import "./ISavingsConfigSchema.sol";
@@ -254,6 +254,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
             commissionFees
         );
+
+        daiToken.approve(recipient, amountToSendToDepositor);
 
         bool isSuccessful = daiToken.transfer(
             recipient,
