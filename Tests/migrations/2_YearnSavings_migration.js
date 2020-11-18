@@ -115,11 +115,17 @@ module.exports = function (deployer) {
 
     let ClientRecord = await ClientRecordContract.deployed();
 
+    let savingsConfig = await SavingsConfigContract.deployed()
+
     let dai = await DaiToken.deployed();
 
     let YDai = await YDaiToken.deployed();
 
     await ClientRecord.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+
+    await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
+
+    await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 1, 1)
      
     await dai.mint('500000000000000000000');
 

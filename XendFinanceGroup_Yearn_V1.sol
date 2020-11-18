@@ -876,7 +876,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (uint256)
     {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
-
+        derivativeToken.approve(LendingAdapterAddress,derivativeAmount);
         lendingService.WithdrawBySharesOnly(derivativeBalance);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
@@ -1324,7 +1324,7 @@ contract XendFinanceGroup_Yearn_V1 is
             "member deposit really isn't worth much"
         );
 
-        return worthOfMemberDepositNow.mul(dividend).div(divisor).div(100);
+        return worthOfMemberDepositNow.mul(dividend).div(divisor);
     }
 
     function _getDivisor() internal returns (uint256) {

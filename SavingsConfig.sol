@@ -145,6 +145,27 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
             );
         }
     }
+    
+    function _validateRuleModification(string memory ruleKey, RuleSet memory rule)
+        internal
+    {
+        bool ruleExist = RuleMapping[ruleKey].exists;
+        require(ruleExist == true, "Rule configuration does not exist");
+
+        if (rule.ruleDefinition == RuleDefinition.RANGE) {
+            require(
+                rule.exact == 0,
+                "Rule definition for range requires that exact field is 0"
+            );
+        } else if (rule.ruleDefinition == RuleDefinition.VALUE) {
+            require(
+                rule.minimum == 0 && rule.maximum == 0,
+                "Rule definition for value requires that minimum and maximum field is 0"
+            );
+        }
+    }
+    
+    
 
     modifier onlyRuleCreatorOrOwner(string memory ruleKey) {
         RuleSet memory ruleSet = _getRule(ruleKey);

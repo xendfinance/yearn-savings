@@ -97,6 +97,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function getClientRecord(address depositor)
         external
+        view
         onlyNonDeprecatedCalls
         returns (
             address payable _address,
@@ -120,6 +121,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function getClientRecord()
         external
+        view
         onlyNonDeprecatedCalls
         returns (
             address payable _address,
@@ -146,6 +148,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function getClientRecordByIndex(uint256 index)
         external
+        view
         onlyNonDeprecatedCalls
         returns (
             address payable _address,
@@ -169,6 +172,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _getClientRecordByIndex(uint256 index)
         internal
+        view
         returns (ClientRecord memory)
     {
         (
@@ -239,13 +243,15 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
 
+        derivativeToken.approve(LendingAdapterAddress,derivativeAmount);
         lendingService.WithdrawBySharesOnly(derivativeAmount);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
 
-        uint256 amountOfUnderlyingAssetWithdrawn = balanceBeforeWithdraw.sub(
-            balanceAfterWithdraw
+        uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
+            balanceBeforeWithdraw
         );
+        
 
         uint256 commissionFees = _computeXendFinanceCommisions(
             amountOfUnderlyingAssetWithdrawn
@@ -254,8 +260,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
             commissionFees
         );
-
-        daiToken.approve(recipient, amountToSendToDepositor);
+            daiToken.approve(recipient, amountToSendToDepositor);
 
         bool isSuccessful = daiToken.transfer(
             recipient,
@@ -310,7 +315,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             "member deposit really isn't worth much"
         );
 
-        return worthOfMemberDepositNow.mul(dividend).div(divisor).div(100);
+        return worthOfMemberDepositNow.mul(dividend).div(divisor);
     }
 
     function _getDivisor() internal returns (uint256) {
@@ -439,23 +444,13 @@ contract XendFinanceIndividual_Yearn_V1 is
                 true,
                 client,
                 underlyingAmountDeposited,
-                underlyingAmountDeposited,
+                0,
                 derivativeAmountDeposited,
                 derivativeAmountDeposited,
                 0
             );
 
-            record.underlyingTotalDeposits = record.underlyingTotalDeposits.add(
-                underlyingAmountDeposited
-            );
-
-            record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
-                derivativeAmountDeposited
-            );
-            record.derivativeBalance = record.derivativeBalance.add(
-                derivativeAmountDeposited
-            );
-
+           
             return record;
         } else {
             ClientRecord memory record = _getClientRecordByAddress(client);
@@ -485,10 +480,10 @@ contract XendFinanceIndividual_Yearn_V1 is
             underlyingAmountWithdrawn
         );
 
-        record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
+        record.derivativeTotalWithdrawn = record.derivativeTotalWithdrawn.add(
             derivativeAmountWithdrawn
         );
-        record.derivativeBalance = record.derivativeBalance.add(
+        record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn
         );
 
