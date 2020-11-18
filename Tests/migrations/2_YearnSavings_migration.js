@@ -16,8 +16,8 @@ const XendFinanceGroup_Yearn_V1Contract = artifacts.require(
 );
 const RewardConfigContract = artifacts.require("RewardConfig");
 const xendTokenContract = artifacts.require("XendToken");
-const yxendTokenContract = artifacts.require("YXendToken");
-const yyxendTokenContract = artifacts.require("YYXendToken")
+const DaiToken = artifacts.require("YXendToken");
+const YDaiToken = artifacts.require("YYXendToken")
 const EsusuServiceContract = artifacts.require("EsusuService");
 
 // const web3 = new Web3("HTTP://127.0.0.1:8545");
@@ -27,29 +27,27 @@ module.exports = function (deployer) {
   deployer.then(async () => {
     await deployer.deploy(GroupsContract);
 
-    console.log("GroupsContract address: " + GroupsContract.address);
+    
 
     await deployer.deploy(TreasuryContract);
 
-    console.log("TreasuryContract address: " + TreasuryContract.address);
+    
 
     await deployer.deploy(CyclesContract);
 
-    console.log("CyclesContract address", CyclesContract.address);
+   
 
     await deployer.deploy(ClientRecordContract);
 
-    console.log("ClientRecordContract address", ClientRecordContract.address);
+   
 
-    await deployer.deploy(SavingsConfigContract);
+   await deployer.deploy(SavingsConfigContract);
 
-    console.log("Savings config address", SavingsConfigContract.address);
+    
 
     await deployer.deploy(EsusuServiceContract);
 
-    console.log(
-      "EsusuServiceContract address: " + EsusuServiceContract.address
-    );
+    
 
     await deployer.deploy(
       RewardConfigContract,
@@ -57,74 +55,128 @@ module.exports = function (deployer) {
       GroupsContract.address
     );
 
-    console.log(
-      "RewardConfigContract address: " + RewardConfigContract.address
-    );
+    
+    
 
     await deployer.deploy(xendTokenContract, "Xend Token", "XTK", 18, 2000000);
 
     await deployer.deploy(
-      yxendTokenContract,
-      "YXend Token",
-      "YXTK",
+      DaiToken,
+      "Dai Token",
+      "DTK",
       18,
       2000000
     );
 
     await deployer.deploy(
-      yyxendTokenContract,
-      "YYXend Token",
-      "YYXTK",
+      YDaiToken,
+      "YDai Token",
+      "YDTK",
       18,
       2000000
     );
 
-    await deployer.deploy(DaiLendingServiceContract);
 
-    await deployer.deploy(
-      DaiLendingAdapterContract,
-      DaiLendingServiceContract.address
-    );
 
-    console.log(
-      "DaiLendingService Contract address: " + DaiLendingServiceContract.address
-    );
+    await deployer.deploy(DaiLendingServiceContract, YDaiToken.address, DaiToken.address);
 
-    console.log(
-      "DaiLendingAdapterContract address: " + DaiLendingAdapterContract.address
-    );
 
-    console.log("yxend", yxendTokenContract.address);
-    console.log("xendt", xendTokenContract.address);
+
+ 
+
+
+const savingsConfig = await SavingsConfigContract.deployed();
+
+  //create savings rule config
+
+  let savingsRuleResult  = await savingsConfig.createRule("PERCENTAGE_PAYOUT_TO_USERS", 0, 0, 0, 1)
+
+  await savingsConfig.createRule("PERCENTAGE_AS_PENALTY", 0, 0, 1, 1)
+
+  await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
+
+  await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 2, 1)
+
+
+  console.log(savingsRuleResult, "savings key")
+
+  
+  let dai = await DaiToken.deployed();
+
+  let YDai = await YDaiToken.deployed();
+   
+  await dai.mint('500000000000000000000');
+
+  //this is a replacement of the dai approval function
+  //await dai.approve(XendFinanceIndividual_Yearn_V1Contract.address, '30000000000000000000000');
+
+  await YDai.mint('30000000000000000000000')
+
+  //transfer to dai lending service
+  await YDai.transfer(DaiLendingServiceContract.address, '30000000000000000000000');
+    
+
+   
 
     await deployer.deploy(
       XendFinanceIndividual_Yearn_V1Contract,
-      DaiLendingAdapterContract.address,
       DaiLendingServiceContract.address,
-      xendTokenContract.address,
+      DaiLendingServiceContract.address,
+      DaiToken.address,
       ClientRecordContract.address,
       SavingsConfigContract.address,
-      yxendTokenContract.address,
+      YDaiToken.address,
       TreasuryContract.address
-    );
-
-    await deployer.deploy(
-      XendFinanceGroup_Yearn_V1Contract,
-      DaiLendingAdapterContract.address,
-      DaiLendingServiceContract.address,
-      yyxendTokenContract.address,
-      GroupsContract.address,
-      CyclesContract.address,
-      TreasuryContract.address,
-      SavingsConfigContract.address,
-      RewardConfigContract.address,
-      xendTokenContract.address,
-      yxendTokenContract.address
     );
 
     console.log(
       "Xend finance individual",
       XendFinanceIndividual_Yearn_V1Contract.address
     );
+  
+    console.log("GroupsContract address: " + GroupsContract.address);
+  console.log("TreasuryContract address: " + TreasuryContract.address);
+  console.log("CyclesContract address", CyclesContract.address);
+  console.log("ClientRecordContract address", ClientRecordContract.address);
+  console.log("Savings config address", SavingsConfigContract.address);
+  console.log(
+      "EsusuServiceContract address: " + EsusuServiceContract.address
+    );
+  console.log(
+      "RewardConfigContract address: " + RewardConfigContract.address
+    );
+
+    console.log(
+      "DaiLendingService Contract address: " + DaiLendingServiceContract.address
+    );
+
+    console.log(YDaiToken.address, "y DAI token address")
+
+
+    console.log("dai token", DaiToken.address);
+
+    console.log("xendt", xendTokenContract.address);
+
+
+  // await deployer.deploy(
+  //   XendFinanceGroup_Yearn_V1Contract,
+  //   DaiLendingAdapterContract.address,
+  //   DaiLendingServiceContract.address,
+  //   yyxendTokenContract.address,
+  //   GroupsContract.address,
+  //   CyclesContract.address,
+  //   TreasuryContract.address,
+  //   SavingsConfigContract.address,
+  //   RewardConfigContract.address,
+  //   xendTokenContract.address,
+  //   yxendTokenContract.address
+  // );
+
+    
+  
+      
+
   });
+
+
 };

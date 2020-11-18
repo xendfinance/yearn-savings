@@ -33,16 +33,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol\":\"Ownable\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol\":{\"keccak256\":\"0x54af820b9e6407e6456bd74ce9d59cc27885b5af010423196eda2f6eaa5168d5\",\"urls\":[\"bzz-raw://4062e537f4d2f0ebc1aa7d4282e3c932947950f15637159f8f333902cf9f5bcd\",\"dweb:/ipfs/QmWteS5JgeaC9hhy7rmUe91zdrZFwk67uzq5rpRj2Aery7\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol\":\"Ownable\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol\":{\"keccak256\":\"0x54af820b9e6407e6456bd74ce9d59cc27885b5af010423196eda2f6eaa5168d5\",\"urls\":[\"bzz-raw://4062e537f4d2f0ebc1aa7d4282e3c932947950f15637159f8f333902cf9f5bcd\",\"dweb:/ipfs/QmWteS5JgeaC9hhy7rmUe91zdrZFwk67uzq5rpRj2Aery7\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.4;\r\n\r\n/*\r\n * Ownable\r\n *\r\n * Base contract with an owner.\r\n * Provides onlyOwner modifier, which prevents function from running if it is called by anyone other than the owner.\r\n */\r\ncontract Ownable {\r\n    address payable public owner;\r\n\r\n    constructor() internal {\r\n        owner = msg.sender;\r\n    }\r\n\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Unauthorized access to contract\");\r\n        _;\r\n    }\r\n\r\n    function transferOwnership(address payable newOwner) public onlyOwner {\r\n        if (newOwner != address(0)) {\r\n            owner = newOwner;\r\n        }\r\n    }\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\XendToken\\Ownable.sol",
+  "sourcePath": "C:\\Users\\HP\\Desktop\\BinaryHills Projects\\XendFinance\\yearn-savings\\Tests\\contracts\\XendToken\\Ownable.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol",
     "exportedSymbols": {
       "Ownable": [
         14895
@@ -608,7 +608,7 @@
     "src": "0:619:50"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol",
     "exportedSymbols": {
       "Ownable": [
         14895
@@ -1178,8 +1178,8 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.669Z",
+  "schemaVersion": "3.3.1",
+  "updatedAt": "2020-11-16T12:03:52.439Z",
   "devdoc": {
     "methods": {}
   },

@@ -1,16 +1,16 @@
 {
   "contractName": "ISavingsConfigSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/ISavingsConfigSchema.sol\":\"ISavingsConfigSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/ISavingsConfigSchema.sol\":{\"keccak256\":\"0xfb585284a820b1ea327452b08858a43b32085a79c8ba8fcdf081e70dbc59ac1a\",\"urls\":[\"bzz-raw://b7dd73066a9c990430c4f88138282b598837ca4a1e02b5b5a391b6492dbbcb1f\",\"dweb:/ipfs/QmcDz3VDPKHjpz6JVjCFo8gge5dNAvb1VpJ4b5Thgz8G5H\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/ISavingsConfigSchema.sol\":\"ISavingsConfigSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/ISavingsConfigSchema.sol\":{\"keccak256\":\"0xfb585284a820b1ea327452b08858a43b32085a79c8ba8fcdf081e70dbc59ac1a\",\"urls\":[\"bzz-raw://b7dd73066a9c990430c4f88138282b598837ca4a1e02b5b5a391b6492dbbcb1f\",\"dweb:/ipfs/QmcDz3VDPKHjpz6JVjCFo8gge5dNAvb1VpJ4b5Thgz8G5H\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\r\n\r\ninterface ISavingsConfigSchema {\r\n    struct RuleSet {\r\n        bool exists;\r\n        uint256 minimum;\r\n        uint256 maximum;\r\n        uint256 exact;\r\n        bool applies;\r\n        RuleDefinition ruleDefinition;\r\n    }\r\n\r\n    enum RuleDefinition {RANGE, VALUE}\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\ISavingsConfigSchema.sol",
+  "sourcePath": "C:\\Users\\HP\\Desktop\\BinaryHills Projects\\XendFinance\\yearn-savings\\Tests\\contracts\\ISavingsConfigSchema.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/ISavingsConfigSchema.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/ISavingsConfigSchema.sol",
     "exportedSymbols": {
       "ISavingsConfigSchema": [
         8080
@@ -254,7 +254,7 @@
     "src": "0:296:31"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/ISavingsConfigSchema.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/ISavingsConfigSchema.sol",
     "exportedSymbols": {
       "ISavingsConfigSchema": [
         8080
@@ -502,8 +502,8 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.639Z",
+  "schemaVersion": "3.3.1",
+  "updatedAt": "2020-11-16T12:03:52.433Z",
   "devdoc": {
     "methods": {}
   },

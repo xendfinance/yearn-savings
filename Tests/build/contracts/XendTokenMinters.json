@@ -73,26 +73,26 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"minter\",\"type\":\"address\"}],\"name\":\"grantAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minters\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"minter\",\"type\":\"address\"}],\"name\":\"revokeAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/XendTokenMinters.sol\":\"XendTokenMinters\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol\":{\"keccak256\":\"0x54af820b9e6407e6456bd74ce9d59cc27885b5af010423196eda2f6eaa5168d5\",\"urls\":[\"bzz-raw://4062e537f4d2f0ebc1aa7d4282e3c932947950f15637159f8f333902cf9f5bcd\",\"dweb:/ipfs/QmWteS5JgeaC9hhy7rmUe91zdrZFwk67uzq5rpRj2Aery7\"]},\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/XendTokenMinters.sol\":{\"keccak256\":\"0xabc8dfb66a1530e440b1da1dc05788ee2b0e69bf31c0bf6aabe4f520fa608899\",\"urls\":[\"bzz-raw://ea5398e9a1bd7e72be70484cf0cbc4ad3bd3efdabb640539dfdcdb8f46590cc9\",\"dweb:/ipfs/QmeueML4gusx5SgUb8bWH4qHmuxnW1FKa3NhkLZ6yF6MZy\"]}},\"version\":1}",
-  "bytecode": "0x608060405260008054600160a060020a03191633179055610455806100256000396000f3fe608060405234801561001057600080fd5b5060043610610073577c010000000000000000000000000000000000000000000000000000000060003504630ae5e739811461007857806385e68531146100a05780638da5cb5b146100c6578063f2fde38b146100ea578063f46eccc414610110575b600080fd5b61009e6004803603602081101561008e57600080fd5b5035600160a060020a031661014a565b005b61009e600480360360208110156100b657600080fd5b5035600160a060020a0316610230565b6100ce610316565b60408051600160a060020a039092168252519081900360200190f35b61009e6004803603602081101561010057600080fd5b5035600160a060020a0316610325565b6101366004803603602081101561012657600080fd5b5035600160a060020a03166103c2565b604080519115158252519081900360200190f35b600054600160a060020a031633146101ac576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602052604090205460ff1680156102085760405160e560020a62461bcd0281526004018080602001828103825260268152602001806103fa6026913960400191505060405180910390fd5b50600160a060020a03166000908152600160208190526040909120805460ff19169091179055565b600054600160a060020a03163314610292576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602081905260409091205460ff1690811515146102f45760405160e560020a62461bcd0281526004018080602001828103825260228152602001806103d86022913960400191505060405180910390fd5b50600160a060020a03166000908152600160205260409020805460ff19169055565b600054600160a060020a031681565b600054600160a060020a03163314610387576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a038116156103bf576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b50565b60016020526000908152604090205460ff168156fe6d696e74657220686173206e6f74206265656e206772616e746564206163636573736d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373a26469706673582212205f0fe568511adec5fdd785cea8bc2576de6163c14b3bb7c8a01123fa51bc272364736f6c63430006060033",
-  "deployedBytecode": "0x608060405234801561001057600080fd5b5060043610610073577c010000000000000000000000000000000000000000000000000000000060003504630ae5e739811461007857806385e68531146100a05780638da5cb5b146100c6578063f2fde38b146100ea578063f46eccc414610110575b600080fd5b61009e6004803603602081101561008e57600080fd5b5035600160a060020a031661014a565b005b61009e600480360360208110156100b657600080fd5b5035600160a060020a0316610230565b6100ce610316565b60408051600160a060020a039092168252519081900360200190f35b61009e6004803603602081101561010057600080fd5b5035600160a060020a0316610325565b6101366004803603602081101561012657600080fd5b5035600160a060020a03166103c2565b604080519115158252519081900360200190f35b600054600160a060020a031633146101ac576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602052604090205460ff1680156102085760405160e560020a62461bcd0281526004018080602001828103825260268152602001806103fa6026913960400191505060405180910390fd5b50600160a060020a03166000908152600160208190526040909120805460ff19169091179055565b600054600160a060020a03163314610292576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602081905260409091205460ff1690811515146102f45760405160e560020a62461bcd0281526004018080602001828103825260228152602001806103d86022913960400191505060405180910390fd5b50600160a060020a03166000908152600160205260409020805460ff19169055565b600054600160a060020a031681565b600054600160a060020a03163314610387576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a038116156103bf576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b50565b60016020526000908152604090205460ff168156fe6d696e74657220686173206e6f74206265656e206772616e746564206163636573736d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373a26469706673582212205f0fe568511adec5fdd785cea8bc2576de6163c14b3bb7c8a01123fa51bc272364736f6c63430006060033",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"minter\",\"type\":\"address\"}],\"name\":\"grantAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"minters\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"minter\",\"type\":\"address\"}],\"name\":\"revokeAccess\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/XendTokenMinters.sol\":\"XendTokenMinters\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol\":{\"keccak256\":\"0x54af820b9e6407e6456bd74ce9d59cc27885b5af010423196eda2f6eaa5168d5\",\"urls\":[\"bzz-raw://4062e537f4d2f0ebc1aa7d4282e3c932947950f15637159f8f333902cf9f5bcd\",\"dweb:/ipfs/QmWteS5JgeaC9hhy7rmUe91zdrZFwk67uzq5rpRj2Aery7\"]},\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/XendTokenMinters.sol\":{\"keccak256\":\"0xabc8dfb66a1530e440b1da1dc05788ee2b0e69bf31c0bf6aabe4f520fa608899\",\"urls\":[\"bzz-raw://ea5398e9a1bd7e72be70484cf0cbc4ad3bd3efdabb640539dfdcdb8f46590cc9\",\"dweb:/ipfs/QmeueML4gusx5SgUb8bWH4qHmuxnW1FKa3NhkLZ6yF6MZy\"]}},\"version\":1}",
+  "bytecode": "0x608060405260008054600160a060020a03191633179055610455806100256000396000f3fe608060405234801561001057600080fd5b5060043610610073577c010000000000000000000000000000000000000000000000000000000060003504630ae5e739811461007857806385e68531146100a05780638da5cb5b146100c6578063f2fde38b146100ea578063f46eccc414610110575b600080fd5b61009e6004803603602081101561008e57600080fd5b5035600160a060020a031661014a565b005b61009e600480360360208110156100b657600080fd5b5035600160a060020a0316610230565b6100ce610316565b60408051600160a060020a039092168252519081900360200190f35b61009e6004803603602081101561010057600080fd5b5035600160a060020a0316610325565b6101366004803603602081101561012657600080fd5b5035600160a060020a03166103c2565b604080519115158252519081900360200190f35b600054600160a060020a031633146101ac576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602052604090205460ff1680156102085760405160e560020a62461bcd0281526004018080602001828103825260268152602001806103fa6026913960400191505060405180910390fd5b50600160a060020a03166000908152600160208190526040909120805460ff19169091179055565b600054600160a060020a03163314610292576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602081905260409091205460ff1690811515146102f45760405160e560020a62461bcd0281526004018080602001828103825260228152602001806103d86022913960400191505060405180910390fd5b50600160a060020a03166000908152600160205260409020805460ff19169055565b600054600160a060020a031681565b600054600160a060020a03163314610387576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a038116156103bf576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b50565b60016020526000908152604090205460ff168156fe6d696e74657220686173206e6f74206265656e206772616e746564206163636573736d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373a2646970667358221220479f8ec8e3c67ba959d908a03f43844636b2b00ee80a9241167266d2f730762164736f6c63430006060033",
+  "deployedBytecode": "0x608060405234801561001057600080fd5b5060043610610073577c010000000000000000000000000000000000000000000000000000000060003504630ae5e739811461007857806385e68531146100a05780638da5cb5b146100c6578063f2fde38b146100ea578063f46eccc414610110575b600080fd5b61009e6004803603602081101561008e57600080fd5b5035600160a060020a031661014a565b005b61009e600480360360208110156100b657600080fd5b5035600160a060020a0316610230565b6100ce610316565b60408051600160a060020a039092168252519081900360200190f35b61009e6004803603602081101561010057600080fd5b5035600160a060020a0316610325565b6101366004803603602081101561012657600080fd5b5035600160a060020a03166103c2565b604080519115158252519081900360200190f35b600054600160a060020a031633146101ac576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602052604090205460ff1680156102085760405160e560020a62461bcd0281526004018080602001828103825260268152602001806103fa6026913960400191505060405180910390fd5b50600160a060020a03166000908152600160208190526040909120805460ff19169091179055565b600054600160a060020a03163314610292576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a03811660009081526001602081905260409091205460ff1690811515146102f45760405160e560020a62461bcd0281526004018080602001828103825260228152602001806103d86022913960400191505060405180910390fd5b50600160a060020a03166000908152600160205260409020805460ff19169055565b600054600160a060020a031681565b600054600160a060020a03163314610387576040805160e560020a62461bcd02815260206004820152601f60248201527f556e617574686f72697a65642061636365737320746f20636f6e747261637400604482015290519081900360640190fd5b600160a060020a038116156103bf576000805473ffffffffffffffffffffffffffffffffffffffff1916600160a060020a0383161790555b50565b60016020526000908152604090205460ff168156fe6d696e74657220686173206e6f74206265656e206772616e746564206163636573736d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373a2646970667358221220479f8ec8e3c67ba959d908a03f43844636b2b00ee80a9241167266d2f730762164736f6c63430006060033",
   "immutableReferences": {},
   "sourceMap": "52:763:54:-:0;;;298:5:50;:18;;-1:-1:-1;;;;;;298:18:50;306:10;298:18;;;52:763:54;;;;;;",
   "deployedSourceMap": "52:763:54:-:0;;;;5:9:-1;2:2;;;27:1;24;17:12;2:2;52:763:54;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;12:1:-1;9;2:12;367:220:54;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;-1:-1;367:220:54;-1:-1:-1;;;;;367:220:54;;:::i;:::-;;595:217;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;-1:-1;595:217:54;-1:-1:-1;;;;;595:217:54;;:::i;227:28:50:-;;;:::i;:::-;;;;-1:-1:-1;;;;;227:28:50;;;;;;;;;;;;;;455:159;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;-1:-1;455:159:50;-1:-1:-1;;;;;455:159:50;;:::i;96:39:54:-;;;;;;15:2:-1;10:3;7:11;4:2;;;31:1;28;21:12;4:2;-1:-1;96:39:54;-1:-1:-1;;;;;96:39:54;;:::i;:::-;;;;;;;;;;;;;;;;;;367:220;386:5:50;;-1:-1:-1;;;;;386:5:50;372:10;:19;364:63;;;;;-1:-1:-1;;;;;364:63:50;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;449:15:54;::::1;432:14;449:15:::0;;;:7:::1;:15;::::0;;;;;::::1;;485:18:::0;::::1;477:69;;;;-1:-1:-1::0;;;;;477:69:54::1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1::0;;;;;;557:15:54::1;;::::0;;;575:4:::1;557:15;::::0;;;;;;;:22;;-1:-1:-1;;557:22:54::1;::::0;;::::1;::::0;;367:220::o;595:217::-;386:5:50;;-1:-1:-1;;;;;386:5:50;372:10;:19;364:63;;;;;-1:-1:-1;;;;;364:63:50;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;678:15:54;::::1;661:14;678:15:::0;;;:7:::1;:15;::::0;;;;;;;;::::1;;::::0;714:17;::::1;;;706:64;;;;-1:-1:-1::0;;;;;706:64:54::1;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1::0;;;;;;781:15:54::1;799:5;781:15:::0;;;:7:::1;:15;::::0;;;;:23;;-1:-1:-1;;781:23:54::1;::::0;;595:217::o;227:28:50:-;;;-1:-1:-1;;;;;227:28:50;;:::o;455:159::-;386:5;;-1:-1:-1;;;;;386:5:50;372:10;:19;364:63;;;;;-1:-1:-1;;;;;364:63:50;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;;;;;540:22:50;::::1;::::0;536:71:::1;;579:5;:16:::0;;-1:-1:-1;;579:16:50::1;-1:-1:-1::0;;;;;579:16:50;::::1;;::::0;;536:71:::1;455:159:::0;:::o;96:39:54:-;;;;;;;;;;;;;;;:::o",
   "source": "pragma solidity ^0.6.4;\r\nimport \"./Ownable.sol\";\r\n\r\ncontract XendTokenMinters is Ownable {\r\n    mapping(address => bool) public minters;\r\n\r\n    modifier onlyMinter() {\r\n        bool hasAccess = minters[msg.sender];\r\n        require(\r\n            hasAccess == true,\r\n            \"mint access has not been granted to this account\"\r\n        );\r\n        _;\r\n    }\r\n\r\n    function grantAccess(address minter) public onlyOwner {\r\n        bool hasAccess = minters[minter];\r\n\r\n        require(hasAccess == false, \"minter has already been granted access\");\r\n        minters[minter] = true;\r\n    }\r\n\r\n    function revokeAccess(address minter) public onlyOwner {\r\n        bool hasAccess = minters[minter];\r\n\r\n        require(hasAccess == true, \"minter has not been granted access\");\r\n        minters[minter] = false;\r\n    }\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\XendToken\\XendTokenMinters.sol",
+  "sourcePath": "C:\\Users\\HP\\Desktop\\BinaryHills Projects\\XendFinance\\yearn-savings\\Tests\\contracts\\XendToken\\XendTokenMinters.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/XendTokenMinters.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/XendTokenMinters.sol",
     "exportedSymbols": {
       "XendTokenMinters": [
-        15511
+        15509
       ]
     },
-    "id": 15512,
+    "id": 15510,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 15431,
+        "id": 15429,
         "literals": [
           "solidity",
           "^",
@@ -103,11 +103,11 @@
         "src": "0:23:54"
       },
       {
-        "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol",
+        "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 15432,
+        "id": 15430,
         "nodeType": "ImportDirective",
-        "scope": 15512,
+        "scope": 15510,
         "sourceUnit": 14896,
         "src": "25:23:54",
         "symbolAliases": [],
@@ -120,7 +120,7 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 15433,
+              "id": 15431,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 14895,
@@ -130,7 +130,7 @@
                 "typeString": "contract Ownable"
               }
             },
-            "id": 15434,
+            "id": 15432,
             "nodeType": "InheritanceSpecifier",
             "src": "81:7:54"
           }
@@ -141,9 +141,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 15511,
+        "id": 15509,
         "linearizedBaseContracts": [
-          15511,
+          15509,
           14895
         ],
         "name": "XendTokenMinters",
@@ -152,12 +152,12 @@
           {
             "constant": false,
             "functionSelector": "f46eccc4",
-            "id": 15438,
+            "id": 15436,
             "mutability": "mutable",
             "name": "minters",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 15511,
+            "scope": 15509,
             "src": "96:39:54",
             "stateVariable": true,
             "storageLocation": "default",
@@ -166,9 +166,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 15437,
+              "id": 15435,
               "keyType": {
-                "id": 15435,
+                "id": 15433,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "104:7:54",
@@ -184,7 +184,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 15436,
+                "id": 15434,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "115:4:54",
@@ -199,23 +199,23 @@
           },
           {
             "body": {
-              "id": 15455,
+              "id": 15453,
               "nodeType": "Block",
               "src": "166:193:54",
               "statements": [
                 {
                   "assignments": [
-                    15441
+                    15439
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15441,
+                      "id": 15439,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15455,
+                      "scope": 15453,
                       "src": "177:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -224,7 +224,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15440,
+                        "id": 15438,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "177:4:54",
@@ -237,28 +237,28 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15446,
+                  "id": 15444,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15442,
+                      "id": 15440,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "194:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15445,
+                    "id": 15443,
                     "indexExpression": {
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 15443,
+                        "id": 15441,
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -269,7 +269,7 @@
                           "typeString": "msg"
                         }
                       },
-                      "id": 15444,
+                      "id": 15442,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -307,18 +307,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15450,
+                        "id": 15448,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15448,
+                          "id": 15446,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15441,
+                          "referencedDeclaration": 15439,
                           "src": "246:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -330,7 +330,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 15449,
+                          "id": 15447,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -354,7 +354,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e742061636365737320686173206e6f74206265656e206772616e74656420746f2074686973206163636f756e74",
-                        "id": 15451,
+                        "id": 15449,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -381,7 +381,7 @@
                           "typeString": "literal_string \"mint access has not been granted to this account\""
                         }
                       ],
-                      "id": 15447,
+                      "id": 15445,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -395,7 +395,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15452,
+                    "id": 15450,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -410,24 +410,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15453,
+                  "id": 15451,
                   "nodeType": "ExpressionStatement",
                   "src": "224:115:54"
                 },
                 {
-                  "id": 15454,
+                  "id": 15452,
                   "nodeType": "PlaceholderStatement",
                   "src": "350:1:54"
                 }
               ]
             },
             "documentation": null,
-            "id": 15456,
+            "id": 15454,
             "name": "onlyMinter",
             "nodeType": "ModifierDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15439,
+              "id": 15437,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "163:2:54"
@@ -438,23 +438,23 @@
           },
           {
             "body": {
-              "id": 15482,
+              "id": 15480,
               "nodeType": "Block",
               "src": "421:166:54",
               "statements": [
                 {
                   "assignments": [
-                    15464
+                    15462
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15464,
+                      "id": 15462,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15482,
+                      "scope": 15480,
                       "src": "432:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -463,7 +463,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15463,
+                        "id": 15461,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "432:4:54",
@@ -476,30 +476,30 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15468,
+                  "id": 15466,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15465,
+                      "id": 15463,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "449:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15467,
+                    "id": 15465,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 15466,
+                      "id": 15464,
                       "name": "minter",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15458,
+                      "referencedDeclaration": 15456,
                       "src": "457:6:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -530,18 +530,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15472,
+                        "id": 15470,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15470,
+                          "id": 15468,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15464,
+                          "referencedDeclaration": 15462,
                           "src": "485:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -553,7 +553,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "66616c7365",
-                          "id": 15471,
+                          "id": 15469,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -577,7 +577,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373",
-                        "id": 15473,
+                        "id": 15471,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -604,7 +604,7 @@
                           "typeString": "literal_string \"minter has already been granted access\""
                         }
                       ],
-                      "id": 15469,
+                      "id": 15467,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -618,7 +618,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15474,
+                    "id": 15472,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -633,14 +633,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15475,
+                  "id": 15473,
                   "nodeType": "ExpressionStatement",
                   "src": "477:69:54"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 15480,
+                    "id": 15478,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -649,25 +649,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 15476,
+                        "id": 15474,
                         "name": "minters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15438,
+                        "referencedDeclaration": 15436,
                         "src": "557:7:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                           "typeString": "mapping(address => bool)"
                         }
                       },
-                      "id": 15478,
+                      "id": 15476,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 15477,
+                        "id": 15475,
                         "name": "minter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15458,
+                        "referencedDeclaration": 15456,
                         "src": "565:6:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -690,7 +690,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "74727565",
-                      "id": 15479,
+                      "id": 15477,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -711,7 +711,7 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 15481,
+                  "id": 15479,
                   "nodeType": "ExpressionStatement",
                   "src": "557:22:54"
                 }
@@ -719,16 +719,16 @@
             },
             "documentation": null,
             "functionSelector": "0ae5e739",
-            "id": 15483,
+            "id": 15481,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 15461,
+                "id": 15459,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 15460,
+                  "id": 15458,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -747,17 +747,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15459,
+              "id": 15457,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15458,
+                  "id": 15456,
                   "mutability": "mutable",
                   "name": "minter",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 15483,
+                  "scope": 15481,
                   "src": "388:14:54",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -766,7 +766,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15457,
+                    "id": 15455,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "388:7:54",
@@ -783,12 +783,12 @@
               "src": "387:16:54"
             },
             "returnParameters": {
-              "id": 15462,
+              "id": 15460,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "421:0:54"
             },
-            "scope": 15511,
+            "scope": 15509,
             "src": "367:220:54",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -796,23 +796,23 @@
           },
           {
             "body": {
-              "id": 15509,
+              "id": 15507,
               "nodeType": "Block",
               "src": "650:162:54",
               "statements": [
                 {
                   "assignments": [
-                    15491
+                    15489
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15491,
+                      "id": 15489,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15509,
+                      "scope": 15507,
                       "src": "661:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -821,7 +821,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15490,
+                        "id": 15488,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "661:4:54",
@@ -834,30 +834,30 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15495,
+                  "id": 15493,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15492,
+                      "id": 15490,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "678:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15494,
+                    "id": 15492,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 15493,
+                      "id": 15491,
                       "name": "minter",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15485,
+                      "referencedDeclaration": 15483,
                       "src": "686:6:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -888,18 +888,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15499,
+                        "id": 15497,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15497,
+                          "id": 15495,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15491,
+                          "referencedDeclaration": 15489,
                           "src": "714:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -911,7 +911,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 15498,
+                          "id": 15496,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -935,7 +935,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e74657220686173206e6f74206265656e206772616e74656420616363657373",
-                        "id": 15500,
+                        "id": 15498,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -962,7 +962,7 @@
                           "typeString": "literal_string \"minter has not been granted access\""
                         }
                       ],
-                      "id": 15496,
+                      "id": 15494,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -976,7 +976,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15501,
+                    "id": 15499,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -991,14 +991,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15502,
+                  "id": 15500,
                   "nodeType": "ExpressionStatement",
                   "src": "706:64:54"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 15507,
+                    "id": 15505,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1007,25 +1007,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 15503,
+                        "id": 15501,
                         "name": "minters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15438,
+                        "referencedDeclaration": 15436,
                         "src": "781:7:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                           "typeString": "mapping(address => bool)"
                         }
                       },
-                      "id": 15505,
+                      "id": 15503,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 15504,
+                        "id": 15502,
                         "name": "minter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15485,
+                        "referencedDeclaration": 15483,
                         "src": "789:6:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -1048,7 +1048,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "66616c7365",
-                      "id": 15506,
+                      "id": 15504,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -1069,7 +1069,7 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 15508,
+                  "id": 15506,
                   "nodeType": "ExpressionStatement",
                   "src": "781:23:54"
                 }
@@ -1077,16 +1077,16 @@
             },
             "documentation": null,
             "functionSelector": "85e68531",
-            "id": 15510,
+            "id": 15508,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 15488,
+                "id": 15486,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 15487,
+                  "id": 15485,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -1105,17 +1105,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15486,
+              "id": 15484,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15485,
+                  "id": 15483,
                   "mutability": "mutable",
                   "name": "minter",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 15510,
+                  "scope": 15508,
                   "src": "617:14:54",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1124,7 +1124,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15484,
+                    "id": 15482,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "617:7:54",
@@ -1141,36 +1141,36 @@
               "src": "616:16:54"
             },
             "returnParameters": {
-              "id": 15489,
+              "id": 15487,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "650:0:54"
             },
-            "scope": 15511,
+            "scope": 15509,
             "src": "595:217:54",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 15512,
+        "scope": 15510,
         "src": "52:763:54"
       }
     ],
     "src": "0:817:54"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/XendTokenMinters.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/XendTokenMinters.sol",
     "exportedSymbols": {
       "XendTokenMinters": [
-        15511
+        15509
       ]
     },
-    "id": 15512,
+    "id": 15510,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 15431,
+        "id": 15429,
         "literals": [
           "solidity",
           "^",
@@ -1181,11 +1181,11 @@
         "src": "0:23:54"
       },
       {
-        "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/XendToken/Ownable.sol",
+        "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/XendToken/Ownable.sol",
         "file": "./Ownable.sol",
-        "id": 15432,
+        "id": 15430,
         "nodeType": "ImportDirective",
-        "scope": 15512,
+        "scope": 15510,
         "sourceUnit": 14896,
         "src": "25:23:54",
         "symbolAliases": [],
@@ -1198,7 +1198,7 @@
             "arguments": null,
             "baseName": {
               "contractScope": null,
-              "id": 15433,
+              "id": 15431,
               "name": "Ownable",
               "nodeType": "UserDefinedTypeName",
               "referencedDeclaration": 14895,
@@ -1208,7 +1208,7 @@
                 "typeString": "contract Ownable"
               }
             },
-            "id": 15434,
+            "id": 15432,
             "nodeType": "InheritanceSpecifier",
             "src": "81:7:54"
           }
@@ -1219,9 +1219,9 @@
         "contractKind": "contract",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 15511,
+        "id": 15509,
         "linearizedBaseContracts": [
-          15511,
+          15509,
           14895
         ],
         "name": "XendTokenMinters",
@@ -1230,12 +1230,12 @@
           {
             "constant": false,
             "functionSelector": "f46eccc4",
-            "id": 15438,
+            "id": 15436,
             "mutability": "mutable",
             "name": "minters",
             "nodeType": "VariableDeclaration",
             "overrides": null,
-            "scope": 15511,
+            "scope": 15509,
             "src": "96:39:54",
             "stateVariable": true,
             "storageLocation": "default",
@@ -1244,9 +1244,9 @@
               "typeString": "mapping(address => bool)"
             },
             "typeName": {
-              "id": 15437,
+              "id": 15435,
               "keyType": {
-                "id": 15435,
+                "id": 15433,
                 "name": "address",
                 "nodeType": "ElementaryTypeName",
                 "src": "104:7:54",
@@ -1262,7 +1262,7 @@
                 "typeString": "mapping(address => bool)"
               },
               "valueType": {
-                "id": 15436,
+                "id": 15434,
                 "name": "bool",
                 "nodeType": "ElementaryTypeName",
                 "src": "115:4:54",
@@ -1277,23 +1277,23 @@
           },
           {
             "body": {
-              "id": 15455,
+              "id": 15453,
               "nodeType": "Block",
               "src": "166:193:54",
               "statements": [
                 {
                   "assignments": [
-                    15441
+                    15439
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15441,
+                      "id": 15439,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15455,
+                      "scope": 15453,
                       "src": "177:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -1302,7 +1302,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15440,
+                        "id": 15438,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "177:4:54",
@@ -1315,28 +1315,28 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15446,
+                  "id": 15444,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15442,
+                      "id": 15440,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "194:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15445,
+                    "id": 15443,
                     "indexExpression": {
                       "argumentTypes": null,
                       "expression": {
                         "argumentTypes": null,
-                        "id": 15443,
+                        "id": 15441,
                         "name": "msg",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
@@ -1347,7 +1347,7 @@
                           "typeString": "msg"
                         }
                       },
-                      "id": 15444,
+                      "id": 15442,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": false,
@@ -1385,18 +1385,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15450,
+                        "id": 15448,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15448,
+                          "id": 15446,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15441,
+                          "referencedDeclaration": 15439,
                           "src": "246:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -1408,7 +1408,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 15449,
+                          "id": 15447,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1432,7 +1432,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e742061636365737320686173206e6f74206265656e206772616e74656420746f2074686973206163636f756e74",
-                        "id": 15451,
+                        "id": 15449,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -1459,7 +1459,7 @@
                           "typeString": "literal_string \"mint access has not been granted to this account\""
                         }
                       ],
-                      "id": 15447,
+                      "id": 15445,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -1473,7 +1473,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15452,
+                    "id": 15450,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1488,24 +1488,24 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15453,
+                  "id": 15451,
                   "nodeType": "ExpressionStatement",
                   "src": "224:115:54"
                 },
                 {
-                  "id": 15454,
+                  "id": 15452,
                   "nodeType": "PlaceholderStatement",
                   "src": "350:1:54"
                 }
               ]
             },
             "documentation": null,
-            "id": 15456,
+            "id": 15454,
             "name": "onlyMinter",
             "nodeType": "ModifierDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15439,
+              "id": 15437,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "163:2:54"
@@ -1516,23 +1516,23 @@
           },
           {
             "body": {
-              "id": 15482,
+              "id": 15480,
               "nodeType": "Block",
               "src": "421:166:54",
               "statements": [
                 {
                   "assignments": [
-                    15464
+                    15462
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15464,
+                      "id": 15462,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15482,
+                      "scope": 15480,
                       "src": "432:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -1541,7 +1541,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15463,
+                        "id": 15461,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "432:4:54",
@@ -1554,30 +1554,30 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15468,
+                  "id": 15466,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15465,
+                      "id": 15463,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "449:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15467,
+                    "id": 15465,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 15466,
+                      "id": 15464,
                       "name": "minter",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15458,
+                      "referencedDeclaration": 15456,
                       "src": "457:6:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -1608,18 +1608,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15472,
+                        "id": 15470,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15470,
+                          "id": 15468,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15464,
+                          "referencedDeclaration": 15462,
                           "src": "485:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -1631,7 +1631,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "66616c7365",
-                          "id": 15471,
+                          "id": 15469,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -1655,7 +1655,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e7465722068617320616c7265616479206265656e206772616e74656420616363657373",
-                        "id": 15473,
+                        "id": 15471,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -1682,7 +1682,7 @@
                           "typeString": "literal_string \"minter has already been granted access\""
                         }
                       ],
-                      "id": 15469,
+                      "id": 15467,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -1696,7 +1696,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15474,
+                    "id": 15472,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1711,14 +1711,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15475,
+                  "id": 15473,
                   "nodeType": "ExpressionStatement",
                   "src": "477:69:54"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 15480,
+                    "id": 15478,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -1727,25 +1727,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 15476,
+                        "id": 15474,
                         "name": "minters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15438,
+                        "referencedDeclaration": 15436,
                         "src": "557:7:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                           "typeString": "mapping(address => bool)"
                         }
                       },
-                      "id": 15478,
+                      "id": 15476,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 15477,
+                        "id": 15475,
                         "name": "minter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15458,
+                        "referencedDeclaration": 15456,
                         "src": "565:6:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -1768,7 +1768,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "74727565",
-                      "id": 15479,
+                      "id": 15477,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -1789,7 +1789,7 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 15481,
+                  "id": 15479,
                   "nodeType": "ExpressionStatement",
                   "src": "557:22:54"
                 }
@@ -1797,16 +1797,16 @@
             },
             "documentation": null,
             "functionSelector": "0ae5e739",
-            "id": 15483,
+            "id": 15481,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 15461,
+                "id": 15459,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 15460,
+                  "id": 15458,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -1825,17 +1825,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15459,
+              "id": 15457,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15458,
+                  "id": 15456,
                   "mutability": "mutable",
                   "name": "minter",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 15483,
+                  "scope": 15481,
                   "src": "388:14:54",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -1844,7 +1844,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15457,
+                    "id": 15455,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "388:7:54",
@@ -1861,12 +1861,12 @@
               "src": "387:16:54"
             },
             "returnParameters": {
-              "id": 15462,
+              "id": 15460,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "421:0:54"
             },
-            "scope": 15511,
+            "scope": 15509,
             "src": "367:220:54",
             "stateMutability": "nonpayable",
             "virtual": false,
@@ -1874,23 +1874,23 @@
           },
           {
             "body": {
-              "id": 15509,
+              "id": 15507,
               "nodeType": "Block",
               "src": "650:162:54",
               "statements": [
                 {
                   "assignments": [
-                    15491
+                    15489
                   ],
                   "declarations": [
                     {
                       "constant": false,
-                      "id": 15491,
+                      "id": 15489,
                       "mutability": "mutable",
                       "name": "hasAccess",
                       "nodeType": "VariableDeclaration",
                       "overrides": null,
-                      "scope": 15509,
+                      "scope": 15507,
                       "src": "661:14:54",
                       "stateVariable": false,
                       "storageLocation": "default",
@@ -1899,7 +1899,7 @@
                         "typeString": "bool"
                       },
                       "typeName": {
-                        "id": 15490,
+                        "id": 15488,
                         "name": "bool",
                         "nodeType": "ElementaryTypeName",
                         "src": "661:4:54",
@@ -1912,30 +1912,30 @@
                       "visibility": "internal"
                     }
                   ],
-                  "id": 15495,
+                  "id": 15493,
                   "initialValue": {
                     "argumentTypes": null,
                     "baseExpression": {
                       "argumentTypes": null,
-                      "id": 15492,
+                      "id": 15490,
                       "name": "minters",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15438,
+                      "referencedDeclaration": 15436,
                       "src": "678:7:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                         "typeString": "mapping(address => bool)"
                       }
                     },
-                    "id": 15494,
+                    "id": 15492,
                     "indexExpression": {
                       "argumentTypes": null,
-                      "id": 15493,
+                      "id": 15491,
                       "name": "minter",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [],
-                      "referencedDeclaration": 15485,
+                      "referencedDeclaration": 15483,
                       "src": "686:6:54",
                       "typeDescriptions": {
                         "typeIdentifier": "t_address",
@@ -1966,18 +1966,18 @@
                           "typeIdentifier": "t_bool",
                           "typeString": "bool"
                         },
-                        "id": 15499,
+                        "id": 15497,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": false,
                         "lValueRequested": false,
                         "leftExpression": {
                           "argumentTypes": null,
-                          "id": 15497,
+                          "id": 15495,
                           "name": "hasAccess",
                           "nodeType": "Identifier",
                           "overloadedDeclarations": [],
-                          "referencedDeclaration": 15491,
+                          "referencedDeclaration": 15489,
                           "src": "714:9:54",
                           "typeDescriptions": {
                             "typeIdentifier": "t_bool",
@@ -1989,7 +1989,7 @@
                         "rightExpression": {
                           "argumentTypes": null,
                           "hexValue": "74727565",
-                          "id": 15498,
+                          "id": 15496,
                           "isConstant": false,
                           "isLValue": false,
                           "isPure": true,
@@ -2013,7 +2013,7 @@
                       {
                         "argumentTypes": null,
                         "hexValue": "6d696e74657220686173206e6f74206265656e206772616e74656420616363657373",
-                        "id": 15500,
+                        "id": 15498,
                         "isConstant": false,
                         "isLValue": false,
                         "isPure": true,
@@ -2040,7 +2040,7 @@
                           "typeString": "literal_string \"minter has not been granted access\""
                         }
                       ],
-                      "id": 15496,
+                      "id": 15494,
                       "name": "require",
                       "nodeType": "Identifier",
                       "overloadedDeclarations": [
@@ -2054,7 +2054,7 @@
                         "typeString": "function (bool,string memory) pure"
                       }
                     },
-                    "id": 15501,
+                    "id": 15499,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2069,14 +2069,14 @@
                       "typeString": "tuple()"
                     }
                   },
-                  "id": 15502,
+                  "id": 15500,
                   "nodeType": "ExpressionStatement",
                   "src": "706:64:54"
                 },
                 {
                   "expression": {
                     "argumentTypes": null,
-                    "id": 15507,
+                    "id": 15505,
                     "isConstant": false,
                     "isLValue": false,
                     "isPure": false,
@@ -2085,25 +2085,25 @@
                       "argumentTypes": null,
                       "baseExpression": {
                         "argumentTypes": null,
-                        "id": 15503,
+                        "id": 15501,
                         "name": "minters",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15438,
+                        "referencedDeclaration": 15436,
                         "src": "781:7:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_mapping$_t_address_$_t_bool_$",
                           "typeString": "mapping(address => bool)"
                         }
                       },
-                      "id": 15505,
+                      "id": 15503,
                       "indexExpression": {
                         "argumentTypes": null,
-                        "id": 15504,
+                        "id": 15502,
                         "name": "minter",
                         "nodeType": "Identifier",
                         "overloadedDeclarations": [],
-                        "referencedDeclaration": 15485,
+                        "referencedDeclaration": 15483,
                         "src": "789:6:54",
                         "typeDescriptions": {
                           "typeIdentifier": "t_address",
@@ -2126,7 +2126,7 @@
                     "rightHandSide": {
                       "argumentTypes": null,
                       "hexValue": "66616c7365",
-                      "id": 15506,
+                      "id": 15504,
                       "isConstant": false,
                       "isLValue": false,
                       "isPure": true,
@@ -2147,7 +2147,7 @@
                       "typeString": "bool"
                     }
                   },
-                  "id": 15508,
+                  "id": 15506,
                   "nodeType": "ExpressionStatement",
                   "src": "781:23:54"
                 }
@@ -2155,16 +2155,16 @@
             },
             "documentation": null,
             "functionSelector": "85e68531",
-            "id": 15510,
+            "id": 15508,
             "implemented": true,
             "kind": "function",
             "modifiers": [
               {
                 "arguments": null,
-                "id": 15488,
+                "id": 15486,
                 "modifierName": {
                   "argumentTypes": null,
-                  "id": 15487,
+                  "id": 15485,
                   "name": "onlyOwner",
                   "nodeType": "Identifier",
                   "overloadedDeclarations": [],
@@ -2183,17 +2183,17 @@
             "nodeType": "FunctionDefinition",
             "overrides": null,
             "parameters": {
-              "id": 15486,
+              "id": 15484,
               "nodeType": "ParameterList",
               "parameters": [
                 {
                   "constant": false,
-                  "id": 15485,
+                  "id": 15483,
                   "mutability": "mutable",
                   "name": "minter",
                   "nodeType": "VariableDeclaration",
                   "overrides": null,
-                  "scope": 15510,
+                  "scope": 15508,
                   "src": "617:14:54",
                   "stateVariable": false,
                   "storageLocation": "default",
@@ -2202,7 +2202,7 @@
                     "typeString": "address"
                   },
                   "typeName": {
-                    "id": 15484,
+                    "id": 15482,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
                     "src": "617:7:54",
@@ -2219,19 +2219,19 @@
               "src": "616:16:54"
             },
             "returnParameters": {
-              "id": 15489,
+              "id": 15487,
               "nodeType": "ParameterList",
               "parameters": [],
               "src": "650:0:54"
             },
-            "scope": 15511,
+            "scope": 15509,
             "src": "595:217:54",
             "stateMutability": "nonpayable",
             "virtual": false,
             "visibility": "public"
           }
         ],
-        "scope": 15512,
+        "scope": 15510,
         "src": "52:763:54"
       }
     ],
@@ -2242,8 +2242,8 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.775Z",
+  "schemaVersion": "3.3.1",
+  "updatedAt": "2020-11-16T12:03:52.497Z",
   "devdoc": {
     "methods": {}
   },

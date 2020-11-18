@@ -1,16 +1,16 @@
 {
   "contractName": "IGroupSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IGroupSchema.sol\":\"IGroupSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IGroupSchema.sol\":{\"keccak256\":\"0x887d99f8087397d70f05c5cac84229298cd1862c73b2ed934d46e5fa7cb9fde1\",\"urls\":[\"bzz-raw://b133320ad491bf5e7f52c658c20fd4bc0a762fbdb9d9a377c20f501595914f67\",\"dweb:/ipfs/QmW7h3xxJbL813t9CBM8CjzvLrJA241RDBoYTDL66DHhEa\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/IGroupSchema.sol\":\"IGroupSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/IGroupSchema.sol\":{\"keccak256\":\"0x887d99f8087397d70f05c5cac84229298cd1862c73b2ed934d46e5fa7cb9fde1\",\"urls\":[\"bzz-raw://b133320ad491bf5e7f52c658c20fd4bc0a762fbdb9d9a377c20f501595914f67\",\"dweb:/ipfs/QmW7h3xxJbL813t9CBM8CjzvLrJA241RDBoYTDL66DHhEa\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\r\n\r\ninterface IGroupSchema {\r\n    struct Group {\r\n        bool exists;\r\n        uint256 id;\r\n        string name;\r\n        string symbol;\r\n        address payable creatorAddress;\r\n    }\r\n\r\n    struct Cycle {\r\n        bool exists;\r\n        uint256 id;\r\n        uint256 groupId;\r\n        uint256 numberOfDepositors;\r\n        uint256 cycleStartTimeStamp;\r\n        uint256 cycleDuration;\r\n        uint256 maximumSlots;\r\n        bool hasMaximumSlots;\r\n        uint256 cycleStakeAmount;\r\n        // represents the total stakes of every cycle member deposits\r\n        uint256 totalStakes;\r\n        //represents the total stakes of every cycle member withdrawal\r\n        uint256 stakesClaimed;\r\n        CycleStatus cycleStatus;\r\n        // represents the number of cycle stakes that user's have cashed out on before the cycle has ended\r\n        uint256 stakesClaimedBeforeMaturity;\r\n    }\r\n\r\n    struct CycleFinancial {\r\n        bool exists;\r\n        uint256 cycleId;\r\n        //total underlying asset deposited into contract\r\n        uint256 underlyingTotalDeposits;\r\n        //total underlying asset that have been withdrawn by cycle members\r\n        uint256 underlyingTotalWithdrawn;\r\n        // underlying amount gotten after lending period has ended and shares have been reedemed for underlying asset;\r\n        uint256 underlyingBalance;\r\n        // lending shares representation of amount deposited in lending protocol\r\n        uint256 derivativeBalance;\r\n        // represents the total underlying crypto amount that has been cashed out before the cycle ended\r\n        uint256 underylingBalanceClaimedBeforeMaturity;\r\n        // represents the total derivative crypto amount that has been cashed out on before the cycle ended\r\n        uint256 derivativeBalanceClaimedBeforeMaturity;\r\n    }\r\n\r\n    struct CycleMember {\r\n        bool exist;\r\n        uint256 cycleId;\r\n        uint256 groupId;\r\n        address payable _address;\r\n        uint256 totalLiquidityAsPenalty;\r\n        uint256 numberOfCycleStakes;\r\n        uint256 stakesClaimed;\r\n        bool hasWithdrawn;\r\n    }\r\n\r\n    struct Member {\r\n        bool exists;\r\n        address payable _address;\r\n    }\r\n\r\n    struct GroupMember {\r\n        bool exists;\r\n        address payable _address;\r\n        uint256 groupId;\r\n    }\r\n\r\n    struct RecordIndex {\r\n        bool exists;\r\n        uint256 index;\r\n    }\r\n\r\n    enum CycleStatus {NOT_STARTED, ONGOING, ENDED}\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\IGroupSchema.sol",
+  "sourcePath": "C:\\Users\\HP\\Desktop\\BinaryHills Projects\\XendFinance\\yearn-savings\\Tests\\contracts\\IGroupSchema.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IGroupSchema.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/IGroupSchema.sol",
     "exportedSymbols": {
       "IGroupSchema": [
         7689
@@ -1310,7 +1310,7 @@
     "src": "0:2439:27"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/IGroupSchema.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/IGroupSchema.sol",
     "exportedSymbols": {
       "IGroupSchema": [
         7689
@@ -2614,8 +2614,8 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.585Z",
+  "schemaVersion": "3.3.1",
+  "updatedAt": "2020-11-16T12:03:52.402Z",
   "devdoc": {
     "methods": {}
   },

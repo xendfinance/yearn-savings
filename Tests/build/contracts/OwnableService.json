@@ -65,16 +65,16 @@
       "type": "function"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_serviceContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"serviceContract\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newServiceContract\",\"type\":\"address\"}],\"name\":\"transferContractOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/Esusu/OwnableService.sol\":\"OwnableService\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/Esusu/OwnableService.sol\":{\"keccak256\":\"0xea6572dc1549c064355bbf996f9510e26481bb4a13591dd82b0d9211b020713c\",\"urls\":[\"bzz-raw://3453de11c7f5f7eeb744e7ce3db8ba6ad0bcef5e380917d1d8e2049a62fb9690\",\"dweb:/ipfs/QmeVG8XgbiY6KuL8gdMg1AQwfHMuCWNXQsnhxNgGNqmqaC\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_serviceContract\",\"type\":\"address\"}],\"stateMutability\":\"nonpayable\",\"type\":\"constructor\"},{\"inputs\":[],\"name\":\"owner\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"serviceContract\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newServiceContract\",\"type\":\"address\"}],\"name\":\"transferContractOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/Esusu/OwnableService.sol\":\"OwnableService\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/Esusu/OwnableService.sol\":{\"keccak256\":\"0xea6572dc1549c064355bbf996f9510e26481bb4a13591dd82b0d9211b020713c\",\"urls\":[\"bzz-raw://3453de11c7f5f7eeb744e7ce3db8ba6ad0bcef5e380917d1d8e2049a62fb9690\",\"dweb:/ipfs/QmeVG8XgbiY6KuL8gdMg1AQwfHMuCWNXQsnhxNgGNqmqaC\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\r\n\r\n/*\r\n * Ownable\r\n *\r\n * Base contract with an owner.\r\n * Provides onlyOwner modifier, which prevents function from running if it is called by anyone other than the owner.\r\n */\r\ncontract OwnableService {\r\n    address payable public owner;\r\n    address payable public serviceContract;\r\n\r\n    constructor(address payable _serviceContract) internal {\r\n        owner = msg.sender;\r\n        serviceContract = _serviceContract;\r\n    }\r\n\r\n    modifier onlyOwner() {\r\n        require(msg.sender == owner, \"Unauthorized access to contract\");\r\n        _;\r\n    }\r\n\r\n    modifier onlyOwnerAndServiceContract() {\r\n        require(\r\n            msg.sender == owner || msg.sender == serviceContract,\r\n            \"Unauthorized access to contract\"\r\n        );\r\n        _;\r\n    }\r\n\r\n    function transferOwnership(address payable newOwner) public onlyOwner {\r\n        if (newOwner != address(0)) {\r\n            owner = newOwner;\r\n        }\r\n    }\r\n\r\n    function transferContractOwnership(address payable newServiceContract)\r\n        public\r\n        onlyOwnerAndServiceContract\r\n    {\r\n        if (newServiceContract != address(0)) {\r\n            serviceContract = newServiceContract;\r\n        }\r\n    }\r\n}\r\n",
-  "sourcePath": "D:\\Nweke\\WORK\\WORK\\XendFinance\\Tests\\contracts\\Esusu\\OwnableService.sol",
+  "sourcePath": "C:\\Users\\HP\\Desktop\\BinaryHills Projects\\XendFinance\\yearn-savings\\Tests\\contracts\\Esusu\\OwnableService.sol",
   "ast": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/Esusu/OwnableService.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/Esusu/OwnableService.sol",
     "exportedSymbols": {
       "OwnableService": [
         5322
@@ -1224,7 +1224,7 @@
     "src": "0:1215:19"
   },
   "legacyAST": {
-    "absolutePath": "/D/Nweke/WORK/WORK/XendFinance/Tests/contracts/Esusu/OwnableService.sol",
+    "absolutePath": "/C/Users/HP/Desktop/BinaryHills Projects/XendFinance/yearn-savings/Tests/contracts/Esusu/OwnableService.sol",
     "exportedSymbols": {
       "OwnableService": [
         5322
@@ -2378,8 +2378,8 @@
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.3.2",
-  "updatedAt": "2020-11-09T19:47:44.502Z",
+  "schemaVersion": "3.3.1",
+  "updatedAt": "2020-11-16T12:03:52.375Z",
   "devdoc": {
     "methods": {}
   },
