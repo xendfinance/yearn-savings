@@ -876,7 +876,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (uint256)
     {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
-        derivativeToken.approve(LendingAdapterAddress,derivativeAmount);
+        derivativeToken.approve(LendingAdapterAddress,derivativeBalance);
         lendingService.WithdrawBySharesOnly(derivativeBalance);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
