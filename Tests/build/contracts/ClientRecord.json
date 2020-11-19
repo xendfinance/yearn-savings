@@ -23,7 +23,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -94,7 +95,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -113,7 +115,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -246,7 +249,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     },
     {
       "inputs": [
@@ -290,7 +294,8 @@
         }
       ],
       "stateMutability": "view",
-      "type": "function"
+      "type": "function",
+      "constant": true
     }
   ],
   "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"name\":\"ClientRecordIndexer\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"exists\",\"type\":\"bool\"},{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"activateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalWithdrawn\",\"type\":\"uint256\"}],\"name\":\"createClientRecord\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"oracle\",\"type\":\"address\"}],\"name\":\"deactivateStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"doesClientRecordExist\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getClientRecordByAddress\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalWithdrawn\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"uint256\",\"name\":\"index\",\"type\":\"uint256\"}],\"name\":\"getClientRecordByIndex\",\"outputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalWithdrawn\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[],\"name\":\"getLengthOfClientRecords\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"depositor\",\"type\":\"address\"}],\"name\":\"getRecordIndex\",\"outputs\":[{\"internalType\":\"uint256\",\"name\":\"\",\"type\":\"uint256\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"newOracle\",\"type\":\"address\"}],\"name\":\"reAssignStorageOracle\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"newOwner\",\"type\":\"address\"}],\"name\":\"transferOwnership\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address payable\",\"name\":\"_address\",\"type\":\"address\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"underlyingTotalWithdrawn\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeBalance\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalDeposits\",\"type\":\"uint256\"},{\"internalType\":\"uint256\",\"name\":\"derivativeTotalWithdrawn\",\"type\":\"uint256\"}],\"name\":\"updateClientRecord\",\"outputs\":[],\"stateMutability\":\"nonpayable\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/ClientRecord.sol\":\"ClientRecord\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/ClientRecord.sol\":{\"keccak256\":\"0x5642881b2f260a66acd002b4a1b4f4c97b856ce896bb29e0e3282eafdada6b10\",\"urls\":[\"bzz-raw://892caba578e3d94d284f35bbf45e171c53c80c8bef60f7798e036064b39e0857\",\"dweb:/ipfs/QmWNREcDCsYnSNHvNGR7j7b6TLJAeW7tjX91b2pqsPLApa\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0x35ae5fa5945bc4a4c41fb711fd7092a85598176dcf6347693f438ef6cbe57538\",\"urls\":[\"bzz-raw://e6e51d8ab3b5517fd2e99b80d4fc061e004492c0cff9fc54decf73077f426cd8\",\"dweb:/ipfs/QmNn2xLU65jkDaCA3BetnXeS1DZcXwc1Umj4mgr2ATWBFm\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/StorageOwners.sol\":{\"keccak256\":\"0x68a125811456d1b20c916672b66066fa9af742ee5c91b372141087e1b5e34331\",\"urls\":[\"bzz-raw://92e0c23367b089936f060e5b0d1d7eec135b66d3336cbf0572aba5b450e9e6fc\",\"dweb:/ipfs/QmdKqoCHX1f7hmxPi97pXoD2iCqjg4BvLDQnRWWXYnW3R7\"]}},\"version\":1}",
@@ -8697,9 +8702,17 @@
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
-  "networks": {},
+  "networks": {
+    "1": {
+      "events": {},
+      "links": {},
+      "address": "0xAb8959E915EfdEDb4a3355228d35cb05B34A2D53",
+      "transactionHash": "0xc4af010c152bef8392677558e425812c81d9ec0dca1b5f02879be3da06f73c21"
+    }
+  },
   "schemaVersion": "3.2.5",
-  "updatedAt": "2020-11-14T11:07:10.372Z",
+  "updatedAt": "2020-11-19T12:35:56.331Z",
+  "networkType": "ethereum",
   "devdoc": {
     "methods": {}
   },

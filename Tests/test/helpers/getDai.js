@@ -6,11 +6,11 @@ const YDaiContractABI = require('../abi/YDAIContractABI.json');
 const DaiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const yDaiContractAddress = "0xC2cB1040220768554cf699b0d863A3cd4324ce32";
 
-const recipientAddress = "0xcd4d6582F34119e3f9CB17f746Bd0c1A703009c5";    // Unlocked recipient address
+const recipientAddress = "0xdBC7893df0cc71172C4b0F882e7Be98746b81E5d";    // Unlocked recipient address
 // const recipientAddress = "0x1dcf9AE235BbA490BA243a06197802dd9125D4aE"; // locked recipient address. NOTE: Ganache must unlock recipient address before it can receive tokens
 const unlockedAddress = "0xdcd024536877075bfb2ffb1db9655ae331045b4e";   //  Has lots of DAI
-const unlockedYDaiSenderAddress = "0x9EF7b6Db1547ae9827a036838F633808FeB9e24D";
-const yDaiRecipientAddress = "0x6123661e433988E1958F32bB400F21e511B079d1";
+const unlockedYDaiSenderAddress = "0x66c57bF505A85A74609D2C83E94Aabb26d691E1F";
+const yDaiRecipientAddress = "0xD5f5d60C9ccbBa834C1b22739Df0b0556787D4aB";
 
 const web3 = new Web3("HTTP://127.0.0.1:8545");
 const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
@@ -47,7 +47,7 @@ async function run (){
     // }
     //  Dai Transfer Operation
     if(true){
-        var amountToSend = BigInt(1000000000000000000); //   10000 Dai
+        var amountToSend = BigInt(90000000000000000000000); //   10000 Dai
         sendDai(amountToSend,recipientAddress);
        sendYDai(amountToSend, yDaiRecipientAddress);
     }
