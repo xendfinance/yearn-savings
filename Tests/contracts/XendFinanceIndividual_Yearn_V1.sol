@@ -6,13 +6,18 @@ import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
-import "./IDaiLendingService.sol";
+// import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
-import "./IERC20.sol";
+// import "./IERC20.sol";
 import "./Address.sol";
 import "./ISavingsConfig.sol";
 import "./ISavingsConfigSchema.sol";
 import "./ITreasury.sol";
+
+import "./IBEP20.sol";
+import "./IForTubeBankService.sol";
+import "./IFToken.sol";
+
 
 contract XendFinanceIndividual_Yearn_V1 is
     Ownable,
@@ -37,40 +42,43 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
 
-    IDaiLendingService lendingService;
-    IERC20 daiToken;
+    //IDaiLendingService lendingService;
+    IForTubeBankService fortubeService;
+    //IERC20 daiToken;
+    IBEP20 BUSD = IBEP20(0x3b1F033dD955f3BE8649Cc9825A2e3E194765a3F);      //  BEP20 - ForTube BUSD Testnet TODO: change to live when moving to mainnet 
+    IFToken fBUSD = IFToken(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);   //  BEP20 - fBUSD Testnet TODO: change to mainnet
     IClientRecord clientRecordStorage;
     ISavingsConfig savingsConfig;
-    IERC20 derivativeToken;
+    //IERC20 derivativeToken;
     ITreasury treasury;
 
     bool isDeprecated = false;
 
-    address LendingAdapterAddress;
+    //address LendingAdapterAddress;
+
+    address FortubeBankAdapter;
     address TreasuryAddress;
-    address TokenAddress;
+    //address TokenAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
 
     constructor(
-        address lendingAdapterAddress,
-        address lendingServiceAddress,
-        address tokenAddress,
+        address fortubeBankAdapterAddress,
+        address fortubeServiceAddress,
+       // address tokenAddress,
         address clientRecordStorageAddress,
         address savingsConfigAddress,
-        address derivativeTokenAddress,
+        //ddress derivativeTokenAddress,
         address treasuryAddress
     ) public {
-        lendingService = IDaiLendingService(lendingServiceAddress);
-        daiToken = IERC20(tokenAddress);
+        fortubeService = IForTubeBankService(fortubeServiceAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
-        LendingAdapterAddress = lendingAdapterAddress;
+        FortubeBankAdapter = fortubeBankAdapterAddress;
         savingsConfig = ISavingsConfig(savingsConfigAddress);
-        derivativeToken = IERC20(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
         TreasuryAddress = treasuryAddress;
-        TokenAddress = tokenAddress;
+        //TokenAddress = tokenAddress;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -80,10 +88,10 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         isDeprecated = true;
         clientRecordStorage.reAssignStorageOracle(newServiceAddress);
-        uint256 derivativeTokenBalance = derivativeToken.balanceOf(
+        uint256 derivativeTokenBalance = fBUSD.balanceOf(
             address(this)
         );
-        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
+        fBUSD.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function doesClientRecordExist(address depositor)
@@ -241,12 +249,12 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         _validateUserBalanceIsSufficient(recipient, derivativeAmount);
 
-        uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
+        uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance();
 
-        derivativeToken.approve(LendingAdapterAddress,derivativeAmount);
-        lendingService.WithdrawBySharesOnly(derivativeAmount);
+        fBUSD.approve(FortubeBankAdapter,derivativeAmount);
+        fortubeService.WithdrawBySharesOnly(derivativeAmount);
 
-        uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
+        uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance();
 
         uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
             balanceBeforeWithdraw
@@ -260,9 +268,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
             commissionFees
         );
-            daiToken.approve(recipient, amountToSendToDepositor);
+            BUSD.approve(recipient, amountToSendToDepositor);
 
-        bool isSuccessful = daiToken.transfer(
+        bool isSuccessful = BUSD.transfer(
             recipient,
             amountToSendToDepositor
         );
@@ -270,7 +278,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
-            daiToken.approve(TreasuryAddress, commissionFees);
+            BUSD.approve(TreasuryAddress, commissionFees);
             treasury.depositToken(TokenAddress);
         }
 
@@ -375,7 +383,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _deposit(address payable depositorAddress) internal {
         address recipient = address(this);
-        uint256 amountTransferrable = daiToken.allowance(
+        uint256 amountTransferrable = BUSD.allowance(
             depositorAddress,
             recipient
         );
@@ -384,7 +392,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable > 0,
             "Approve an amount > 0 for token before proceeding"
         );
-        bool isSuccessful = daiToken.transferFrom(
+        bool isSuccessful = BUSD.transferFrom(
             depositorAddress,
             recipient,
             amountTransferrable
@@ -394,13 +402,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             "Could not complete deposit process from token contract"
         );
 
-        daiToken.approve(LendingAdapterAddress, amountTransferrable);
+        BUSD.approve(FortubeBankAdapter, amountTransferrable);
 
-        uint256 balanceBeforeDeposit = lendingService.userShares();
+        uint256 balanceBeforeDeposit = fortubeService.UserShares();
 
-        lendingService.save(amountTransferrable);
+        fortubeService.save(amountTransferrable);
 
-        uint256 balanceAfterDeposit = lendingService.userShares();
+        uint256 balanceAfterDeposit = fortubeService.UserShares();
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
         ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
