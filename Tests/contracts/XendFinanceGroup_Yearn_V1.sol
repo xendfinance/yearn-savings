@@ -7,7 +7,9 @@ import "./Ownable.sol";
 import "./IGroups.sol";
 import "./ICycle.sol";
 import "./IGroupSchema.sol";
-import "./IDaiLendingService.sol";
+import "./IForTubeBankService.sol";
+import "./IBEP20.sol";
+import "./IFToken.sol";
 import "./Address.sol";
 import "./IRewardConfig.sol";
 import "./SafeMath.sol";
@@ -68,21 +70,21 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
         uint256 indexed cycleId,
         uint256 indexed blockTimeStamp,
         uint256 blockNumber,
-        uint256 totalDerivativeAmount,
-        uint256 totalUnderlyingAmount
+        //uint256 totalDerivativeAmount,
+        //uint256 totalUnderlyingAmount
     );
 
-    IDaiLendingService lendingService;
-    IERC20 daiToken;
+    IForTubeBankService fortubeBankService;
+    IBEP20 busdToken;
     IGroups groupStorage;
     ICycles cycleStorage;
     ITreasury treasury;
     ISavingsConfig savingsConfig;
     IRewardConfig rewardConfig;
     IXendToken xendToken;
-    IERC20 derivativeToken;
+    IFToken fbusdToken;
 
-    address LendingAdapterAddress;
+    address ForTubeBankAdapterAddress;
     address TokenAddress;
     address TreasuryAddress;
 
@@ -656,6 +658,17 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
 
+            //put the deposited amount in the lending service
+          uint256 derivativeAmount = _lendCycleDeposit(
+             cycleFinancial.underlyingAmountDeposited
+         );
+
+         cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
+             derivativeAmount
+         );
+
+         _updateCycleFinancials(cycleFinancial);
+
         emit UnderlyingAssetDeposited(
             cycle.id,
             depositorAddress,
@@ -796,7 +809,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         uint256 expectedAmount = numberOfStakes.mul(amountForStake);
 
         address recipient = address(this);
-        uint256 amountTransferrable = daiToken.allowance(
+        uint256 amountTransferrable = busdToken.allowance(
             depositorAddress,
             recipient
         );
@@ -810,7 +823,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             "Token allowance does not cover stake claim"
         );
 
-        bool isSuccessful = daiToken.transferFrom(
+        bool isSuccessful = busdToken.transferFrom(
             depositorAddress,
             recipient,
             expectedAmount
@@ -838,7 +851,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance -
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
 
-        derivativeToken.approve(
+        fbusdToken.approve(
             LendingAdapterAddress,
             derivativeBalanceToWithdraw
         );
@@ -876,7 +889,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (uint256)
     {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
-        derivativeToken.approve(LendingAdapterAddress,derivativeBalance);
+        fbusdToken.approve(LendingAdapterAddress,derivativeBalance);
         lendingService.WithdrawBySharesOnly(derivativeBalance);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
@@ -917,8 +930,8 @@ contract XendFinanceGroup_Yearn_V1 is
     using Address for address payable;
 
     constructor(
-        address lendingAdapterAddress,
-        address lendingServiceAddress,
+        address forTubeBankAdapterAddress,
+        address forTubeBankServiceAddress,
         address tokenAddress,
         address groupStorageAddress,
         address cycleStorageAddress,
@@ -928,16 +941,16 @@ contract XendFinanceGroup_Yearn_V1 is
         address xendTokenAddress,
         address derivativeTokenAddress
     ) public {
-        lendingService = IDaiLendingService(lendingServiceAddress);
-        daiToken = IERC20(tokenAddress);
+        forTubeBankService = IForTubeBankService(forTubeBankServiceAddress);
+        busdToken = IBEP20(tokenAddress);
         groupStorage = IGroups(groupStorageAddress);
         cycleStorage = ICycles(cycleStorageAddress);
         treasury = ITreasury(treasuryAddress);
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         rewardConfig = IRewardConfig(rewardConfigAddress);
         xendToken = IXendToken(xendTokenAddress);
-        derivativeToken = IERC20(derivativeTokenAddress);
-        LendingAdapterAddress = lendingAdapterAddress;
+        fbusdToken = IFToken(derivativeTokenAddress);
+        ForTubeBankAdapterAddress = forTubeBankAdapterAddress;
         TokenAddress = tokenAddress;
         TreasuryAddress = treasuryAddress;
     }
@@ -997,7 +1010,7 @@ contract XendFinanceGroup_Yearn_V1 is
             numberOfStakesByMember
         );
 
-        derivativeToken.approve(
+        fbusdToken.approve(
             LendingAdapterAddress,
             derivativeBalanceForMember
         );
@@ -1039,7 +1052,7 @@ contract XendFinanceGroup_Yearn_V1 is
             .add(totalDeductible);
 
         if (withdrawalResolution.amountToSendToTreasury > 0) {
-            daiToken.approve(
+            busdToken.approve(
                 TreasuryAddress,
                 withdrawalResolution.amountToSendToTreasury
             );
@@ -1051,7 +1064,7 @@ contract XendFinanceGroup_Yearn_V1 is
             "After deducting early withdrawal penalties and fees, there's nothing left for you"
         );
         if (withdrawalResolution.amountToSendToMember > 0) {
-            daiToken.transfer(
+            busdToken.transfer(
                 cycleMember._address,
                 withdrawalResolution.amountToSendToMember
             );
@@ -1216,7 +1229,7 @@ contract XendFinanceGroup_Yearn_V1 is
             .add(amountToChargeAsFees);
 
         if (withdrawalResolution.amountToSendToTreasury > 0) {
-            daiToken.approve(
+            busdToken.approve(
                 TreasuryAddress,
                 withdrawalResolution.amountToSendToTreasury
             );
@@ -1224,7 +1237,7 @@ contract XendFinanceGroup_Yearn_V1 is
         }
 
         if (withdrawalResolution.amountToSendToMember > 0) {
-            daiToken.transfer(
+            busdToken.transfer(
                 cycleMember._address,
                 withdrawalResolution.amountToSendToMember
             );
@@ -1260,10 +1273,10 @@ contract XendFinanceGroup_Yearn_V1 is
         isDeprecated = true;
         groupStorage.reAssignStorageOracle(newServiceAddress);
         cycleStorage.reAssignStorageOracle(newServiceAddress);
-        uint256 derivativeTokenBalance = derivativeToken.balanceOf(
+        uint256 derivativeTokenBalance = fbusdToken.balanceOf(
             address(this)
         );
-        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
+        fbusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function _rewardUserWithTokens(
@@ -1534,17 +1547,17 @@ contract XendFinanceGroup_Yearn_V1 is
             "Cycle start time has not been reached"
         );
 
-        uint256 derivativeAmount = _lendCycleDeposit(
-            cycleFinancial.underlyingTotalDeposits
-        );
+        // uint256 derivativeAmount = _lendCycleDeposit(
+        //     cycleFinancial.underlyingTotalDeposits
+        // );
 
-        cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
-            derivativeAmount
-        );
+        // cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
+        //     derivativeAmount
+        // );
 
         cycle.cycleStartTimeStamp = currentTimeStamp;
         _startCycle(cycle);
-        _updateCycleFinancials(cycleFinancial);
+        //_updateCycleFinancials(cycleFinancial);
 
         uint256 blockNumber = block.number;
         uint256 blockTimestamp = currentTimeStamp;
@@ -1553,24 +1566,24 @@ contract XendFinanceGroup_Yearn_V1 is
             cycleId,
             blockTimestamp,
             blockNumber,
-            derivativeAmount,
-            cycleFinancial.underlyingTotalDeposits
+            //derivativeAmount,
+            //cycleFinancial.underlyingTotalDeposits
         );
     }
 
     function endCycle(uint256 cycleId) external onlyNonDeprecatedCalls {
         _endCycle(cycleId);
     }
-
-    function _lendCycleDeposit(uint256 underlyingTotalDeposits)
+    //change underlying total deposits to underlying amount deposited
+    function _lendCycleDeposit(uint256 underlyingAmountDeposited)
         internal
         returns (uint256)
     {
-        daiToken.approve(LendingAdapterAddress, underlyingTotalDeposits);
+        busdToken.approve(LendingAdapterAddress, underlyingAmountDeposited);
 
         uint256 balanceBeforeDeposit = lendingService.userShares();
 
-        lendingService.save(underlyingTotalDeposits);
+        lendingService.save(underlyingAmountDeposited);
 
         uint256 balanceAfterDeposit = lendingService.userShares();
 

@@ -45,8 +45,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     //IDaiLendingService lendingService;
     IForTubeBankService fortubeService;
     //IERC20 daiToken;
-    IBEP20 BUSD = IBEP20(0x3b1F033dD955f3BE8649Cc9825A2e3E194765a3F);      //  BEP20 - ForTube BUSD Testnet TODO: change to live when moving to mainnet 
-    IFToken fBUSD = IFToken(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);   //  BEP20 - fBUSD Testnet TODO: change to mainnet
+    IBEP20 busdToken;      //  BEP20 - ForTube BUSD Testnet TODO: change to live when moving to mainnet 
+    IFToken fBusdToken;   //  BEP20 - fBUSD Testnet TODO: change to mainnet
     IClientRecord clientRecordStorage;
     ISavingsConfig savingsConfig;
     //IERC20 derivativeToken;
@@ -58,7 +58,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     address FortubeBankAdapter;
     address TreasuryAddress;
-    //address TokenAddress;
+    address TokenAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
@@ -66,19 +66,21 @@ contract XendFinanceIndividual_Yearn_V1 is
     constructor(
         address fortubeBankAdapterAddress,
         address fortubeServiceAddress,
-       // address tokenAddress,
+        address tokenAddress,
         address clientRecordStorageAddress,
         address savingsConfigAddress,
-        //ddress derivativeTokenAddress,
+        address derivativeTokenAddress,
         address treasuryAddress
     ) public {
         fortubeService = IForTubeBankService(fortubeServiceAddress);
+        busdToken = IBEP20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
         FortubeBankAdapter = fortubeBankAdapterAddress;
         savingsConfig = ISavingsConfig(savingsConfigAddress);
+        fBusdToken = IFToken(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
         TreasuryAddress = treasuryAddress;
-        //TokenAddress = tokenAddress;
+        TokenAddress = tokenAddress;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -88,10 +90,10 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         isDeprecated = true;
         clientRecordStorage.reAssignStorageOracle(newServiceAddress);
-        uint256 derivativeTokenBalance = fBUSD.balanceOf(
+        uint256 derivativeTokenBalance = fBusdToken.balanceOf(
             address(this)
         );
-        fBUSD.transfer(newServiceAddress, derivativeTokenBalance);
+        fBusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function doesClientRecordExist(address depositor)
@@ -251,7 +253,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance();
 
-        fBUSD.approve(FortubeBankAdapter,derivativeAmount);
+        fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
         fortubeService.WithdrawBySharesOnly(derivativeAmount);
 
         uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance();
@@ -268,9 +270,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
             commissionFees
         );
-            BUSD.approve(recipient, amountToSendToDepositor);
+            busdToken.approve(recipient, amountToSendToDepositor);
 
-        bool isSuccessful = BUSD.transfer(
+        bool isSuccessful = busdToken.transfer(
             recipient,
             amountToSendToDepositor
         );
@@ -278,7 +280,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
-            BUSD.approve(TreasuryAddress, commissionFees);
+            busdToken.approve(TreasuryAddress, commissionFees);
             treasury.depositToken(TokenAddress);
         }
 
@@ -383,7 +385,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _deposit(address payable depositorAddress) internal {
         address recipient = address(this);
-        uint256 amountTransferrable = BUSD.allowance(
+        uint256 amountTransferrable = busdToken.allowance(
             depositorAddress,
             recipient
         );
@@ -392,7 +394,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable > 0,
             "Approve an amount > 0 for token before proceeding"
         );
-        bool isSuccessful = BUSD.transferFrom(
+        bool isSuccessful = busdToken.transferFrom(
             depositorAddress,
             recipient,
             amountTransferrable
@@ -402,11 +404,11 @@ contract XendFinanceIndividual_Yearn_V1 is
             "Could not complete deposit process from token contract"
         );
 
-        BUSD.approve(FortubeBankAdapter, amountTransferrable);
+        busdToken.approve(FortubeBankAdapter, amountTransferrable);
 
         uint256 balanceBeforeDeposit = fortubeService.UserShares();
 
-        fortubeService.save(amountTransferrable);
+        fortubeService.Save(amountTransferrable);
 
         uint256 balanceAfterDeposit = fortubeService.UserShares();
 

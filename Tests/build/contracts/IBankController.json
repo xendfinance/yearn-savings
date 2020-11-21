@@ -1,0 +1,691 @@
+{
+  "contractName": "IBankController",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "fToken",
+          "type": "address"
+        }
+      ],
+      "name": "isFTokenValid",
+      "outputs": [
+        {
+          "internalType": "bool",
+          "name": "",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAllMarkets",
+      "outputs": [
+        {
+          "internalType": "contract IFToken[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "underlying",
+          "type": "address"
+        }
+      ],
+      "name": "getFTokeAddress",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"inputs\":[],\"name\":\"getAllMarkets\",\"outputs\":[{\"internalType\":\"contract IFToken[]\",\"name\":\"\",\"type\":\"address[]\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"underlying\",\"type\":\"address\"}],\"name\":\"getFTokeAddress\",\"outputs\":[{\"internalType\":\"address\",\"name\":\"\",\"type\":\"address\"}],\"stateMutability\":\"view\",\"type\":\"function\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"fToken\",\"type\":\"address\"}],\"name\":\"isFTokenValid\",\"outputs\":[{\"internalType\":\"bool\",\"name\":\"\",\"type\":\"bool\"}],\"stateMutability\":\"view\",\"type\":\"function\"}],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{\"getFTokeAddress(address)\":{\"notice\":\"underlying is the main token address eg BUSD This function will return the corresponding fToken when you pass the token address  Eg when you pass BUSD you will get address of fBUSD \"}}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBankController.sol\":\"IBankController\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBEP20.sol\":{\"keccak256\":\"0x1466ba22461d84dbe68084723e4faf2b1a2aecabdf9b54cb532cbc38200ae74c\",\"urls\":[\"bzz-raw://ea60fdada0a3ca0fa073d55bb3864e5980592469d8efe84db3fc104cd598132c\",\"dweb:/ipfs/QmSVg74Pq9icQfuTB6fsRZkeF9E9CeNDDGTnHLEiN5waCd\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBankController.sol\":{\"keccak256\":\"0x975333150c81724d2a21169eac6ec2efb14dd3b375479bbffdfb4bbbaf6562fa\",\"urls\":[\"bzz-raw://60d031f6303194f62f062e169398c0247114f3c8910061e642b406fbdc837993\",\"dweb:/ipfs/QmUFzYyYFYYtWnEMhyoNNusPoQE8tDipV4oYam9Bi8rgPx\"]},\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IFToken.sol\":{\"keccak256\":\"0x9d88c1f8ce5a98896d516242c20a8f453a47af4020e2658f5d439a5b9a1c645d\",\"urls\":[\"bzz-raw://62a973f77157d212fb17f928613f4d3b3254c415f591e870b2edca18e262bc13\",\"dweb:/ipfs/QmRAJY8FcMXYgcW9LU69qH6oZ6PV2MXhVX85VGaeuQXNUY\"]}},\"version\":1}",
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "immutableReferences": {},
+  "sourceMap": "",
+  "deployedSourceMap": "",
+  "source": "// SPDX-License-Identifier: MIT\n\npragma solidity >=0.6.6;\n\nimport \"./IFToken.sol\";\n\ninterface IBankController{\n    \n    // Pass the address of a token or fToken and check if it is valid\n    function isFTokenValid(address fToken) external view returns (bool);\n    \n    //  retuns all the supported FToken addresses\n    function getAllMarkets() external view returns (IFToken[] memory);\n    \n    /**\n        underlying is the main token address eg BUSD\n        This function will return the corresponding fToken when you pass the token address \n        Eg when you pass BUSD you will get address of fBUSD \n    */\n     function getFTokeAddress(address underlying)\n        external\n        view\n        returns (address);\n}",
+  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBankController.sol",
+  "ast": {
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBankController.sol",
+    "exportedSymbols": {
+      "IBankController": [
+        8053
+      ]
+    },
+    "id": 8054,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8030,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.6",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:24:27"
+      },
+      {
+        "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IFToken.sol",
+        "file": "./IFToken.sol",
+        "id": 8031,
+        "nodeType": "ImportDirective",
+        "scope": 8054,
+        "sourceUnit": 8700,
+        "src": "59:23:27",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 8053,
+        "linearizedBaseContracts": [
+          8053
+        ],
+        "name": "IBankController",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "2a4d98cf",
+            "id": 8038,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isFTokenValid",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8034,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8033,
+                  "mutability": "mutable",
+                  "name": "fToken",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8038,
+                  "src": "213:14:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8032,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "213:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "212:16:27"
+            },
+            "returnParameters": {
+              "id": 8037,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8036,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8038,
+                  "src": "252:4:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8035,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "252:4:27",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "251:6:27"
+            },
+            "scope": 8053,
+            "src": "190:68:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "b0772d0b",
+            "id": 8044,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAllMarkets",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8039,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "340:2:27"
+            },
+            "returnParameters": {
+              "id": 8043,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8042,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8044,
+                  "src": "366:16:27",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_IFToken_$8699_$dyn_memory_ptr",
+                    "typeString": "contract IFToken[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 8040,
+                      "name": "IFToken",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 8699,
+                      "src": "366:7:27",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_IFToken_$8699",
+                        "typeString": "contract IFToken"
+                      }
+                    },
+                    "id": 8041,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "366:9:27",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_IFToken_$8699_$dyn_storage_ptr",
+                      "typeString": "contract IFToken[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "365:18:27"
+            },
+            "scope": 8053,
+            "src": "318:66:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 8045,
+              "nodeType": "StructuredDocumentation",
+              "src": "394:216:27",
+              "text": "underlying is the main token address eg BUSD\nThis function will return the corresponding fToken when you pass the token address \nEg when you pass BUSD you will get address of fBUSD "
+            },
+            "functionSelector": "fc1ce708",
+            "id": 8052,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getFTokeAddress",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8048,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8047,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8052,
+                  "src": "641:18:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8046,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "641:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "640:20:27"
+            },
+            "returnParameters": {
+              "id": 8051,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8050,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8052,
+                  "src": "708:7:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8049,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "708:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "707:9:27"
+            },
+            "scope": 8053,
+            "src": "616:101:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8054,
+        "src": "84:635:27"
+      }
+    ],
+    "src": "33:686:27"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IBankController.sol",
+    "exportedSymbols": {
+      "IBankController": [
+        8053
+      ]
+    },
+    "id": 8054,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 8030,
+        "literals": [
+          "solidity",
+          ">=",
+          "0.6",
+          ".6"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "33:24:27"
+      },
+      {
+        "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IFToken.sol",
+        "file": "./IFToken.sol",
+        "id": 8031,
+        "nodeType": "ImportDirective",
+        "scope": 8054,
+        "sourceUnit": 8700,
+        "src": "59:23:27",
+        "symbolAliases": [],
+        "unitAlias": ""
+      },
+      {
+        "abstract": false,
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "interface",
+        "documentation": null,
+        "fullyImplemented": false,
+        "id": 8053,
+        "linearizedBaseContracts": [
+          8053
+        ],
+        "name": "IBankController",
+        "nodeType": "ContractDefinition",
+        "nodes": [
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "2a4d98cf",
+            "id": 8038,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "isFTokenValid",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8034,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8033,
+                  "mutability": "mutable",
+                  "name": "fToken",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8038,
+                  "src": "213:14:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8032,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "213:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "212:16:27"
+            },
+            "returnParameters": {
+              "id": 8037,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8036,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8038,
+                  "src": "252:4:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  },
+                  "typeName": {
+                    "id": 8035,
+                    "name": "bool",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "252:4:27",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_bool",
+                      "typeString": "bool"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "251:6:27"
+            },
+            "scope": 8053,
+            "src": "190:68:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": null,
+            "functionSelector": "b0772d0b",
+            "id": 8044,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getAllMarkets",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8039,
+              "nodeType": "ParameterList",
+              "parameters": [],
+              "src": "340:2:27"
+            },
+            "returnParameters": {
+              "id": 8043,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8042,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8044,
+                  "src": "366:16:27",
+                  "stateVariable": false,
+                  "storageLocation": "memory",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_array$_t_contract$_IFToken_$8699_$dyn_memory_ptr",
+                    "typeString": "contract IFToken[]"
+                  },
+                  "typeName": {
+                    "baseType": {
+                      "contractScope": null,
+                      "id": 8040,
+                      "name": "IFToken",
+                      "nodeType": "UserDefinedTypeName",
+                      "referencedDeclaration": 8699,
+                      "src": "366:7:27",
+                      "typeDescriptions": {
+                        "typeIdentifier": "t_contract$_IFToken_$8699",
+                        "typeString": "contract IFToken"
+                      }
+                    },
+                    "id": 8041,
+                    "length": null,
+                    "nodeType": "ArrayTypeName",
+                    "src": "366:9:27",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_array$_t_contract$_IFToken_$8699_$dyn_storage_ptr",
+                      "typeString": "contract IFToken[]"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "365:18:27"
+            },
+            "scope": 8053,
+            "src": "318:66:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          },
+          {
+            "body": null,
+            "documentation": {
+              "id": 8045,
+              "nodeType": "StructuredDocumentation",
+              "src": "394:216:27",
+              "text": "underlying is the main token address eg BUSD\nThis function will return the corresponding fToken when you pass the token address \nEg when you pass BUSD you will get address of fBUSD "
+            },
+            "functionSelector": "fc1ce708",
+            "id": 8052,
+            "implemented": false,
+            "kind": "function",
+            "modifiers": [],
+            "name": "getFTokeAddress",
+            "nodeType": "FunctionDefinition",
+            "overrides": null,
+            "parameters": {
+              "id": 8048,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8047,
+                  "mutability": "mutable",
+                  "name": "underlying",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8052,
+                  "src": "641:18:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8046,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "641:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "640:20:27"
+            },
+            "returnParameters": {
+              "id": 8051,
+              "nodeType": "ParameterList",
+              "parameters": [
+                {
+                  "constant": false,
+                  "id": 8050,
+                  "mutability": "mutable",
+                  "name": "",
+                  "nodeType": "VariableDeclaration",
+                  "overrides": null,
+                  "scope": 8052,
+                  "src": "708:7:27",
+                  "stateVariable": false,
+                  "storageLocation": "default",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address",
+                    "typeString": "address"
+                  },
+                  "typeName": {
+                    "id": 8049,
+                    "name": "address",
+                    "nodeType": "ElementaryTypeName",
+                    "src": "708:7:27",
+                    "stateMutability": "nonpayable",
+                    "typeDescriptions": {
+                      "typeIdentifier": "t_address",
+                      "typeString": "address"
+                    }
+                  },
+                  "value": null,
+                  "visibility": "internal"
+                }
+              ],
+              "src": "707:9:27"
+            },
+            "scope": 8053,
+            "src": "616:101:27",
+            "stateMutability": "view",
+            "virtual": false,
+            "visibility": "external"
+          }
+        ],
+        "scope": 8054,
+        "src": "84:635:27"
+      }
+    ],
+    "src": "33:686:27"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.6.6+commit.6c089d02.Emscripten.clang"
+  },
+  "networks": {},
+  "schemaVersion": "3.2.5",
+  "updatedAt": "2020-11-21T17:03:35.439Z",
+  "devdoc": {
+    "methods": {}
+  },
+  "userdoc": {
+    "methods": {
+      "getFTokeAddress(address)": {
+        "notice": "underlying is the main token address eg BUSD This function will return the corresponding fToken when you pass the token address  Eg when you pass BUSD you will get address of fBUSD "
+      }
+    }
+  }
+}

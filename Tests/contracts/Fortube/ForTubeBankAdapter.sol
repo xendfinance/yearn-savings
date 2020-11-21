@@ -1,10 +1,10 @@
 pragma solidity >=0.6.6;
 
-import "../interfaces/IBank.sol";
-import "../interfaces/IFToken.sol";
-import "../interfaces/IBankController.sol";
-import "../interfaces/IBEP20.sol";
-import "./SafeMath.sol";
+import "../IBank.sol";
+import "../IFToken.sol";
+import "../IBankController.sol";
+import "../IBEP20.sol";
+import "../SafeMath.sol";
 import "./OwnableService.sol";
 import "./Exponential.sol";
 
