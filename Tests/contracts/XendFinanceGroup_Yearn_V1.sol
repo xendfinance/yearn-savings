@@ -69,12 +69,12 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     event CycleStartedEvent(
         uint256 indexed cycleId,
         uint256 indexed blockTimeStamp,
-        uint256 blockNumber,
+        uint256 blockNumber
         //uint256 totalDerivativeAmount,
         //uint256 totalUnderlyingAmount
     );
 
-    IForTubeBankService fortubeBankService;
+    IForTubeBankService forTubeBankService;
     IBEP20 busdToken;
     IGroups groupStorage;
     ICycles cycleStorage;
@@ -607,6 +607,23 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycle.stakesClaimedBeforeMaturity
         );
     }
+    
+    //change underlying total deposits to underlying amount deposited
+    function _lendCycleDeposit(uint256 underlyingTotalDeposits)
+        internal
+        returns (uint256)
+    {
+        busdToken.approve(ForTubeBankAdapterAddress, underlyingTotalDeposits);
+
+        uint256 balanceBeforeDeposit = forTubeBankService.UserShares();
+
+        forTubeBankService.Save(underlyingTotalDeposits);
+
+        uint256 balanceAfterDeposit = forTubeBankService.UserShares();
+
+        uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
+        return amountOfyDai;
+    }
 
     function _updateCycleFinancials(CycleFinancial memory cycleFinancial)
         internal
@@ -658,14 +675,15 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
 
-            //put the deposited amount in the lending service
-          uint256 derivativeAmount = _lendCycleDeposit(
-             cycleFinancial.underlyingAmountDeposited
-         );
+         
 
-         cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
-             derivativeAmount
-         );
+        uint256 derivativeAmount = _lendCycleDeposit(
+            cycleFinancial.underlyingTotalDeposits
+        );
+
+        cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
+            derivativeAmount
+        );
 
          _updateCycleFinancials(cycleFinancial);
 
@@ -852,7 +870,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
 
         fbusdToken.approve(
-            LendingAdapterAddress,
+            ForTubeBankAdapterAddress,
             derivativeBalanceToWithdraw
         );
 
@@ -888,11 +906,11 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         internal
         returns (uint256)
     {
-        uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
-        fbusdToken.approve(LendingAdapterAddress,derivativeBalance);
-        lendingService.WithdrawBySharesOnly(derivativeBalance);
+        uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance();
+        fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
+        forTubeBankService.WithdrawBySharesOnly(derivativeBalance);
 
-        uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
+        uint256 balanceAfterWithdraw = forTubeBankService.UserBUSDBalance();
 
         uint256 amountOfUnderlyingAssetWithdrawn = balanceAfterWithdraw.sub(
             balanceBeforeWithdraw
@@ -1011,7 +1029,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         fbusdToken.approve(
-            LendingAdapterAddress,
+            ForTubeBankAdapterAddress,
             derivativeBalanceForMember
         );
 
@@ -1565,7 +1583,7 @@ contract XendFinanceGroup_Yearn_V1 is
         emit CycleStartedEvent(
             cycleId,
             blockTimestamp,
-            blockNumber,
+            blockNumber
             //derivativeAmount,
             //cycleFinancial.underlyingTotalDeposits
         );
@@ -1574,22 +1592,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function endCycle(uint256 cycleId) external onlyNonDeprecatedCalls {
         _endCycle(cycleId);
     }
-    //change underlying total deposits to underlying amount deposited
-    function _lendCycleDeposit(uint256 underlyingAmountDeposited)
-        internal
-        returns (uint256)
-    {
-        busdToken.approve(LendingAdapterAddress, underlyingAmountDeposited);
-
-        uint256 balanceBeforeDeposit = lendingService.userShares();
-
-        lendingService.save(underlyingAmountDeposited);
-
-        uint256 balanceAfterDeposit = lendingService.userShares();
-
-        uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
-        return amountOfyDai;
-    }
+    
 
     function createGroup(string calldata name, string calldata symbol)
         external
