@@ -19,6 +19,13 @@ contract ForTubeBankService {
         _bankAdapter = ForTubeBankAdapter(adapterAddress);
     }
 
+    function UserShares() external view returns (uint256) {
+        return _bankAdapter.GetFBUSDBalance(msg.sender);
+    }
+
+    function UserBUSDBalance() external view returns (uint256) {
+        return _bankAdapter.GetBUSDBalance(msg.sender);
+    }
 
     /*
         -   Before calling this function, ensure that the msg.sender or caller has given this contract address
@@ -46,14 +53,6 @@ contract ForTubeBankService {
 
     function TransferAdapterContractOwnership(address payable newServiceContract) external onlyOwner {
         _bankAdapter.transferContractOwnership(newServiceContract);
-    }
-    //get user busd balance
-    function UserBUSDBalance() external view returns (uint256) {
-        return _bankAdapter.GetBUSDBalance(msg.sender);
-    }
-     //  Get the user's shares or the fbusd tokens
-    function UserShares() external view returns (uint256) {
-        return _bankAdapter.GetFBUSDBalance(msg.sender);
     }
     
     function CalculateTotalBUSDEarned(address member) external view returns (uint256 exchangeRate){

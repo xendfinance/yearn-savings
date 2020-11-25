@@ -1,14 +1,14 @@
-pragma solidity ^0.6.6;
+pragma solidity >=0.6.6;
 
 import "./EsusuAdapter.sol";
-
+import "./EsusuAdapterWithdrawalDelegate.sol";
 
 
 contract EsusuService{
     
     address _owner;
     EsusuAdapter _esusuAdapter;
-    
+    EsusuAdapterWithdrawalDelegate _esusuAdapterWithdrawalDelegate;
     
     mapping(address => uint) userDaiDeposits;   
 
@@ -22,6 +22,10 @@ contract EsusuService{
     
     function UpdateAdapter(address adapterAddress) onlyOwner() external{
         _esusuAdapter = EsusuAdapter(adapterAddress);   
+    }
+    
+    function UpdateAdapterWithdrawalDelegate(address delegateAddress) onlyOwner() external{
+        _esusuAdapterWithdrawalDelegate = EsusuAdapterWithdrawalDelegate(delegateAddress);   
     }
     
     function GetGroupInformationByName(string calldata name) external view returns (uint groupId, string memory groupName, string memory groupSymbol, address groupCreatorAddress){
@@ -78,19 +82,19 @@ contract EsusuService{
     }
     
     function WithdrawROIFromEsusuCycle(uint esusuCycleId) external{
-        _esusuAdapter.WithdrawROIFromEsusuCycle(esusuCycleId,msg.sender);
+        _esusuAdapterWithdrawalDelegate.WithdrawROIFromEsusuCycle(esusuCycleId,msg.sender);
     }
     
     function WithdrawCapitalFromEsusuCycle(uint esusuCycleId) external{
-        _esusuAdapter.WithdrawCapitalFromEsusuCycle(esusuCycleId,msg.sender);
+        _esusuAdapterWithdrawalDelegate.WithdrawCapitalFromEsusuCycle(esusuCycleId,msg.sender);
     }
     
     function IsMemberEligibleToWithdrawROI(uint esusuCycleId, address member) external view returns(bool){
-        _esusuAdapter.IsMemberEligibleToWithdrawROI(esusuCycleId,member);
+        _esusuAdapterWithdrawalDelegate.IsMemberEligibleToWithdrawROI(esusuCycleId,member);
     }
     
     function IsMemberEligibleToWithdrawCapital(uint esusuCycleId, address member) external view returns(bool){
-        _esusuAdapter.IsMemberEligibleToWithdrawCapital(esusuCycleId,member);
+        _esusuAdapterWithdrawalDelegate.IsMemberEligibleToWithdrawCapital(esusuCycleId,member);
     }
     
     function GetCurrentEsusuCycleId() external view returns(uint){

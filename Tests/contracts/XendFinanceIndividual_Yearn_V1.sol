@@ -404,9 +404,11 @@ contract XendFinanceIndividual_Yearn_V1 is
             "Could not complete deposit process from token contract"
         );
 
-        busdToken.approve(FortubeBankAdapter, amountTransferrable);
+       
 
         uint256 balanceBeforeDeposit = fortubeService.UserShares();
+
+         busdToken.approve(FortubeBankAdapter, amountTransferrable);
 
         fortubeService.Save(amountTransferrable);
 
