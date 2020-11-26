@@ -609,15 +609,19 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     }
     
     //change underlying total deposits to underlying amount deposited
-    function _lendCycleDeposit(uint256 underlyingTotalDeposits)
+    function _lendCycleDeposit()
         internal
         returns (uint256)
     {
-        busdToken.approve(ForTubeBankAdapterAddress, underlyingTotalDeposits);
+        address owner = address(this);
+        
+        uint256 amountDepositedByUser = busdToken.allowance(msg.sender, owner);
+        
+        busdToken.approve(ForTubeBankAdapterAddress, amountDepositedByUser);
 
         uint256 balanceBeforeDeposit = forTubeBankService.UserShares();
 
-        forTubeBankService.Save(underlyingTotalDeposits);
+        forTubeBankService.Save(amountDepositedByUser);
 
         uint256 balanceAfterDeposit = forTubeBankService.UserShares();
 
@@ -638,6 +642,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycleFinancial.derivativeBalanceClaimedBeforeMaturity
         );
     }
+    
 
     function _joinCycle(
         uint256 cycleId,
@@ -675,11 +680,9 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
 
-         
+        // uint256 amountDepositedByUser = cycle.cycleStakeAmount.mul(numberOfStakes);
 
-        uint256 derivativeAmount = _lendCycleDeposit(
-            cycleFinancial.underlyingTotalDeposits
-        );
+        uint256 derivativeAmount = _lendCycleDeposit();
 
         cycleFinancial.derivativeBalance = cycleFinancial.derivativeBalance.add(
             derivativeAmount
