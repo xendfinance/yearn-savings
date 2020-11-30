@@ -14,10 +14,10 @@ import "../ISavingsConfig.sol";
 import "../ISavingsConfigSchema.sol";
 import "../IRewardConfig.sol";
 import "../IXendToken.sol";
+import "../SafeMath.sol";
 import "../IEsusuStorage.sol";
 import "../IEsusuAdapter.sol";
 import "../Fortube/Exponential.sol";
-import "../SafeMath.sol";
 
 contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema, Exponential {
         
@@ -39,6 +39,13 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
             uint cycleId,
             uint amount
             
+        );
+
+        event XendTokenReward (
+            uint date,
+            address indexed member,
+            uint cycleId,
+            uint amount
         );
     
         enum CycleStateEnum{
@@ -64,8 +71,9 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         IEsusuStorage _esusuStorage;
         IEsusuAdapter _esusuAdapterContract;
         IBEP20 _BUSD = IBEP20(0x3b1F033dD955f3BE8649Cc9825A2e3E194765a3F);      //  BEP20 - ForTube BUSD Testnet TODO: change to live when moving to mainnet 
-        IBEP20 _fBUSD = IBEP20(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);
-        IFToken _fBUSDMain = IFToken(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);    //  BEP20 - fBUSD Testnet TODO: change to mainnet
+        IBEP20 _fBUSD = IBEP20(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);   //  BEP20 - fBUSD Testnet TODO: change to mainnet
+        IFToken _fBUSDMain = IFToken(0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45);   //  BEP20 - fBUSD Testnet TODO: change to mainnet
+
         IForTubeBankService _forTubeBankService;
         bool _isActive = true;
 
@@ -83,6 +91,12 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
 
         }
     
+        // This is sets mock tokens for BUSD , fBUSD for the purpose of testing
+        function SetMockAddresses(address mockBUSD, address mockFBUSD) onlyOwner public {
+            _BUSD = IBEP20(mockBUSD);  
+            _fBUSD = IBEP20(mockFBUSD);
+
+        }
         function UpdateForTubeBankService(address forTubeBankServiceContractAddress) active onlyOwner external {
             _forTubeBankService = IForTubeBankService(forTubeBankServiceContractAddress);
         }
@@ -132,7 +146,7 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         _BUSD.transfer(member, DepositAmount);
         
         //  Reward member with Xend Tokens
-        _rewardMember(_esusuStorage.GetEsusuCycleDuration(esusuCycleId),member,DepositAmount);
+        _rewardMember(_esusuStorage.GetEsusuCycleDuration(esusuCycleId),member,DepositAmount, esusuCycleId);
         
         //  Get the fBUSDSharesForContractAfterWithdrawal 
         uint fBUSDSharesForContractAfterWithdrawal = _fBUSD.balanceOf(address(this));
@@ -222,14 +236,16 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
     */
     
     function WithdrawROIFromEsusuCycle(uint esusuCycleId, address member)  public active onlyOwnerAndServiceContract {
-
-        uint totalMembers = _esusuStorage.GetTotalMembersInCycle(esusuCycleId);
         
+        uint totalMembers = _esusuStorage.GetTotalMembersInCycle(esusuCycleId);
+
         bool isMemberEligibleToWithdraw = _isMemberEligibleToWithdrawROI(esusuCycleId,member);
         
         require(isMemberEligibleToWithdraw, "Member cannot withdraw at this time");
         
         uint currentBalanceShares = _esusuStorage.GetEsusuCycleTotalShares(esusuCycleId);
+        
+        // uint pricePerFullShare = _fBUSDMain.exchangeRateStored());
         
         uint overallGrossBUSDBalance = mulScalarTruncate(currentBalanceShares,_fBUSDMain.exchangeRateStored());
         
@@ -264,7 +280,8 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         sendROI(Mroi,member,CycleId);
         
         
-       //  Get the fBUSDSharesForContractAfterWithdrawal 
+        
+        //  Get the fBUSDSharesForContractAfterWithdrawal 
         uint fBUSDSharesForContractAfterWithdrawal = _fBUSD.balanceOf(address(this));
         
         require(fBUSDSharesForContractBeforeWithdrawal > fBUSDSharesForContractAfterWithdrawal, "fBUSD shares before withdrawal must be greater !!!");
@@ -326,6 +343,8 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         //  Approve the treasury contract
         _BUSD.approve(address(_treasuryContract),fee);
         _treasuryContract.depositToken(address(_BUSD));
+
+
         
     }
     
@@ -445,13 +464,19 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
 
         emit ROIWithdrawalEvent(now, member,esusuCycleId,Mroi);
     }
+
+    function _emitXendTokenReward(address member, uint amount, uint esusuCycleId) internal {
+        emit XendTokenReward(now, member, esusuCycleId, amount);
+    }
     
-    function _rewardMember(uint totalCycleTime, address member, uint amount) internal {
+    function _rewardMember(uint totalCycleTime, address member, uint amount, uint esusuCycleId) internal {
         
         uint reward = _rewardConfigContract.CalculateEsusuReward(totalCycleTime, amount);
         
         // get Xend Token contract and mint token for member
         _xendTokenContract.mint(payable(member), reward);
+
+        _emitXendTokenReward(member, reward, esusuCycleId);
     }
 
     function DepricateContract(string calldata reason) external onlyOwner{

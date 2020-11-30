@@ -1,26 +1,26 @@
 {
   "contractName": "IClientRecordSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0x35ae5fa5945bc4a4c41fb711fd7092a85598176dcf6347693f438ef6cbe57538\",\"urls\":[\"bzz-raw://e6e51d8ab3b5517fd2e99b80d4fc061e004492c0cff9fc54decf73077f426cd8\",\"dweb:/ipfs/QmNn2xLU65jkDaCA3BetnXeS1DZcXwc1Umj4mgr2ATWBFm\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/mac/Desktop/BinaryHiils/yearn-savings/YearnBSC/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/mac/Desktop/BinaryHiils/yearn-savings/YearnBSC/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0x35ae5fa5945bc4a4c41fb711fd7092a85598176dcf6347693f438ef6cbe57538\",\"urls\":[\"bzz-raw://e6e51d8ab3b5517fd2e99b80d4fc061e004492c0cff9fc54decf73077f426cd8\",\"dweb:/ipfs/QmNn2xLU65jkDaCA3BetnXeS1DZcXwc1Umj4mgr2ATWBFm\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
   "source": "pragma solidity ^0.6.6;\n\ninterface IClientRecordSchema {\n    struct ClientRecord {\n        bool exists;\n        address payable _address;\n        uint256 underlyingTotalDeposits;\n        uint256 underlyingTotalWithdrawn;\n        uint256 derivativeBalance;\n        uint256 derivativeTotalDeposits;\n        uint256 derivativeTotalWithdrawn;\n    }\n\n    struct RecordIndex {\n        bool exists;\n        uint256 index;\n    }\n}\n",
-  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
+  "sourcePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/YearnBSC/contracts/IClientRecordShema.sol",
   "ast": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/YearnBSC/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
-        7105
+        4105
       ]
     },
-    "id": 7106,
+    "id": 4106,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7084,
+        "id": 4084,
         "literals": [
           "solidity",
           "^",
@@ -28,7 +28,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:12"
       },
       {
         "abstract": false,
@@ -37,26 +37,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 7105,
+        "id": 4105,
         "linearizedBaseContracts": [
-          7105
+          4105
         ],
         "name": "IClientRecordSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "IClientRecordSchema.ClientRecord",
-            "id": 7099,
+            "id": 4099,
             "members": [
               {
                 "constant": false,
-                "id": 7086,
+                "id": 4086,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "91:11:23",
+                "scope": 4099,
+                "src": "91:11:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -64,10 +64,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 7085,
+                  "id": 4085,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "91:4:23",
+                  "src": "91:4:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -78,13 +78,13 @@
               },
               {
                 "constant": false,
-                "id": 7088,
+                "id": 4088,
                 "mutability": "mutable",
                 "name": "_address",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "112:24:23",
+                "scope": 4099,
+                "src": "112:24:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -92,10 +92,10 @@
                   "typeString": "address payable"
                 },
                 "typeName": {
-                  "id": 7087,
+                  "id": 4087,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "112:15:23",
+                  "src": "112:15:12",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -107,13 +107,13 @@
               },
               {
                 "constant": false,
-                "id": 7090,
+                "id": 4090,
                 "mutability": "mutable",
                 "name": "underlyingTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "146:31:23",
+                "scope": 4099,
+                "src": "146:31:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -121,10 +121,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7089,
+                  "id": 4089,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:7:23",
+                  "src": "146:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -135,13 +135,13 @@
               },
               {
                 "constant": false,
-                "id": 7092,
+                "id": 4092,
                 "mutability": "mutable",
                 "name": "underlyingTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "187:32:23",
+                "scope": 4099,
+                "src": "187:32:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -149,10 +149,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7091,
+                  "id": 4091,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "187:7:23",
+                  "src": "187:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -163,13 +163,13 @@
               },
               {
                 "constant": false,
-                "id": 7094,
+                "id": 4094,
                 "mutability": "mutable",
                 "name": "derivativeBalance",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "229:25:23",
+                "scope": 4099,
+                "src": "229:25:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -177,10 +177,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7093,
+                  "id": 4093,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "229:7:23",
+                  "src": "229:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -191,13 +191,13 @@
               },
               {
                 "constant": false,
-                "id": 7096,
+                "id": 4096,
                 "mutability": "mutable",
                 "name": "derivativeTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "264:31:23",
+                "scope": 4099,
+                "src": "264:31:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -205,10 +205,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7095,
+                  "id": 4095,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "264:7:23",
+                  "src": "264:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -219,13 +219,13 @@
               },
               {
                 "constant": false,
-                "id": 7098,
+                "id": 4098,
                 "mutability": "mutable",
                 "name": "derivativeTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "305:32:23",
+                "scope": 4099,
+                "src": "305:32:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -233,10 +233,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7097,
+                  "id": 4097,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "305:7:23",
+                  "src": "305:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -248,23 +248,23 @@
             ],
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
-            "scope": 7105,
-            "src": "61:283:23",
+            "scope": 4105,
+            "src": "61:283:12",
             "visibility": "public"
           },
           {
             "canonicalName": "IClientRecordSchema.RecordIndex",
-            "id": 7104,
+            "id": 4104,
             "members": [
               {
                 "constant": false,
-                "id": 7101,
+                "id": 4101,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7104,
-                "src": "379:11:23",
+                "scope": 4104,
+                "src": "379:11:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -272,10 +272,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 7100,
+                  "id": 4100,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "379:4:23",
+                  "src": "379:4:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -286,13 +286,13 @@
               },
               {
                 "constant": false,
-                "id": 7103,
+                "id": 4103,
                 "mutability": "mutable",
                 "name": "index",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7104,
-                "src": "400:13:23",
+                "scope": 4104,
+                "src": "400:13:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -300,10 +300,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7102,
+                  "id": 4102,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "400:7:23",
+                  "src": "400:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -315,29 +315,29 @@
             ],
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
-            "scope": 7105,
-            "src": "350:70:23",
+            "scope": 4105,
+            "src": "350:70:12",
             "visibility": "public"
           }
         ],
-        "scope": 7106,
-        "src": "25:397:23"
+        "scope": 4106,
+        "src": "25:397:12"
       }
     ],
-    "src": "0:423:23"
+    "src": "0:423:12"
   },
   "legacyAST": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn-savings/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/YearnBSC/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
-        7105
+        4105
       ]
     },
-    "id": 7106,
+    "id": 4106,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 7084,
+        "id": 4084,
         "literals": [
           "solidity",
           "^",
@@ -345,7 +345,7 @@
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:23"
+        "src": "0:23:12"
       },
       {
         "abstract": false,
@@ -354,26 +354,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 7105,
+        "id": 4105,
         "linearizedBaseContracts": [
-          7105
+          4105
         ],
         "name": "IClientRecordSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "IClientRecordSchema.ClientRecord",
-            "id": 7099,
+            "id": 4099,
             "members": [
               {
                 "constant": false,
-                "id": 7086,
+                "id": 4086,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "91:11:23",
+                "scope": 4099,
+                "src": "91:11:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -381,10 +381,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 7085,
+                  "id": 4085,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "91:4:23",
+                  "src": "91:4:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -395,13 +395,13 @@
               },
               {
                 "constant": false,
-                "id": 7088,
+                "id": 4088,
                 "mutability": "mutable",
                 "name": "_address",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "112:24:23",
+                "scope": 4099,
+                "src": "112:24:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -409,10 +409,10 @@
                   "typeString": "address payable"
                 },
                 "typeName": {
-                  "id": 7087,
+                  "id": 4087,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "112:15:23",
+                  "src": "112:15:12",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -424,13 +424,13 @@
               },
               {
                 "constant": false,
-                "id": 7090,
+                "id": 4090,
                 "mutability": "mutable",
                 "name": "underlyingTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "146:31:23",
+                "scope": 4099,
+                "src": "146:31:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -438,10 +438,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7089,
+                  "id": 4089,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:7:23",
+                  "src": "146:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -452,13 +452,13 @@
               },
               {
                 "constant": false,
-                "id": 7092,
+                "id": 4092,
                 "mutability": "mutable",
                 "name": "underlyingTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "187:32:23",
+                "scope": 4099,
+                "src": "187:32:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -466,10 +466,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7091,
+                  "id": 4091,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "187:7:23",
+                  "src": "187:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -480,13 +480,13 @@
               },
               {
                 "constant": false,
-                "id": 7094,
+                "id": 4094,
                 "mutability": "mutable",
                 "name": "derivativeBalance",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "229:25:23",
+                "scope": 4099,
+                "src": "229:25:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -494,10 +494,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7093,
+                  "id": 4093,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "229:7:23",
+                  "src": "229:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -508,13 +508,13 @@
               },
               {
                 "constant": false,
-                "id": 7096,
+                "id": 4096,
                 "mutability": "mutable",
                 "name": "derivativeTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "264:31:23",
+                "scope": 4099,
+                "src": "264:31:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -522,10 +522,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7095,
+                  "id": 4095,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "264:7:23",
+                  "src": "264:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -536,13 +536,13 @@
               },
               {
                 "constant": false,
-                "id": 7098,
+                "id": 4098,
                 "mutability": "mutable",
                 "name": "derivativeTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7099,
-                "src": "305:32:23",
+                "scope": 4099,
+                "src": "305:32:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -550,10 +550,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7097,
+                  "id": 4097,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "305:7:23",
+                  "src": "305:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -565,23 +565,23 @@
             ],
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
-            "scope": 7105,
-            "src": "61:283:23",
+            "scope": 4105,
+            "src": "61:283:12",
             "visibility": "public"
           },
           {
             "canonicalName": "IClientRecordSchema.RecordIndex",
-            "id": 7104,
+            "id": 4104,
             "members": [
               {
                 "constant": false,
-                "id": 7101,
+                "id": 4101,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7104,
-                "src": "379:11:23",
+                "scope": 4104,
+                "src": "379:11:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -589,10 +589,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 7100,
+                  "id": 4100,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "379:4:23",
+                  "src": "379:4:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -603,13 +603,13 @@
               },
               {
                 "constant": false,
-                "id": 7103,
+                "id": 4103,
                 "mutability": "mutable",
                 "name": "index",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 7104,
-                "src": "400:13:23",
+                "scope": 4104,
+                "src": "400:13:12",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -617,10 +617,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 7102,
+                  "id": 4102,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "400:7:23",
+                  "src": "400:7:12",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -632,24 +632,24 @@
             ],
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
-            "scope": 7105,
-            "src": "350:70:23",
+            "scope": 4105,
+            "src": "350:70:12",
             "visibility": "public"
           }
         ],
-        "scope": 7106,
-        "src": "25:397:23"
+        "scope": 4106,
+        "src": "25:397:12"
       }
     ],
-    "src": "0:423:23"
+    "src": "0:423:12"
   },
   "compiler": {
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.2.5",
-  "updatedAt": "2020-11-14T11:07:10.627Z",
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2020-11-27T15:01:06.548Z",
   "devdoc": {
     "methods": {}
   },

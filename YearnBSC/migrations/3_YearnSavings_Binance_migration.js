@@ -131,10 +131,13 @@ module.exports = function (deployer) {
      clientRecord = await ClientRecordContract.deployed();
      
      
-    //0. update fortube adapter
-    await fortubeService.updateAdapter(ForTubeBankAdapterContract.address)
+    
+    
 
      //1. Create SavingsConfig rules
+
+     await clientRecord.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+     
      await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
 
      await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 1, 1)
@@ -147,6 +150,9 @@ module.exports = function (deployer) {
      await savingsConfigContract.createRule("esusufee",0,0,1000,1);
 
      console.log("1->Savings Config Rule Created ...");
+     
+     //0. update fortube adapter
+     await fortubeService.updateAdapter(ForTubeBankAdapterContract.address)
  
       //3. Update the fortube service Address in the EsusuAdapter Contract
       await esusuAdapterContract.UpdateForTubeBankService(ForTubeBankServiceContract.address);
@@ -184,7 +190,7 @@ module.exports = function (deployer) {
       await xendTokenContract.grantAccess(esusuAdapterWithdrawalDelegateContract.address);
       console.log("11->Xend Token Has Given access To Esusu Adapter Withdrawal Delegate to transfer tokens ...");
 
-      await clientRecord.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+      
   
   })
   
