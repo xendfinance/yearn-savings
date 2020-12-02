@@ -15,7 +15,7 @@ contract Groups is IGroupSchema, StorageOwners {
     // indexes a group location using the group name
     mapping(string => RecordIndex) private GroupIndexerByName;
 
-    mapping(string => uint256) private XendTokensReward;
+    mapping(address => uint256) private XendTokensReward;
 
     GroupMember[] GroupMembers;
 
