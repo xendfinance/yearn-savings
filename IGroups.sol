@@ -2,6 +2,16 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface IGroups is IGroupSchema {
+    function getXendTokensReward(address depositorAddress)
+        external
+        view
+        returns (uint256);
+
+    function setXendTokensReward(address depositorAddress, uint256 amount)
+        external
+        view
+        returns (uint256);
+
     function getLengthOfTokenAddressesUsedInDeposit()
         external
         view

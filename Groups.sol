@@ -15,6 +15,8 @@ contract Groups is IGroupSchema, StorageOwners {
     // indexes a group location using the group name
     mapping(string => RecordIndex) private GroupIndexerByName;
 
+    mapping(string => uint) private XendTokensReward;
+
     GroupMember[] GroupMembers;
 
     //Mapping of a groups members. Key is the group id,
@@ -35,6 +37,22 @@ contract Groups is IGroupSchema, StorageOwners {
     address[] tokenAddresses;
     uint256 totalEthersDeposited;
     mapping(address => uint256) totalTokensDeposited;
+
+    function getXendTokensReward(address depositorAddress)
+        external
+        view
+        returns (uint256)
+    {
+        return XendTokensReward[tokenAddress];
+    }
+
+    function setXendTokensReward(address depositorAddress, uint amount)
+        external
+        view
+        returns (uint256)
+    {
+        XendTokensReward[tokenAddress] =  XendTokensReward[tokenAddress].add(amount);
+    }
 
     function getLengthOfTokenAddressesUsedInDeposit()
         external
