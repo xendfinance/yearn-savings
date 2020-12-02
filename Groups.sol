@@ -2,8 +2,11 @@ pragma solidity ^0.6.0;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
+import "./SafeMath.sol";
 
 contract Groups is IGroupSchema, StorageOwners {
+    using SafeMath for uint256;
+
     // list of group records
     Group[] private Groups;
     //Mapping that enables ease of traversal of the group records
