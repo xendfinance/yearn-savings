@@ -10,7 +10,7 @@ interface IGroups is IGroupSchema {
     function setXendTokensReward(
         address payable receiverAddress,
         uint256 amount
-    ) external view returns (uint256);
+    ) external;
 
     function getLengthOfTokenAddressesUsedInDeposit()
         external

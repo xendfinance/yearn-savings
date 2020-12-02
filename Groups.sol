@@ -49,7 +49,7 @@ contract Groups is IGroupSchema, StorageOwners {
     function setXendTokensReward(
         address payable receiverAddress,
         uint256 amount
-    ) external view returns (uint256) {
+    ) external {
         XendTokensReward[receiverAddress] = XendTokensReward[receiverAddress]
             .add(amount);
     }
