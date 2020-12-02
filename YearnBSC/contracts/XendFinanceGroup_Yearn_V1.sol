@@ -37,6 +37,12 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
         address indexed tokenAddress
     );
 
+      event XendTokenReward (
+            uint date,
+            address indexed member,
+            uint amount
+        );
+
     event DerivativeAssetWithdrawn(
         uint256 indexed cycleId,
         address payable indexed memberAddress,
@@ -1300,6 +1306,10 @@ contract XendFinanceGroup_Yearn_V1 is
         fbusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
+     function _emitXendTokenReward(address member, uint amount) internal {
+        emit XendTokenReward(now, member, amount);
+    }
+    
     function _rewardUserWithTokens(
         uint256 totalCycleTimeInSeconds,
         uint256 amountDeposited,
@@ -1314,6 +1324,8 @@ contract XendFinanceGroup_Yearn_V1 is
         if (numberOfRewardTokens > 0) {
             xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
         }
+
+        _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)

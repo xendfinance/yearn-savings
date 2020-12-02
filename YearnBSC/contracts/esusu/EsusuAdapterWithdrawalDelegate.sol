@@ -56,7 +56,6 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         }
     
         event DepricateContractEvent(
-        
         uint date,
         address owner, 
         string reason
