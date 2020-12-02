@@ -878,7 +878,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (uint256)
     {
         uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
-        derivativeToken.approve(LendingAdapterAddress, derivativeAmount);
+        derivativeToken.approve(LendingAdapterAddress, derivativeBalance);
         lendingService.WithdrawBySharesOnly(derivativeBalance);
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
@@ -1281,13 +1281,15 @@ contract XendFinanceGroup_Yearn_V1 is
 
         if (numberOfRewardTokens > 0) {
             xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
-            groupStorage.setXendTokensReward(numberOfRewardTokens);
+            groupStorage.setXendTokensReward(
+                cycleMemberAddress,
+                numberOfRewardTokens
+            );
             _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
-
         }
     }
 
-    function _emitXendTokenReward(address member, uint amount) internal {
+    function _emitXendTokenReward(address member, uint256 amount) internal {
         emit XendTokenReward(now, member, amount);
     }
 
