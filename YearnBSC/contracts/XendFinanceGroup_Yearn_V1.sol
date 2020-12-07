@@ -39,7 +39,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
 
       event XendTokenReward (
             uint date,
-            address indexed member,
+            address payable indexed member,
             uint amount
         );
 
@@ -916,7 +916,9 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (uint256)
     {
         uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance();
+        
         fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
+        
         forTubeBankService.WithdrawBySharesOnly(derivativeBalance);
 
         uint256 balanceAfterWithdraw = forTubeBankService.UserBUSDBalance();
@@ -1279,10 +1281,12 @@ contract XendFinanceGroup_Yearn_V1 is
         cycleMember.hasWithdrawn = true;
         cycleMember.stakesClaimed += stakesHoldings;
         uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
+        
         _rewardUserWithTokens(
             cycle.cycleDuration,
             amountDeposited,
             cycleMember._address
+            
         );
 
         _updateCycle(cycle);
@@ -1306,7 +1310,7 @@ contract XendFinanceGroup_Yearn_V1 is
         fbusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
 
-     function _emitXendTokenReward(address member, uint amount) internal {
+     function _emitXendTokenReward(address payable member, uint256 amount) internal {
         emit XendTokenReward(now, member, amount);
     }
     
@@ -1323,9 +1327,11 @@ contract XendFinanceGroup_Yearn_V1 is
 
         if (numberOfRewardTokens > 0) {
             xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
+             groupStorage.setXendTokensReward(cycleMemberAddress, numberOfRewardTokens);
+              _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
+
         }
 
-        _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)

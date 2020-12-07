@@ -34,6 +34,7 @@ interface IEsusuStorage {
     function GetCycleIndexFromCycleMember(address member) external view returns(uint);
     function GetCycleIdFromCycleIndexAndCycleMember(uint cycleIndex, address member) external view returns(uint);
     function GetTotalMembersInCycle(uint esusuCycleId)external view returns(uint TotalMembers);
+    function GetMemberXendTokenReward(address member) external returns(uint);
 
 
     /* Setters - only owner or service contract can call */
@@ -52,4 +53,5 @@ interface IEsusuStorage {
     function CreateEsusuCycleToBeneficiaryMapping(uint esusuCycleId, address memberAddress, uint memberROINet) external;
     function CreateMemberToCycleIndexToCycleIDMapping(address member, uint esusuCycleId) external;
     function UpdateEsusuCycleSharesDuringJoin(uint esusuCycleId, uint memberShares) external;
+    function UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) external;
 }

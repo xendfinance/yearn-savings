@@ -475,6 +475,9 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         // get Xend Token contract and mint token for member
         _xendTokenContract.mint(payable(member), reward);
 
+         //  update the xend token reward for the member
+        _esusuStorage.UpdateMemberToXendTokeRewardMapping(member,reward);
+
         _emitXendTokenReward(member, reward, esusuCycleId);
     }
 

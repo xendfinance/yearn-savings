@@ -91,6 +91,9 @@ contract EsusuStorage {
 
     mapping(address=>mapping(uint=>uint)) MemberToCycleIndexToCycleIDMapping; //  This maps the member to the cycle index and then to the cycle ID
 
+    mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
+    
+
 
     uint TotalDeposits; //  This holds all the dai amounts users have deposited in this contract
 
@@ -455,6 +458,14 @@ contract EsusuStorage {
 
     function GetTotalDeposits() external view returns (uint){
         return TotalDeposits;
+    }
+
+     function UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) external onlyOwnerAdapterAndAdapterDelegateContract {
+        MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
+    }
+
+        function GetMemberXendTokenReward(address member) external returns(uint) {
+        return MemberToXendTokenRewardMapping[member];
     }
 
     function GetEsusuCycleState(uint esusuCycleId) external view returns (uint){

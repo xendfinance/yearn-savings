@@ -2,8 +2,11 @@ pragma solidity ^0.6.0;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
+import "./SafeMath.sol";
 
 contract Groups is IGroupSchema, StorageOwners {
+    
+    using SafeMath for uint256;
     // list of group records
     Group[] private Groups;
     //Mapping that enables ease of traversal of the group records
@@ -14,6 +17,9 @@ contract Groups is IGroupSchema, StorageOwners {
 
     // indexes a group location using the group name
     mapping(string => RecordIndex) private GroupIndexerByName;
+    
+    mapping(address => uint256) private XendTokensReward;
+
 
     GroupMember[] GroupMembers;
 
@@ -43,7 +49,22 @@ contract Groups is IGroupSchema, StorageOwners {
     {
         return tokenAddresses.length;
     }
+    
+    function getXendTokensReward(address payable receiverAddress)
+        external
+        view
+        returns (uint256)
+    {
+        return XendTokensReward[receiverAddress];
+    }
 
+   function setXendTokensReward(
+        address payable receiverAddress,
+        uint256 amount
+    ) external {
+        XendTokensReward[receiverAddress] = XendTokensReward[receiverAddress]
+            .add(amount);
+    }
     function incrementTokenDeposit(address tokenAddress, uint256 amount)
         external
         onlyStorageOracle

@@ -119,6 +119,7 @@ module.exports = function (deployer) {
      let esusuStorageContract = null;
      let fortubeService = null;
      let clientRecord = null;
+     let rewardConfigContract = null;
 
      savingsConfigContract = await SavingsConfigContract.deployed();
      esusuAdapterContract = await EsusuAdapterContract.deployed();
@@ -129,6 +130,7 @@ module.exports = function (deployer) {
      esusuStorageContract = await EsusuStorageContract.deployed();
      fortubeService = await ForTubeBankServiceContract.deployed();
      clientRecord = await ClientRecordContract.deployed();
+     rewardConfigContract = await RewardConfigContract.deployed();
      
      
     
@@ -190,6 +192,11 @@ module.exports = function (deployer) {
       await xendTokenContract.grantAccess(esusuAdapterWithdrawalDelegateContract.address);
       console.log("11->Xend Token Has Given access To Esusu Adapter Withdrawal Delegate to transfer tokens ...");
 
+      //12.
+     await rewardConfigContract.SetRewardParams("100000000000000000000000000", "10000000000000000000000000", "2", "7", "10","15", "4","60", "4");
+
+     //13. 
+     await rewardConfigContract.SetRewardActive(true);
       
   
   })
