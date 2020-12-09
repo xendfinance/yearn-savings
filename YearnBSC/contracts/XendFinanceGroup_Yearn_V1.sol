@@ -915,6 +915,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         internal
         returns (uint256)
     {
+        require(derivativeBalance>0,"Derivative balance must be greater than 0");
         uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance();
         
         fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
@@ -923,8 +924,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         uint256 balanceAfterWithdraw = forTubeBankService.UserBUSDBalance();
 
-        uint256 amountOfUnderlyingAssetWithdrawn = balanceAfterWithdraw.sub(
-            balanceBeforeWithdraw
+        uint256 amountOfUnderlyingAssetWithdrawn = balanceBeforeWithdraw.sub(
+            balanceAfterWithdraw
         );
 
         return amountOfUnderlyingAssetWithdrawn;
@@ -1026,7 +1027,7 @@ contract XendFinanceGroup_Yearn_V1 is
             "Funds have already been withdrawn"
         );
 
-        uint256 numberOfStakesByMember = cycleMember.numberOfCycleStakes;
+        //uint256 numberOfStakesByMember = cycleMember.numberOfCycleStakes;
         //uint256 pricePerFullShare = lendingService.getPricePerFullShare();
 
         // get's the worth of one stake of the cycle in the derivative amount e.g yDAI
@@ -1036,20 +1037,16 @@ contract XendFinanceGroup_Yearn_V1 is
 
         //get's how much of a crypto asset the user has deposited. e.g yDAI
         uint256 derivativeBalanceForMember = derivativeAmountForStake.mul(
-            numberOfStakesByMember
+            cycleMember.numberOfCycleStakes
         );
+        
+        uint outstandingStakesBalance = cycleMember.numberOfCycleStakes - cycleMember.stakesClaimed;
 
-        fbusdToken.approve(
-            ForTubeBankAdapterAddress,
-            derivativeBalanceForMember
-        );
-
+       
         //get's the crypto equivalent of a members derivative balance. Crytpo here refers to DAI. this is gotten after the user's ydai balance has been converted to dai
-        uint256 underlyingAmountThatMemberDepositIsWorth = _redeemLending(
-            derivativeBalanceForMember
-        );
+        uint256 underlyingAmountThatMemberDepositIsWorth = cycleFinancial.underlyingBalance.div(outstandingStakesBalance);
 
-        uint256 initialUnderlyingDepositByMember = numberOfStakesByMember.mul(
+        uint256 initialUnderlyingDepositByMember = cycleMember.numberOfCycleStakes.mul(
             cycle.cycleStakeAmount
         );
 
@@ -1102,14 +1099,14 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 totalUnderlyingAmountSentOut = withdrawalResolution
             .amountToSendToTreasury + withdrawalResolution.amountToSendToMember;
 
-        cycle.stakesClaimedBeforeMaturity += numberOfStakesByMember;
+        cycle.stakesClaimedBeforeMaturity += cycleMember.numberOfCycleStakes;
         cycleFinancial
             .underylingBalanceClaimedBeforeMaturity += totalUnderlyingAmountSentOut;
         cycleFinancial
             .derivativeBalanceClaimedBeforeMaturity += derivativeBalanceForMember;
 
         cycleMember.hasWithdrawn = true;
-        cycleMember.stakesClaimed += numberOfStakesByMember;
+        cycleMember.stakesClaimed += cycleMember.numberOfCycleStakes;
 
         _updateCycle(cycle);
         _updateCycleMember(cycleMember);
