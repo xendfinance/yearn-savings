@@ -2,8 +2,12 @@ pragma solidity ^0.6.6;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
+import "./SafeMath.sol";
 
 contract Cycles is IGroupSchema, StorageOwners {
+
+    using SafeMath for uint256;
+
     // list of Group Cycles
     Cycle[] private Cycles;
     CycleFinancial[] private CycleFinancials;
@@ -256,7 +260,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
     ) external onlyStorageOracle returns (uint256) {
-        lastCycleId += 1;
+        lastCycleId  = lastCycleId.add(1);
         Cycle memory cycle = Cycle(
             true,
             lastCycleId,
