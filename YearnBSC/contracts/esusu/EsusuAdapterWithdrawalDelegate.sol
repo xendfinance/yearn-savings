@@ -139,7 +139,7 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         
         _fBUSD.approve(forTubeAdapterContractAddress,fBUSDSharesPerCycle);
         
-        _forTubeBankService.WithdrawByShares(DepositAmount,fBUSDSharesPerCycle);
+        _forTubeBankService.WithdrawByShares(DepositAmount,fBUSDSharesPerCycle - 3);
         
         //  Now the BUSD is in this contract, transfer it to the member 
         _BUSD.transfer(member, DepositAmount);
@@ -273,7 +273,7 @@ contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema,
         
         //  Before this function is called, we will have triggered a transfer of yDaiShares from the adapter to this withdrawal contract 
         _fBUSD.approve(forTubeAdapterContractAddress,currentBalanceShares);
-        _forTubeBankService.WithdrawByShares(Mroi,currentBalanceShares);
+        _forTubeBankService.WithdrawByShares(Mroi,currentBalanceShares - 3);
         
         //  Now the Dai is in this contract, transfer the net ROI to the member and fee to treasury contract 
         sendROI(Mroi,member,CycleId);

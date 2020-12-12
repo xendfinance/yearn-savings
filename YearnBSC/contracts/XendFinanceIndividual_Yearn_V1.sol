@@ -258,8 +258,10 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance();
 
-        uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
-            balanceBeforeWithdraw
+        require(balanceBeforeWithdraw>balanceAfterWithdraw, "Balance before needs to be greater than balance after");
+
+        uint256 amountOfUnderlyingAssetWithdrawn =  balanceBeforeWithdraw.sub(
+            balanceAfterWithdraw
         );
         
 
@@ -267,10 +269,12 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountOfUnderlyingAssetWithdrawn
         );
 
+        require(amountOfUnderlyingAssetWithdrawn>commissionFees, "Amount to be withdrawn must be greater than commision fees");
         uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
             commissionFees
         );
-            busdToken.approve(recipient, amountToSendToDepositor);
+            
+        //busdToken.approve(recipient, amountToSendToDepositor);
 
         bool isSuccessful = busdToken.transfer(
             recipient,
@@ -406,13 +410,13 @@ contract XendFinanceIndividual_Yearn_V1 is
 
        
 
-        uint256 balanceBeforeDeposit = fortubeService.UserShares();
+        uint256 balanceBeforeDeposit = fBusdToken.balanceOf(address(this));
 
          busdToken.approve(FortubeBankAdapter, amountTransferrable);
 
         fortubeService.Save(amountTransferrable);
 
-        uint256 balanceAfterDeposit = fortubeService.UserShares();
+        uint256 balanceAfterDeposit = fBusdToken.balanceOf(address(this));
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
         ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
