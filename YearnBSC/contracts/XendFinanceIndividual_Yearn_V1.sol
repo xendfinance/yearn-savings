@@ -235,8 +235,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         external
         onlyNonDeprecatedCalls
     {
-        address payable recipient = msg.sender;
-        _withdraw(recipient, derivativeAmount);
+      address payable recipient = msg.sender;
+      
+      _withdraw(recipient, derivativeAmount);
     }
 
     function withdrawDelegate(
@@ -245,23 +246,33 @@ contract XendFinanceIndividual_Yearn_V1 is
     ) external onlyNonDeprecatedCalls onlyOwner {
         _withdraw(recipient, derivativeAmount);
     }
+    
+    function withdrawByShares(uint256 derivativeAmount) external {
+        
+        fBusdToken.approve(FortubeBankAdapter, derivativeAmount);
+        
+        fortubeService.WithdrawBySharesOnly(derivativeAmount);
+    }
 
     function _withdraw(address payable recipient, uint256 derivativeAmount)
         internal
     {
         _validateUserBalanceIsSufficient(recipient, derivativeAmount);
 
-        uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance();
+        uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance(address(this));
 
-        fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
-        fortubeService.WithdrawBySharesOnly(derivativeAmount);
+         bool isApprovalSuccessful = fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
+         
+         require(isApprovalSuccessful == true, 'could not approve fbusd token for adapter contract');
+        
+         fortubeService.WithdrawBySharesOnly(derivativeAmount);
 
-        uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance();
+        uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance(address(this));
 
-        require(balanceBeforeWithdraw>balanceAfterWithdraw, "Balance before needs to be greater than balance after");
+        require(balanceAfterWithdraw>balanceBeforeWithdraw, "Balance before needs to be greater than balance after");
 
-        uint256 amountOfUnderlyingAssetWithdrawn =  balanceBeforeWithdraw.sub(
-            balanceAfterWithdraw
+        uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
+            balanceBeforeWithdraw
         );
         
 

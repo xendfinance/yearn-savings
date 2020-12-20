@@ -1,14 +1,16 @@
 pragma solidity >=0.6.6;
 
-import "./ForTubeBankAdapter.sol";
+import "./FortubeAdapterHack.sol";
 
 contract ForTubeBankService {
     address _owner;
+    address  _delegateContract;
     
-    ForTubeBankAdapter _bankAdapter;
+    FortubeBankAdapterHack _bankAdapter;
 
     constructor() public {
         _owner = msg.sender;
+        
     }
 
     function transferOwnership(address account) external onlyOwner() {
@@ -16,16 +18,13 @@ contract ForTubeBankService {
     }
 
     function updateAdapter(address adapterAddress) external onlyOwner() {
-        _bankAdapter = ForTubeBankAdapter(adapterAddress);
+        _bankAdapter = FortubeBankAdapterHack(adapterAddress);
+    }
+    
+    function updateWithdrawalDelegrateContract (address withdrawalDelegateAddress) external onlyOwner() {
+        _delegateContract = withdrawalDelegateAddress;
     }
 
-    function UserShares() external view returns (uint256) {
-        return _bankAdapter.GetFBUSDBalance(msg.sender);
-    }
-
-    function UserBUSDBalance() external view returns (uint256) {
-        return _bankAdapter.GetBUSDBalance(msg.sender);
-    }
 
     /*
         -   Before calling this function, ensure that the msg.sender or caller has given this contract address
@@ -38,6 +37,12 @@ contract ForTubeBankService {
     function Withdraw(uint256 amount) external {
         _bankAdapter.Withdraw(amount, msg.sender);
     }
+    
+     function TransferCapitalBack (uint depositAmount, address member) external onlyOwnerAndDelegateContract {
+            _bankAdapter.TransferCapitalBack(depositAmount, member);
+    }
+    
+    
 
     function WithdrawByShares(uint256 amount, uint256 sharesAmount) external {
         _bankAdapter.WithdrawByShares(amount, msg.sender, sharesAmount);
@@ -55,11 +60,32 @@ contract ForTubeBankService {
         _bankAdapter.transferContractOwnership(newServiceContract);
     }
     
-    function CalculateTotalBUSDEarned(address member) external view returns (uint256 exchangeRate){
-        return _bankAdapter.CalculateTotalBUSDEarned(member);
-    }
+    function UserShares(address user) external view returns (uint256) {
+    return _bankAdapter.GetFBUSDBalance(user);
+}
+
+function UserBUSDBalance(address user) external view returns (uint256) {
+    return _bankAdapter.GetBUSDBalance(user);
+}
+
+function Save(uint256 amount, address user) external {
+    _bankAdapter.Save(amount, user);
+}
+
+function Withdraw(uint256 amount, address user) external {
+    _bankAdapter.Withdraw(amount, user);
+}
+
     modifier onlyOwner() {
         require(_owner == msg.sender, "Only owner can make this call");
+        _;
+    }
+    
+     modifier onlyOwnerAndDelegateContract() {
+        require(
+            msg.sender == _owner || msg.sender == _delegateContract,
+            "Unauthorized access to contract"
+        );
         _;
     }
 }

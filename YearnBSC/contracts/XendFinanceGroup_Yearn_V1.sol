@@ -614,31 +614,30 @@ function _updateCycle(Cycle memory cycle) internal {
     );
 }
 
-function _lendCycleDeposit(uint numberOfStake,uint stakeAmount)
+function getAllowanceForBusd() external view returns (uint){
+    return _getAllowanceForBusd();
+}
+
+
+
+function _lendCycleDeposit(uint allowance,uint amountToDeductFromClient)
     internal
     returns (uint256)
 {
-
-  uint256 amountDepositedByUser = busdToken.allowance(msg.sender, address(this));
-  string memory stringifiedAmountDepositedByUser = uintToStr(amountDepositedByUser);
-  require(amountDepositedByUser>0, stringifiedAmountDepositedByUser);
-
-  uint totalCostToJoin = numberOfStake.mul(stakeAmount);
-  
-  require(amountDepositedByUser>=totalCostToJoin,"Approve an amount to cover for stake purchase [1]");
+  require(allowance>=amountToDeductFromClient,"Approve an amount to cover for stake purchase [1]");
   
 
-  bool isSuccessful = busdToken.transferFrom(msg.sender, address(this), totalCostToJoin);
+  bool isSuccessful = busdToken.transferFrom(msg.sender, address(this), amountToDeductFromClient);
   
   require(isSuccessful==true,"Could not transfer tokens to contract");
  
 
-  isSuccessful = busdToken.approve(forTubeBankService.GetForTubeAdapterAddress(), totalCostToJoin);
+  isSuccessful = busdToken.approve(forTubeBankService.GetForTubeAdapterAddress(), amountToDeductFromClient);
 
   uint256 balanceBeforeDeposit = fbusdToken.balanceOf(address(this));
 
 
-  forTubeBankService.Save(totalCostToJoin);
+  forTubeBankService.Save(amountToDeductFromClient);
 
   uint256 balanceAfterDeposit = fbusdToken.balanceOf(address(this));
 
@@ -648,25 +647,34 @@ function _lendCycleDeposit(uint numberOfStake,uint stakeAmount)
 
 }
 
-function uintToStr(uint _i) internal pure returns (string memory _uintAsString) {
-        uint number = _i;
-        if (number == 0) {
-            return "0";
-        }
-        uint j = number;
-        uint len;
-        while (j != 0) {
-            len++;
-            j /= 10;
-        }
-        bytes memory bstr = new bytes(len);
-        uint k = len - 1;
-        while (number != 0) {
-            bstr[k--] = byte(uint8(48 + number % 10));
-            number /= 10;
-        }
-        return string(bstr);
-    }
+function _getAllowanceForBusd() internal view returns (uint){
+    address recipient = address(this);
+    uint256 amountDepositedByUser = busdToken.allowance(msg.sender, recipient);
+    require(amountDepositedByUser>0, "Approve an amount to cover for stake purchase [0]");
+
+    return amountDepositedByUser;
+}
+
+
+// function uintToStr(uint _i) internal pure returns (string memory _uintAsString) {
+//         uint number = _i;
+//         if (number == 0) {
+//             return "0";
+//         }
+//         uint j = number;
+//         uint len;
+//         while (j != 0) {
+//             len++;
+//             j /= 10;
+//         }
+//         bytes memory bstr = new bytes(len);
+//         uint k = len - 1;
+//         while (number != 0) {
+//             bstr[k--] = byte(uint8(48 + number % 10));
+//             number /= 10;
+//         }
+//         return string(bstr);
+//     }
 
 
 
@@ -685,10 +693,18 @@ function _updateCycleFinancials(CycleFinancial memory cycleFinancial)
     );
 }
 
+function getAmountToBillClient(uint cycleId,uint numberOfStakes) external view returns (uint){
+    Cycle memory cycle = _getCycleById(cycleId);
+    
+    uint amountToDeductFromClient = cycle.cycleStakeAmount.mul(numberOfStakes);
+    return amountToDeductFromClient;
+
+}
 
 function _joinCycle(
     uint256 cycleId,
     uint256 numberOfStakes,
+    uint allowance,
     address payable depositorAddress
 ) internal {
     require(numberOfStakes > 0, "Minimum stakes that can be acquired is 1");
@@ -720,7 +736,10 @@ function _joinCycle(
         numberOfStakes,
         depositorAddress
     );
-    uint256 derivativeAmount = _lendCycleDeposit(cycle.cycleStakeAmount,numberOfStakes);
+    
+    uint amountToDeductFromClient = cycle.cycleStakeAmount.mul(numberOfStakes);
+
+    uint256 derivativeAmount = _lendCycleDeposit(allowance,amountToDeductFromClient);
 
 
     cycle = _updateCycleStakeDeposit(cycle, cycleFinancial, numberOfStakes);
@@ -953,20 +972,18 @@ function _redeemLending(uint256 derivativeBalance)
 {
     require(derivativeBalance>0,"Derivative balance must be greater than 0");
     
-    uint256 newDerivativeBalance = derivativeBalance.sub(3);
-    
-    uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance();
+    uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance(address(this));
     
     bool isSuccessful = fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
     
     require(isSuccessful==true,"Approval for withdrawal failed");
     
-    forTubeBankService.WithdrawBySharesOnly(newDerivativeBalance);
+    forTubeBankService.WithdrawBySharesOnly(derivativeBalance);
 
-    uint256 balanceAfterWithdraw = forTubeBankService.UserBUSDBalance();
+    uint256 balanceAfterWithdraw = forTubeBankService.UserBUSDBalance(address(this));
 
-    uint256 amountOfUnderlyingAssetWithdrawn = balanceBeforeWithdraw.sub(
-        balanceAfterWithdraw
+    uint256 amountOfUnderlyingAssetWithdrawn = balanceAfterWithdraw.sub(
+        balanceBeforeWithdraw
     );
 
     return amountOfUnderlyingAssetWithdrawn;
@@ -1720,7 +1737,9 @@ function joinCycle(uint256 cycleId, uint256 numberOfStakes)
     onlyNonDeprecatedCalls
 {
     address payable depositorAddress = msg.sender;
-    _joinCycle(cycleId, numberOfStakes, depositorAddress);
+    uint allowance = _getAllowanceForBusd();
+
+    _joinCycle(cycleId, numberOfStakes,allowance, depositorAddress);
 }
 
 function joinCycleDelegate(
@@ -1728,6 +1747,8 @@ function joinCycleDelegate(
     uint256 numberOfStakes,
     address payable depositorAddress
 ) external onlyNonDeprecatedCalls {
-    _joinCycle(cycleId, numberOfStakes, depositorAddress);
+    uint allowance = _getAllowanceForBusd();
+
+    _joinCycle(cycleId, numberOfStakes,allowance, depositorAddress);
 }
 }

@@ -1,7 +1,7 @@
 
 pragma solidity >=0.6.6;
 
-import "../SafeMath.sol";
+import "./SafeMath.sol";
 
 
 contract EsusuStorage {
@@ -90,9 +90,8 @@ contract EsusuStorage {
     mapping(address=>uint) MemberToCycleIndexMapping; //  This tracks the number of cycles by index created by a member
 
     mapping(address=>mapping(uint=>uint)) MemberToCycleIndexToCycleIDMapping; //  This maps the member to the cycle index and then to the cycle ID
-
-    mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
     
+    mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
 
 
     uint TotalDeposits; //  This holds all the dai amounts users have deposited in this contract
@@ -217,6 +216,18 @@ contract EsusuStorage {
                 cycle.TotalMembers, cycle.MaxMembers, cycle.PayoutIntervalSeconds,cycle.GroupId);
 
     }
+    
+     function GetEsusuCycleBasicInformationForEsusuAdapter(uint esusuCycleId) external view returns(uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers){
+
+        require(esusuCycleId > 0 && esusuCycleId <= EsusuCycleId, "Cycle ID must be within valid EsusuCycleId range");
+
+        EsusuCycle memory cycle = EsusuCycleMapping[esusuCycleId];
+
+        return (cycle.CycleId, cycle.DepositAmount,
+                uint256(cycle.CycleState),
+                cycle.TotalMembers, cycle.MaxMembers);
+
+    }
 
     function GetEsusuCycleTotalShares(uint esusuCycleId) external view returns(uint TotalShares){
 
@@ -314,6 +325,15 @@ contract EsusuStorage {
         return amount;
     }
 
+    function GetTotalMembersInCycle(uint esusuCycleId)external view returns(uint TotalMembers){
+         
+        require(esusuCycleId > 0 && esusuCycleId <= EsusuCycleId, "Cycle ID must be within valid EsusuCycleId range");
+        
+        EsusuCycle memory cycle = EsusuCycleMapping[esusuCycleId];
+        
+        return (cycle.TotalMembers);      
+    }
+
     function IsMemberInCycle(address memberAddress,uint esusuCycleId ) external view returns(bool){
 
         mapping(uint=>MemberCycle) storage memberCycleMapping =  MemberAddressToMemberCycleMapping[memberAddress];
@@ -353,7 +373,15 @@ contract EsusuStorage {
 
         EsusuCycleMapping[esusuCycleId].TotalMembers +=1;
     }
+    
+      function UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) external onlyOwnerAdapterAndAdapterDelegateContract {
+        MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
+    }
 
+    function GetMemberXendTokenReward(address member) external returns(uint) {
+        return MemberToXendTokenRewardMapping[member];
+    }
+    
     function CreateMemberPositionMapping(uint esusuCycleId, address member) onlyOwnerAdapterAndAdapterDelegateContract external{
 
         mapping(address=>uint) storage memberPositionMapping =  CycleToMemberPositionMapping[esusuCycleId];
@@ -368,7 +396,6 @@ contract EsusuStorage {
 
     }
 
-  
     function UpdateEsusuCycleDuringStart(uint esusuCycleId,uint cycleStateEnum, uint toalCycleDuration, uint totalShares,uint currentTime) external onlyOwnerAdapterAndAdapterDelegateContract{
 
         EsusuCycleMapping[esusuCycleId].TotalCycleDuration = toalCycleDuration;
@@ -458,14 +485,6 @@ contract EsusuStorage {
 
     function GetTotalDeposits() external view returns (uint){
         return TotalDeposits;
-    }
-
-     function UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) external onlyOwnerAdapterAndAdapterDelegateContract {
-        MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
-    }
-
-        function GetMemberXendTokenReward(address member) external returns(uint) {
-        return MemberToXendTokenRewardMapping[member];
     }
 
     function GetEsusuCycleState(uint esusuCycleId) external view returns (uint){

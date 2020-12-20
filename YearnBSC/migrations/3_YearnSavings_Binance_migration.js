@@ -73,16 +73,16 @@ module.exports = function (deployer) {
                               XendTokenContract.address,
                               SavingsConfigContract.address);
 
-                              await deployer.deploy(
-                                XendFinanceIndividual_Yearn_V1Contract,
-                                ForTubeBankServiceContract.address,
-                                ForTubeBankAdapterContract.address,
-                                BUSDContractAddress,
-                                ClientRecordContract.address,
-                                SavingsConfigContract.address,
-                                FBUSDContractAddress,
-                                TreasuryContract.address
-                              );
+                              // await deployer.deploy(
+                              //   XendFinanceIndividual_Yearn_V1Contract,
+                              //   ForTubeBankServiceContract.address,
+                              //   ForTubeBankAdapterContract.address,
+                              //   BUSDContractAddress,
+                              //   ClientRecordContract.address,
+                              //   SavingsConfigContract.address,
+                              //   FBUSDContractAddress,
+                              //   TreasuryContract.address
+                              // );
                               
      console.log("Groups Contract address", "",  GroupsContract.address);
 

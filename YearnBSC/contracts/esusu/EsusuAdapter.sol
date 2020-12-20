@@ -151,7 +151,7 @@ contract EsusuAdapter is OwnableService, ISavingsConfigSchema {
         - Increment the total number of Members that have joined this cycle 
     */
     
-    function JoinEsusu(uint esusuCycleId, address member) public onlyOwnerAndServiceContract active {
+       function JoinEsusu(uint esusuCycleId, address member) public onlyOwnerAndServiceContract active {
         //  Get Current EsusuCycleId
         uint currentEsusuCycleId = _esusuStorage.GetEsusuCycleId();
         
@@ -160,7 +160,7 @@ contract EsusuAdapter is OwnableService, ISavingsConfigSchema {
         
         //  Get the Esusu Cycle struct
         
-        (uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers) = _esusuStorage.GetEsusuCycleBasicInformation(esusuCycleId);
+        (uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers) = _esusuStorage.GetEsusuCycleBasicInformationForEsusuAdapter(esusuCycleId);
         //  If cycle is not in Idle State, bounce 
         require( CycleState == uint(CycleStateEnum.Idle), "Esusu Cycle must be in Idle State before you can join");
 
@@ -183,7 +183,7 @@ contract EsusuAdapter is OwnableService, ISavingsConfigSchema {
         _BUSD.transferFrom(member, address(this), DepositAmount);
         
         //  Increment the total deposited amount in this cycle
-        uint totalAmountDeposited = _esusuStorage.IncreaseTotalAmountDepositedInCycle(esusuCycleId,DepositAmount);
+        uint totalAmountDeposited = _esusuStorage.IncreaseTotalAmountDepositedInCycle(CycleId,DepositAmount);
         
         
        _esusuStorage.CreateMemberAddressToMemberCycleMapping(
@@ -197,7 +197,8 @@ contract EsusuAdapter is OwnableService, ISavingsConfigSchema {
         _esusuStorage.CreateMemberPositionMapping(CycleId, member);
         //  Create mapping to track the Cycles a member belongs to by index and by ID
         _esusuStorage.CreateMemberToCycleIndexToCycleIDMapping(member, CycleId);
-   //  Get  the BUSD deposited for this cycle by this user: DepositAmount
+
+        //  Get  the BUSD deposited for this cycle by this user: DepositAmount
         
         //  Get the balance of fBUSDSharesForContract before save operation for this user
         uint fBUSDSharesForContractBeforeSave = _fBUSD.balanceOf(address(this));
@@ -249,7 +250,7 @@ contract EsusuAdapter is OwnableService, ISavingsConfigSchema {
         uint currentEsusuCycleId = _esusuStorage.GetEsusuCycleId();
         
         //  Get Esusu Cycle Basic information
-        (uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers) = _esusuStorage.GetEsusuCycleBasicInformation(esusuCycleId);
+        (uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers, uint PayoutIntervalSeconds, uint GroupId) = _esusuStorage.GetEsusuCycleBasicInformation(esusuCycleId);
 
         //  Get Esusu Cycle Total Shares
         (uint EsusuCycleTotalShares) = _esusuStorage.GetEsusuCycleTotalShares(esusuCycleId);
