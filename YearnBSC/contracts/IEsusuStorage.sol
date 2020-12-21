@@ -9,7 +9,7 @@ interface IEsusuStorage {
                                                             uint TotalMembers, uint TotalAmountDeposited, uint TotalShares,
                                                             uint TotalCycleDurationInSeconds, uint TotalCapitalWithdrawn, uint CycleStartTimeInSeconds,
                                                             uint TotalBeneficiaries, uint MaxMembers);
-    function GetEsusuCycleBasicInformation(uint esusuCycleId) external view returns(uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers);
+    function GetEsusuCycleBasicInformation(uint esusuCycleId) external view returns(uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers, uint PayoutIntervalSeconds, uint GroupId);
     function GetEsusuCycleTotalShares(uint esusuCycleId) external view returns(uint TotalShares);
     function GetEsusuCycleStartTime(uint esusuCycleId)external view returns(uint EsusuCycleStartTime);
     function GetEsusuCyclePayoutInterval(uint esusuCycleId)external view returns(uint EsusuCyclePayoutInterval);
@@ -35,6 +35,7 @@ interface IEsusuStorage {
     function GetCycleIdFromCycleIndexAndCycleMember(uint cycleIndex, address member) external view returns(uint);
     function GetTotalMembersInCycle(uint esusuCycleId)external view returns(uint TotalMembers);
     function GetMemberXendTokenReward(address member) external returns(uint);
+    function GetEsusuCycleBasicInformationForEsusuAdapter(uint esusuCycleId) external view returns(uint CycleId, uint DepositAmount, uint CycleState,uint TotalMembers,uint MaxMembers);
 
 
     /* Setters - only owner or service contract can call */
