@@ -1,180 +1,180 @@
-    /**
-     *  @todo    
-     *  Ensure to install web3 before running this test -> npm install web3
-     *  Tests to write:
-     *  1.  Create Group                        -   Done  
-     *  2.  Get Group By Name                   -   Done
-     *  3.  Create Esusu & Get current ID       -   Done
-     *  4.  Join Esusu                          -   Done
-     *  5.  Get Member Cycle Info               -   Done
-     *  6.  Get Esusu Cycle Info                -   Done
-     *  7.  Start Esusu Cycle                   -   Done
-     *  8.  Withdraw ROI From Cycle. ( Delay for sometime before this test is called)   -   Done
-     *  9.  Withdraw Capital From Cycle ( Delay for sometime before this test is called ) - Done
-     *  10. Create Group with account 2         -   Done
-     *  11. Create Esusu with account 2         -   Done
-     *  12. Join Esusu with 3 accounts          -   Done
-     *  13. Start the Esusu Cycle with 3 accounts   -   Done
-     *  14. Withdraw ROI for 3 accounts             -   Done
-     *  15. Withraw Capital for 3 accounts          -   Done
-     *  16. Test contract deprication               -   Done
-     */
+//     /**
+//      *  @todo    
+//      *  Ensure to install web3 before running this test -> npm install web3
+//      *  Tests to write:
+//      *  1.  Create Group                        -   Done  
+//      *  2.  Get Group By Name                   -   Done
+//      *  3.  Create Esusu & Get current ID       -   Done
+//      *  4.  Join Esusu                          -   Done
+//      *  5.  Get Member Cycle Info               -   Done
+//      *  6.  Get Esusu Cycle Info                -   Done
+//      *  7.  Start Esusu Cycle                   -   Done
+//      *  8.  Withdraw ROI From Cycle. ( Delay for sometime before this test is called)   -   Done
+//      *  9.  Withdraw Capital From Cycle ( Delay for sometime before this test is called ) - Done
+//      *  10. Create Group with account 2         -   Done
+//      *  11. Create Esusu with account 2         -   Done
+//      *  12. Join Esusu with 3 accounts          -   Done
+//      *  13. Start the Esusu Cycle with 3 accounts   -   Done
+//      *  14. Withdraw ROI for 3 accounts             -   Done
+//      *  15. Withraw Capital for 3 accounts          -   Done
+//      *  16. Test contract deprication               -   Done
+//      */
 
 
 
-    // if(true){
-    //     return;
-    // }
-    console.log("********************** Running Esusu Test *****************************");
-    const Web3 = require('web3');
-    const { assert } = require('console');
-    const web3 = new Web3("HTTP://127.0.0.1:8545");
-    const utils = require("./helpers/Utils")
+//     // if(true){
+//     //     return;
+//     // }
+//     console.log("********************** Running Esusu Test *****************************");
+//     const Web3 = require('web3');
+//     const { assert } = require('console');
+//     const web3 = new Web3("HTTP://127.0.0.1:8545");
+//     const utils = require("./helpers/Utils")
     
-    const ForTubeBankAdapterContract = artifacts.require("ForTubeBankAdapter");
-    const ForTubeBankServiceContract = artifacts.require("ForTubeBankService");
-    const GroupsContract = artifacts.require('Groups');
-    const TreasuryContract = artifacts.require('Treasury');
-    const SavingsConfigContract = artifacts.require('SavingsConfig');
-    const XendTokenContract = artifacts.require('XendToken');
-    const EsusuServiceContract = artifacts.require('EsusuService');
-    const RewardConfigContract = artifacts.require('RewardConfig');
-    const EsusuAdapterContract = artifacts.require('EsusuAdapter'); 
-    const EsusuAdapterWithdrawalDelegateContract = artifacts.require('EsusuAdapterWithdrawalDelegate');
-    const EsusuStorageContract = artifacts.require('EsusuStorage');
+//     const ForTubeBankAdapterContract = artifacts.require("ForTubeBankAdapter");
+//     const ForTubeBankServiceContract = artifacts.require("ForTubeBankService");
+//     const GroupsContract = artifacts.require('Groups');
+//     const TreasuryContract = artifacts.require('Treasury');
+//     const SavingsConfigContract = artifacts.require('SavingsConfig');
+//     const XendTokenContract = artifacts.require('XendToken');
+//     const EsusuServiceContract = artifacts.require('EsusuService');
+//     const RewardConfigContract = artifacts.require('RewardConfig');
+//     const EsusuAdapterContract = artifacts.require('EsusuAdapter'); 
+//     const EsusuAdapterWithdrawalDelegateContract = artifacts.require('EsusuAdapterWithdrawalDelegate');
+//     const EsusuStorageContract = artifacts.require('EsusuStorage');
 
 
-  const BUSDContractABI = require('./abi/BEP20ABI.json');
-  const FBUSDContractABI = require('./abi/BEP20ABI.json');    // FBUSD and BUSD can use the same ABI since we are just calling basic BEP20 functions for this test
-const { default: BigNumber } = require('bignumber.js');
+//   const BUSDContractABI = require('./abi/BEP20ABI.json');
+//   const FBUSDContractABI = require('./abi/BEP20ABI.json');    // FBUSD and BUSD can use the same ABI since we are just calling basic BEP20 functions for this test
+// const { default: BigNumber } = require('bignumber.js');
 
-  const BUSDContractAddress = "0x3b1F033dD955f3BE8649Cc9825A2e3E194765a3F";  // This is a custom BUSD for ForTube, you will not find it on BSC Faucet
-  const FBUSDContractAddress = "0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45";  // This is the FToken shares a user will receive when they deposit BUSD
+//   const BUSDContractAddress = "0x3b1F033dD955f3BE8649Cc9825A2e3E194765a3F";  // This is a custom BUSD for ForTube, you will not find it on BSC Faucet
+//   const FBUSDContractAddress = "0x6112a45160b2058C6402a5bfBE3A446c8fD4fb45";  // This is the FToken shares a user will receive when they deposit BUSD
 
-  const unlockedAddress = "0x9957887a260c7db1d4cb1fa67c0ce43d9b1d72c5";   //  Has lots of ForTube BUSD
+//   const unlockedAddress = "0x9957887a260c7db1d4cb1fa67c0ce43d9b1d72c5";   //  Has lots of ForTube BUSD
 
-  const BUSDContract = new web3.eth.Contract(BUSDContractABI,BUSDContractAddress);
-  const FBUSDContract = new web3.eth.Contract(FBUSDContractABI,FBUSDContractAddress);
+//   const BUSDContract = new web3.eth.Contract(BUSDContractABI,BUSDContractAddress);
+//   const FBUSDContract = new web3.eth.Contract(FBUSDContractABI,FBUSDContractAddress);
     
-  var account1;   
-  var account2;
-  var account3;
+//   var account1;   
+//   var account2;
+//   var account3;
 
-  var account1Balance;
-  var account2Balance;
-  var account3Balance;
+//   var account1Balance;
+//   var account2Balance;
+//   var account3Balance;
 
   
-//  Send Fortube BUSD from our constant unlocked address
-async function sendBUSD(amount, recipient){
+// //  Send Fortube BUSD from our constant unlocked address
+// async function sendBUSD(amount, recipient){
 
-  var amountToSend = BigInt(amount); //  1000 Dai
+//   var amountToSend = BigInt(amount); //  1000 Dai
 
-  console.log(`Sending  ${ amountToSend } x 10^-18 FortTube-BUSD to  ${recipient}`);
+//   console.log(`Sending  ${ amountToSend } x 10^-18 FortTube-BUSD to  ${recipient}`);
 
-  await BUSDContract.methods.transfer(recipient,amountToSend).send({from: unlockedAddress});
+//   await BUSDContract.methods.transfer(recipient,amountToSend).send({from: unlockedAddress});
 
-  let recipientBalance = await BUSDContract.methods.balanceOf(recipient).call();
+//   let recipientBalance = await BUSDContract.methods.balanceOf(recipient).call();
   
-  console.log(`Recipient Balance: ${recipientBalance}`);
+//   console.log(`Recipient Balance: ${recipientBalance}`);
 
 
-}
+// }
 
-//  ForTube BUSD Balance
-async function BUSDBalance(){
+// //  ForTube BUSD Balance
+// async function BUSDBalance(){
 
-  let unlockedAddressBalance = await BUSDContract.methods.balanceOf(unlockedAddress).call();
+//   let unlockedAddressBalance = await BUSDContract.methods.balanceOf(unlockedAddress).call();
 
-  console.log("Unlocked Address Balance: " + unlockedAddressBalance);
-};
-
-
-//  Approve a smart contract address or normal address to spend on behalf of the owner
-async function approveBUSD(spender,  owner,  amount){
-
-  await BUSDContract.methods.approve(spender,amount).send({from: owner});
-
-  console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 Fortube-BUSD by Owner:  ${owner}`);
-
-};
-
-async function approveFBUSD(spender,  owner,  amount){
-
-  await FBUSDContract.methods.approve(spender,amount).send({from: owner});
-
-  console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 FBUSD by Owner:  ${owner}`);
-
-};
+//   console.log("Unlocked Address Balance: " + unlockedAddressBalance);
+// };
 
 
-contract('EsusuService', () => {
-    let forTubeBankAdapterContract = null;
-    let forTubeBankServiceContract = null;
-    let savingsConfigContract = null;
-    let esusuAdapterContract = null;
-    let esusuServiceContract = null;
-    let groupsContract = null;
-    let xendTokenContract = null;
-    let esusuAdapterWithdrawalDelegateContract = null;
-    let esusuStorageContract = null;
+// //  Approve a smart contract address or normal address to spend on behalf of the owner
+// async function approveBUSD(spender,  owner,  amount){
 
-    before(async () =>{
+//   await BUSDContract.methods.approve(spender,amount).send({from: owner});
 
-        savingsConfigContract = await SavingsConfigContract.deployed();
-        forTubeBankAdapterContract = await ForTubeBankAdapterContract.deployed();
-        forTubeBankServiceContract = await ForTubeBankServiceContract.deployed();
-        esusuAdapterContract = await EsusuAdapterContract.deployed();
-        esusuServiceContract = await EsusuServiceContract.deployed();
-        groupsContract = await GroupsContract.deployed();
-        xendTokenContract = await XendTokenContract.deployed();
-        esusuAdapterWithdrawalDelegateContract = await EsusuAdapterWithdrawalDelegateContract.deployed();
-        esusuStorageContract = await EsusuStorageContract.deployed();
+//   console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 Fortube-BUSD by Owner:  ${owner}`);
 
-        //1. Create SavingsConfig rules
-        await savingsConfigContract.createRule("esusufee",0,0,1000,1);
+// };
 
-        console.log("1->Savings Config Rule Created ...");
+// async function approveFBUSD(spender,  owner,  amount){
 
-        //2. Update the forTubeAdapterContract Address in the forTubeBankingService Contract
-        await forTubeBankServiceContract.updateAdapter(forTubeBankAdapterContract.address);
-        console.log("2->forTubeAdapter Address Updated In forTubeBankingService ...");
+//   await FBUSDContract.methods.approve(spender,amount).send({from: owner});
+
+//   console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 FBUSD by Owner:  ${owner}`);
+
+// };
+
+
+// contract('EsusuService', () => {
+//     let forTubeBankAdapterContract = null;
+//     let forTubeBankServiceContract = null;
+//     let savingsConfigContract = null;
+//     let esusuAdapterContract = null;
+//     let esusuServiceContract = null;
+//     let groupsContract = null;
+//     let xendTokenContract = null;
+//     let esusuAdapterWithdrawalDelegateContract = null;
+//     let esusuStorageContract = null;
+
+//     before(async () =>{
+
+//         savingsConfigContract = await SavingsConfigContract.deployed();
+//         forTubeBankAdapterContract = await ForTubeBankAdapterContract.deployed();
+//         forTubeBankServiceContract = await ForTubeBankServiceContract.deployed();
+//         esusuAdapterContract = await EsusuAdapterContract.deployed();
+//         esusuServiceContract = await EsusuServiceContract.deployed();
+//         groupsContract = await GroupsContract.deployed();
+//         xendTokenContract = await XendTokenContract.deployed();
+//         esusuAdapterWithdrawalDelegateContract = await EsusuAdapterWithdrawalDelegateContract.deployed();
+//         esusuStorageContract = await EsusuStorageContract.deployed();
+
+//         //1. Create SavingsConfig rules
+//         await savingsConfigContract.createRule("esusufee",0,0,1000,1);
+
+//         console.log("1->Savings Config Rule Created ...");
+
+//         //2. Update the forTubeAdapterContract Address in the forTubeBankingService Contract
+//         await forTubeBankServiceContract.updateAdapter(forTubeBankAdapterContract.address);
+//         console.log("2->forTubeAdapter Address Updated In forTubeBankingService ...");
         
-        //3. Update the ForTubeBankService Address in the EsusuAdapter Contract
-        await esusuAdapterContract.UpdateForTubeBankService(forTubeBankServiceContract.address);
-        console.log("3->ForTubeBankService Address Updated In EsusuAdapter ...");
+//         //3. Update the ForTubeBankService Address in the EsusuAdapter Contract
+//         await esusuAdapterContract.UpdateForTubeBankService(forTubeBankServiceContract.address);
+//         console.log("3->ForTubeBankService Address Updated In EsusuAdapter ...");
 
-        //4. Update the EsusuAdapter Address in the EsusuService Contract
-        await esusuServiceContract.UpdateAdapter(esusuAdapterContract.address);
-        console.log("4->EsusuAdapter Address Updated In EsusuService ...");
+//         //4. Update the EsusuAdapter Address in the EsusuService Contract
+//         await esusuServiceContract.UpdateAdapter(esusuAdapterContract.address);
+//         console.log("4->EsusuAdapter Address Updated In EsusuService ...");
 
-        //5. Activate the storage oracle in Groups.sol with the Address of the EsusuApter
-        await  groupsContract.activateStorageOracle(esusuAdapterContract.address);
-        console.log("5->EsusuAdapter Address Updated In Groups contract ...");
+//         //5. Activate the storage oracle in Groups.sol with the Address of the EsusuApter
+//         await  groupsContract.activateStorageOracle(esusuAdapterContract.address);
+//         console.log("5->EsusuAdapter Address Updated In Groups contract ...");
 
-        //6. Xend Token Should Grant access to the  Esusu Adapter Contract
-        await xendTokenContract.grantAccess(esusuAdapterContract.address);
-        console.log("6->Xend Token Has Given access To Esusu Adapter to transfer tokens ...");
+//         //6. Xend Token Should Grant access to the  Esusu Adapter Contract
+//         await xendTokenContract.grantAccess(esusuAdapterContract.address);
+//         console.log("6->Xend Token Has Given access To Esusu Adapter to transfer tokens ...");
         
-        //7. Esusu Adapter should Update Esusu Adapter Withdrawal Delegate
-        await esusuAdapterContract.UpdateEsusuAdapterWithdrawalDelegate(esusuAdapterWithdrawalDelegateContract.address);
-        console.log("7->EsusuAdapter Has Updated Esusu Adapter Withdrawal Delegate Address ...");
+//         //7. Esusu Adapter should Update Esusu Adapter Withdrawal Delegate
+//         await esusuAdapterContract.UpdateEsusuAdapterWithdrawalDelegate(esusuAdapterWithdrawalDelegateContract.address);
+//         console.log("7->EsusuAdapter Has Updated Esusu Adapter Withdrawal Delegate Address ...");
 
-        //8. Esusu Adapter Withdrawal Delegate should Update ForTubeBank Service
-        await esusuAdapterWithdrawalDelegateContract.UpdateForTubeBankService(forTubeBankServiceContract.address);
-        console.log("8->Esusu Adapter Withdrawal Delegate Has Updated ForTubeBank Service ...");
+//         //8. Esusu Adapter Withdrawal Delegate should Update ForTubeBank Service
+//         await esusuAdapterWithdrawalDelegateContract.UpdateForTubeBankService(forTubeBankServiceContract.address);
+//         console.log("8->Esusu Adapter Withdrawal Delegate Has Updated ForTubeBank Service ...");
 
-        //9. Esusu Service should update esusu adapter withdrawal delegate
-        await esusuServiceContract.UpdateAdapterWithdrawalDelegate(esusuAdapterWithdrawalDelegateContract.address);
-        console.log("9->Esusu Service Contract Has Updated  Esusu Adapter Withdrawal Delegate Address ...");
+//         //9. Esusu Service should update esusu adapter withdrawal delegate
+//         await esusuServiceContract.UpdateAdapterWithdrawalDelegate(esusuAdapterWithdrawalDelegateContract.address);
+//         console.log("9->Esusu Service Contract Has Updated  Esusu Adapter Withdrawal Delegate Address ...");
 
-        //10. Esusu Storage should Update Adapter and Adapter Withdrawal Delegate 
-        await esusuStorageContract.UpdateAdapterAndAdapterDelegateAddresses(esusuAdapterContract.address,esusuAdapterWithdrawalDelegateContract.address);
-        console.log("10->Esusu Storage Contract Has Updated  Esusu Adapter and Esusu Adapter Withdrawal Delegate Address ...");
+//         //10. Esusu Storage should Update Adapter and Adapter Withdrawal Delegate 
+//         await esusuStorageContract.UpdateAdapterAndAdapterDelegateAddresses(esusuAdapterContract.address,esusuAdapterWithdrawalDelegateContract.address);
+//         console.log("10->Esusu Storage Contract Has Updated  Esusu Adapter and Esusu Adapter Withdrawal Delegate Address ...");
         
-        //11. Xend Token Should Grant access to the  Esusu Adapter Withdrawal Delegate Contract
-        await xendTokenContract.grantAccess(esusuAdapterWithdrawalDelegateContract.address);
-        console.log("11->Xend Token Has Given access To Esusu Adapter Withdrawal Delegate to transfer tokens ...");
+//         //11. Xend Token Should Grant access to the  Esusu Adapter Withdrawal Delegate Contract
+//         await xendTokenContract.grantAccess(esusuAdapterWithdrawalDelegateContract.address);
+//         console.log("11->Xend Token Has Given access To Esusu Adapter Withdrawal Delegate to transfer tokens ...");
 
 
         //  Get the addresses and Balances of at least 2 accounts to be used in the test
@@ -232,23 +232,23 @@ contract('EsusuService', () => {
 
 
 
-    });
+    // });
 
-    var groupName = "Omega Reality";
-    var groupSymbol = "Ω";
-    var groupId = null;
-    var depositAmount = "2000000000000000000000";   //2,000 DAI 10000000000000000000000 
-    var payoutIntervalSeconds = "30";  // 2 minutes
-    var startTimeInSeconds = Math.floor((Date.now() + 120)/1000); // starts 2 minutes afer current time
-    var maxMembers = "2";
-    var currentEsusuCycleId = null;
+    // var groupName = "Omega Reality";
+    // var groupSymbol = "Ω";
+    // var groupId = null;
+    // var depositAmount = "2000000000000000000000";   //2,000 DAI 10000000000000000000000 
+    // var payoutIntervalSeconds = "30";  // 2 minutes
+    // var startTimeInSeconds = Math.floor((Date.now() + 120)/1000); // starts 2 minutes afer current time
+    // var maxMembers = "2";
+    // var currentEsusuCycleId = null;
 
 
-    //1 & 2.  Create Group and Get Group Information By name
+    // //1 & 2.  Create Group and Get Group Information By name
 
-    it('EsusuService Contract: Should Create Group and Get the Group By Name', async () => {
+    // it('EsusuService Contract: Should Create Group and Get the Group By Name', async () => {
 
-        console.log("Hello");
+    //     console.log("Hello");
         // await esusuServiceContract.CreateGroup(groupName, groupSymbol);
 
         // var groupInfo = await esusuServiceContract.GetGroupInformationByName(groupName);
@@ -259,7 +259,7 @@ contract('EsusuService', () => {
         // assert(groupInfo[1] === groupName);
         // assert(groupInfo[2] === groupSymbol);
 
-    });
+    //});
     
     //3  & 6.Create An Esusu Cycle, Get Current ID and Get the Esusu Cycle Information
     // it('EsusuService Contract: Should Create Esusu Cycle and Get The Current Esusu Cycle', async () => {
@@ -953,4 +953,4 @@ contract('EsusuService', () => {
 
     // });
 
-});
+//});

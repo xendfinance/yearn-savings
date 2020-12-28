@@ -13,12 +13,14 @@ interface IForTubeBankService {
 
     function GetForTubeAdapterAddress() external view returns (address);
 
-    function UserShares() external view returns (uint256);
+    function UserShares(address user) external view returns (uint256);
 
-    function UserBUSDBalance() external view returns (uint256);
+    function UserBUSDBalance(address user) external view returns (uint256);
 
     function TransferAdapterContractOwnership(address payable newServiceContract) external;
     
     function CalculateTotalBUSDEarned(address member) external view returns (uint256 exchangeRate);
+    
+    function TransferCapitalBack (uint depositAmount, address member) external;
 
 }

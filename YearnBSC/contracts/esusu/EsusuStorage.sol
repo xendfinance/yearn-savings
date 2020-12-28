@@ -1,7 +1,7 @@
 
 pragma solidity >=0.6.6;
 
-import "./SafeMath.sol";
+import "../SafeMath.sol";
 
 
 contract EsusuStorage {

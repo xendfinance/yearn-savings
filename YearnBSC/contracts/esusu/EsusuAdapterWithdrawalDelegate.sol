@@ -17,7 +17,7 @@ import "../IXendToken.sol";
 import "../SafeMath.sol";
 import "../IEsusuStorage.sol";
 import "../IEsusuAdapter.sol";
-import "../Exponential.sol";
+import "../Fortube/Exponential.sol";
 
 contract EsusuAdapterWithdrawalDelegate is OwnableService, ISavingsConfigSchema, Exponential {
         

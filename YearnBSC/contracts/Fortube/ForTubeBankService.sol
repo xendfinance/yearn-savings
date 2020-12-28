@@ -1,6 +1,6 @@
 pragma solidity >=0.6.6;
 
-import "./FortubeAdapterHack.sol";
+import "./ForTubeBankAdapterHack.sol";
 
 contract ForTubeBankService {
     address _owner;
