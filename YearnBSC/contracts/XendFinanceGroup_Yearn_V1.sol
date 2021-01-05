@@ -932,6 +932,8 @@ function _endCycle(uint256 cycleId)
 
     uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance -
         cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
+        
+        ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
 
     fbusdToken.approve(
         ForTubeBankAdapterAddress,
@@ -973,6 +975,8 @@ function _redeemLending(uint256 derivativeBalance)
     require(derivativeBalance>0,"Derivative balance must be greater than 0");
     
     uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance(address(this));
+    
+    ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
     
     bool isSuccessful = fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
     
@@ -1020,7 +1024,6 @@ using SafeMath for uint256;
 using Address for address payable;
 
 constructor(
-    address forTubeBankAdapterAddress,
     address forTubeBankServiceAddress,
     address tokenAddress,
     address groupStorageAddress,
@@ -1040,7 +1043,6 @@ constructor(
     rewardConfig = IRewardConfig(rewardConfigAddress);
     xendToken = IXendToken(xendTokenAddress);
     fbusdToken = IFToken(derivativeTokenAddress);
-    ForTubeBankAdapterAddress = forTubeBankAdapterAddress;
     TokenAddress = tokenAddress;
     TreasuryAddress = treasuryAddress;
 }
