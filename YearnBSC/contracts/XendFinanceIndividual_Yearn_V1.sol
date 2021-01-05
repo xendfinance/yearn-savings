@@ -64,7 +64,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
 
     constructor(
-        address fortubeBankAdapterAddress,
+        //address fortubeBankAdapterAddress,
         address fortubeServiceAddress,
         address tokenAddress,
         address clientRecordStorageAddress,
@@ -75,7 +75,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         fortubeService = IForTubeBankService(fortubeServiceAddress);
         busdToken = IBEP20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
-        FortubeBankAdapter = fortubeBankAdapterAddress;
+       // FortubeBankAdapter = fortubeBankAdapterAddress;
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         fBusdToken = IFToken(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
@@ -103,6 +103,10 @@ contract XendFinanceIndividual_Yearn_V1 is
         returns (bool)
     {
         return clientRecordStorage.doesClientRecordExist(depositor);
+    }
+    
+    function getAdapterAddress() external  {
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
     }
 
     function getClientRecord(address depositor)
@@ -249,6 +253,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     
     function withdrawByShares(uint256 derivativeAmount) external {
         
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
+        
         fBusdToken.approve(FortubeBankAdapter, derivativeAmount);
         
         fortubeService.WithdrawBySharesOnly(derivativeAmount);
@@ -260,6 +266,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         _validateUserBalanceIsSufficient(recipient, derivativeAmount);
 
         uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance(address(this));
+        
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
 
          bool isApprovalSuccessful = fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
          
@@ -422,6 +430,8 @@ contract XendFinanceIndividual_Yearn_V1 is
        
 
         uint256 balanceBeforeDeposit = fBusdToken.balanceOf(address(this));
+        
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
 
          busdToken.approve(FortubeBankAdapter, amountTransferrable);
 
