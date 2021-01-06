@@ -3,14 +3,17 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
 import "./SafeMath.sol";
+pragma experimental ABIEncoderV2;
 
 contract Cycles is IGroupSchema, StorageOwners {
 
     using SafeMath for uint256;
 
     // list of Group Cycles
-    Cycle[] private Cycles;
+    Cycle[] Cycles;
     CycleFinancial[] private CycleFinancials;
+    
+    
 
     //Mapping that enables ease of traversal of the cycle records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleIndexer;
@@ -108,6 +111,10 @@ contract Cycles is IGroupSchema, StorageOwners {
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
         );
+    }
+    
+    function getCycles() external view returns (Cycle [] memory) {
+        return Cycles;
     }
 
     function getCycleFinancialsByIndex(uint256 index)
