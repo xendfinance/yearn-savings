@@ -1,9 +1,11 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.;
 
 import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
+import "./SafeERC20.sol";
+import "./ReentrancyGuard.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
@@ -17,9 +19,12 @@ import "./ITreasury.sol";
 contract XendFinanceIndividual_Yearn_V1 is
     Ownable,
     IClientRecordSchema,
-    ISavingsConfigSchema
+    ISavingsConfigSchema,
+    ReentrancyGuard
 {
     using SafeMath for uint256;
+
+    using SafeERC20 for IERC20;
 
     using Address for address payable;
 
@@ -83,7 +88,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 derivativeTokenBalance = derivativeToken.balanceOf(
             address(this)
         );
-        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
+        derivativeToken.safeTransfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function doesClientRecordExist(address depositor)
@@ -233,7 +238,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     }
 
     function _withdraw(address payable recipient, uint256 derivativeAmount)
-        internal
+        internal nonReentrant
     {
         _validateUserBalanceIsSufficient(recipient, derivativeAmount);
 
@@ -285,7 +290,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     function _validateUserBalanceIsSufficient(
         address payable recipient,
         uint256 derivativeAmount
-    ) internal view returns (uint256) {
+    ) internal {
         ClientRecord memory clientRecord = _getClientRecordByAddress(recipient);
 
         uint256 derivativeBalance = clientRecord.derivativeBalance;
@@ -313,8 +318,6 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _getDivisor() internal returns (uint256) {
         (
-            uint256 minimumDivisor,
-            uint256 maximumDivisor,
             uint256 exactDivisor,
             bool appliesDivisor,
             RuleDefinition ruleDefinitionDivisor
@@ -334,8 +337,6 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _getDividend() internal returns (uint256) {
         (
-            uint256 minimumDividend,
-            uint256 maximumDividend,
             uint256 exactDividend,
             bool appliesDividend,
             RuleDefinition ruleDefinitionDividend
@@ -354,8 +355,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     }
 
     function deposit() external onlyNonDeprecatedCalls {
-        address payable depositor = msg.sender;
-        _deposit(depositor);
+        _deposit(msg.sender);
     }
 
     function depositDelegate(address payable depositorAddress)
@@ -437,21 +437,10 @@ contract XendFinanceIndividual_Yearn_V1 is
                 true,
                 client,
                 underlyingAmountDeposited,
-                underlyingAmountDeposited,
+                0,
                 derivativeAmountDeposited,
                 derivativeAmountDeposited,
                 0
-            );
-
-            record.underlyingTotalDeposits = record.underlyingTotalDeposits.add(
-                underlyingAmountDeposited
-            );
-
-            record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
-                derivativeAmountDeposited
-            );
-            record.derivativeBalance = record.derivativeBalance.add(
-                derivativeAmountDeposited
             );
 
             return record;
@@ -483,10 +472,9 @@ contract XendFinanceIndividual_Yearn_V1 is
             underlyingAmountWithdrawn
         );
 
-        record.derivativeTotalDeposits = record.derivativeTotalDeposits.add(
-            derivativeAmountWithdrawn
-        );
-        record.derivativeBalance = record.derivativeBalance.add(
+        record.dericateTotalWithdrawn = record.dericateTotalWithdrawn.add(derivativeAmountWithdrawn);
+
+        record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn
         );
 

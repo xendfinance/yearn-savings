@@ -1,13 +1,15 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.6;
+pragma solidity ^0.6.2;
 import "./ISavingsConfig.sol";
 import "./ITreasury.sol";
 import "./Ownable.sol";
 import "./IGroups.sol";
+import "./SafeERC20.sol";
 import "./ICycle.sol";
 import "./IGroupSchema.sol";
 import "./IDaiLendingService.sol";
+import "./ReentrancyGuard.sol";
 import "./XendToken/IERC20.sol";
 import "./Address.sol";
 import "./IRewardConfig.sol";
@@ -104,15 +106,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
 contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
     function _updateGroup(Group memory group) internal {
         uint256 index = _getGroupIndex(group.id);
-
-        (
-            uint256 id,
-            string memory name,
-            string memory symbol,
-            address payable groupCreator
-        ) = (group.id, group.name, group.symbol, group.creatorAddress);
-
-        groupStorage.updateGroup(id, name, symbol, groupCreator);
+        groupStorage.updateGroup(group.id, group.name, group.symbol, group.creatorAddress);
     }
 
     function _getGroupById(uint256 _groupId)
@@ -252,28 +246,14 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     using SafeMath for uint256;
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
-        (
-            uint256 cycleId,
-            address payable depositor,
-            uint256 totalLiquidityAsPenalty,
-            uint256 numberOfCycleStakes,
-            uint256 stakesClaimed,
-            bool hasWithdrawn
-        ) = (
-            cycleMember.cycleId,
+   
+        cycleStorage.updateCycleMember(
+             cycleMember.cycleId,
             cycleMember._address,
             cycleMember.totalLiquidityAsPenalty,
             cycleMember.numberOfCycleStakes,
             cycleMember.stakesClaimed,
             cycleMember.hasWithdrawn
-        );
-        cycleStorage.updateCycleMember(
-            cycleId,
-            depositor,
-            totalLiquidityAsPenalty,
-            numberOfCycleStakes,
-            stakesClaimed,
-            hasWithdrawn
         );
     }
 
@@ -464,7 +444,6 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
     function _CreateCycleMember(CycleMember memory cycleMember)
         internal
-        returns (CycleMember memory)
     {
         cycleStorage.createCycleMember(
             cycleMember.cycleId,
@@ -760,8 +739,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycleId
         );
 
-        uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance -
-            cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
+        uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance.sub(cycleFinancial.derivativeBalanceClaimedBeforeMaturity);
 
         derivativeToken.approve(
             LendingAdapterAddress,
@@ -792,8 +770,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp +
             cycle.cycleDuration;
 
-        if (currentTimeStamp >= cycleEndTimeStamp) return true;
-        else return false;
+     return currentTimeStamp >= cycleEndTimeStamp;
+     
     }
 
     function _redeemLending(uint256 derivativeBalance)
@@ -813,16 +791,16 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         return amountOfUnderlyingAssetWithdrawn;
     }
 
-    modifier onlyCycleCreator(uint256 cycleId) {
+    modifier onlyCycleCreatorOrMember(uint256 cycleId) {
         Group memory group = _getCycleGroup(cycleId);
 
-        bool isCreatorOrMember = (msg.sender == group.creatorAddress);
+        bool isCreatorOrMember = msg.sender == group.creatorAddress;
 
         if (isCreatorOrMember == false) {
             uint256 index = _getCycleMemberIndex(cycleId, msg.sender);
             CycleMember memory cycleMember = _getCycleMember(index);
 
-            isCreatorOrMember = (cycleMember._address == msg.sender);
+            isCreatorOrMember = cycleMember._address == msg.sender;
         }
 
         require(isCreatorOrMember == true, "unauthorized access to contract");
@@ -833,9 +811,12 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 contract XendFinanceGroup_Yearn_V1 is
     XendFinanceCycleHelpers,
     ISavingsConfigSchema,
-    Ownable
+    Ownable,
+    ReentrancyGuard
 {
     using SafeMath for uint256;
+
+    using SafeERC20 for IERC20;
 
     using Address for address payable;
 
@@ -876,7 +857,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function _withdrawFromCycleWhileItIsOngoing(
         uint256 cycleId,
         address payable memberAddress
-    ) internal {
+    ) internal nonReentrant {
         bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
 
         require(
@@ -948,7 +929,7 @@ contract XendFinanceGroup_Yearn_V1 is
             amountToChargeAsFees
         );
 
-        underlyingAmountThatMemberDepositIsWorth -= totalDeductible;
+        underlyingAmountThatMemberDepositIsWorth.sub(totalDeductible);
 
 
             WithdrawalResolution memory withdrawalResolution
@@ -973,12 +954,10 @@ contract XendFinanceGroup_Yearn_V1 is
             withdrawalResolution.amountToSendToMember > 0,
             "After deducting early withdrawal penalties and fees, there's nothing left for you"
         );
-        if (withdrawalResolution.amountToSendToMember > 0) {
-            daiToken.transfer(
+            daiToken.safeTransfer(
                 cycleMember._address,
                 withdrawalResolution.amountToSendToMember
             );
-        }
 
         uint256 totalUnderlyingAmountSentOut = withdrawalResolution
             .amountToSendToTreasury + withdrawalResolution.amountToSendToMember;
@@ -1068,7 +1047,7 @@ contract XendFinanceGroup_Yearn_V1 is
     }
 
     function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
-        internal
+        internal nonReentrant
         returns (uint256 amountToSendToMember)
     {
         Cycle memory cycle;
@@ -1186,7 +1165,7 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 derivativeTokenBalance = derivativeToken.balanceOf(
             address(this)
         );
-        derivativeToken.transfer(newServiceAddress, derivativeTokenBalance);
+        derivativeToken.safeTransfer(newServiceAddress, derivativeTokenBalance);
     }
 
     function _rewardUserWithTokens(
@@ -1525,7 +1504,7 @@ contract XendFinanceGroup_Yearn_V1 is
     function activateCycle(uint256 cycleId)
         external
         onlyNonDeprecatedCalls
-        onlyCycleCreator(cycleId)
+        onlyCycleCreatorOrMember(cycleId)
     {
         Cycle memory cycle = _getCycleById(cycleId);
         CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
@@ -1707,14 +1686,6 @@ contract XendFinanceGroup_Yearn_V1 is
         onlyNonDeprecatedCalls
     {
         address payable depositorAddress = msg.sender;
-        _joinCycle(cycleId, numberOfStakes, depositorAddress);
-    }
-
-    function joinCycleDelegate(
-        uint256 cycleId,
-        uint256 numberOfStakes,
-        address payable depositorAddress
-    ) external onlyNonDeprecatedCalls {
         _joinCycle(cycleId, numberOfStakes, depositorAddress);
     }
 }

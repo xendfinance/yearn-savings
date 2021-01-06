@@ -1,9 +1,14 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.2;
 
 import "./IGroupSchema.sol";
+import "./SafeMath.sol";
 import "./StorageOwners.sol";
 
+
 contract Groups is IGroupSchema, StorageOwners {
+
+    using SafeMath for uint256;
+
     // list of group records
     Group[] private Groups;
     //Mapping that enables ease of traversal of the group records
@@ -52,7 +57,7 @@ contract Groups is IGroupSchema, StorageOwners {
         if (totalTokensDeposited[tokenAddress] == 0) {
             tokenAddresses.push(tokenAddress);
         }
-        totalTokensDeposited[tokenAddress] += amount;
+        totalTokensDeposited[tokenAddress] = totalTokensDeposited[tokenAddress].add(amount);
         return totalTokensDeposited[tokenAddress];
     }
 
@@ -66,7 +71,7 @@ contract Groups is IGroupSchema, StorageOwners {
             currentAmount >= amount,
             "deposit balance overdraft is not allowed"
         );
-        totalTokensDeposited[tokenAddress] -= amount;
+        totalTokensDeposited[tokenAddress] = totalTokensDeposited[tokenAddress].sub(amount);
         return totalTokensDeposited[tokenAddress];
     }
 
@@ -83,7 +88,7 @@ contract Groups is IGroupSchema, StorageOwners {
         onlyStorageOracle
         returns (uint256)
     {
-        totalEthersDeposited += amount;
+        totalEthersDeposited = totalEthersDeposited.add(amount);
         return totalEthersDeposited;
     }
 
@@ -96,7 +101,7 @@ contract Groups is IGroupSchema, StorageOwners {
             totalEthersDeposited >= amount,
             "deposit balance overdraft is not allowed"
         );
-        totalEthersDeposited -= amount;
+        totalEthersDeposited = totalEthersDeposited.sub(amount);
         return totalEthersDeposited;
     }
 
@@ -206,10 +211,7 @@ contract Groups is IGroupSchema, StorageOwners {
     }
 
     function _doesMemberExist(address depositor) internal view returns (bool) {
-        bool exist = MemberIndexer[depositor].exists;
-
-        if (exist) return true;
-        else return false;
+        return MemberIndexer[depositor].exists;
     }
 
     function createGroupMember(uint256 groupId, address payable depositor)

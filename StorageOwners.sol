@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.2;
 
 contract StorageOwners {
     address owner;
@@ -8,13 +8,9 @@ contract StorageOwners {
         owner = msg.sender;
     }
 
-    function activateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = true;
-    }
-
-    function deactivateStorageOracle(address oracle) external onlyOwner {
-        storageOracles[oracle] = false;
-    }
+    function changeStorageOracleStatus(address oracle, bool status) external onlyOwner {
+        storageOracles[oracle] = status;
+}
 
     function reAssignStorageOracle(address newOracle)
         external
@@ -28,6 +24,8 @@ contract StorageOwners {
         if (newOwner != address(0)) {
             owner = newOwner;
         }
+
+        // require(newOwner == address(0), "new owneru");
     }
 
     modifier onlyOwner() {

@@ -1,4 +1,4 @@
-pragma solidity ^0.6.6;
+pragma solidity ^0.6.2;
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./ISavingsConfigSchema.sol";
@@ -8,8 +8,6 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
 
     mapping(string => RuleSet) public RuleMapping;
     mapping(string => address) public RuleModifier;
-
-    constructor() public {}
 
     function getRuleSet(string calldata ruleKey)
         external
@@ -92,8 +90,10 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         ruleSet.minimum = minimum;
         ruleSet.maximum = maximum;
         ruleSet.exact = exact;
+        ruleSet.exists = false;
         ruleSet.ruleDefinition = ruleDefinition;
         _validateRuleCreation(ruleKey, ruleSet);
+        _saveRule(ruleKey, ruleSet);
     }
 
     function disableRule(string calldata ruleKey)

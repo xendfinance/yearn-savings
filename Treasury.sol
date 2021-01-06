@@ -1,4 +1,4 @@
-pragma solidity ^0.6.6;
+pragma solidity ^0.6.2;
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./Tests/contracts/XendToken/IERC20.sol";
@@ -13,20 +13,13 @@ contract Treasury is Ownable {
     );
     event EtherDepositEvent(address indexed depositorAddress, uint256 amount);
 
-    enum DeositType {ETHER, TOKEN}
-
     receive() external payable {
         require(msg.value != 0, "Cannot deposit nothing into the treasury");
         emit EtherDepositEvent(msg.sender, msg.value);
     }
 
     function depositToken(address token) public payable {
-        require(token != address(0x0), "token contract address cannot be null");
-
-        require(
-            address(token) != address(0),
-            "tken contract address cannot be 0"
-        );
+        require(token != address(0x0), "token contract address cannot be 0");
 
         IERC20 tokenContract = IERC20(token);
         uint256 amountToDeposit = tokenContract.allowance(
@@ -53,12 +46,7 @@ contract Treasury is Ownable {
     }
 
     function getTokenBalance(address token) public view returns (uint256) {
-        require(token != address(0x0), "token contract address cannot be null");
-
-        require(
-            address(token) != address(0),
-            "tken contract address cannot be 0"
-        );
+        require(token != address(0x0), "token contract address cannot be 0");
 
         IERC20 tokenContract = IERC20(token);
         return tokenContract.balanceOf(address(this));

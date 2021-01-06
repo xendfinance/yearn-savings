@@ -1,4 +1,4 @@
-pragma solidity ^0.6.0;
+pragma solidity ^0.6.2;
 
 
 import "./IClientRecordShema.sol";
@@ -15,8 +15,8 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         view
         returns (bool)
     {
-        RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
-        return recordIndex.exists;
+       return ClientRecordIndexer[depositor].exists;
+        
     }
 
     function getRecordIndex(address depositor) external view returns (uint256) {
@@ -72,16 +72,14 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             derivativeTotalDeposits,
             derivativeTotalWithdrawn
         );
+        ClientRecord storage clientRecord = ClientRecords[index];
 
-        uint256 index = recordIndex.index;
-
-        ClientRecords[index].underlyingTotalDeposits = underlyingTotalDeposits;
-        ClientRecords[index]
-            .underlyingTotalWithdrawn = underlyingTotalWithdrawn;
-        ClientRecords[index].derivativeBalance = derivativeBalance;
-        ClientRecords[index].derivativeTotalDeposits = derivativeTotalDeposits;
-        ClientRecords[index]
-            .derivativeTotalWithdrawn = derivativeTotalWithdrawn;
+     ClientRecord storage clientRecord = ClientRecords[index];
+clientRecord.underlyingTotalDeposits = underlyingTotalDeposits;
+clientRecord.underlyingTotalWithdrawn = underlyingTotalWithdrawn;
+clientRecord.derivativeBalance = derivativeBalance;
+clientRecord.derivativeTotalDeposits = derivativeTotalDeposits;
+clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
     }
 
     function getLengthOfClientRecords() external returns (uint256) {

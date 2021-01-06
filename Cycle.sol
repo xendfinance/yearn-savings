@@ -1,4 +1,4 @@
-pragma solidity ^0.6.6;
+pragma solidity ^0.6.2;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
@@ -224,7 +224,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 numberOfCycleStakes,
         uint256 stakesClaimed,
         bool hasWithdrawn
-    ) external {
+    ) external onlyStorageOracle {
         CycleMember memory cycleMember = _getCycleMember(cycleId, depositor);
         cycleMember._address = depositor;
         cycleMember.totalLiquidityAsPenalty = totalLiquidityAsPenalty;
@@ -381,7 +381,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     ) external view returns (bool, uint256) {
 
             RecordIndex memory recordIndex
-         = CycleMembersIndexer[cycleId][recordIndexLocation];
+         = CycleMembersIndexerByDepositor[depositorAddress][recordIndexLocation];
         return (recordIndex.exists, recordIndex.index);
     }
 
@@ -391,7 +391,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     ) external view returns (bool, uint256) {
 
             RecordIndex memory recordIndex
-         = CycleMembersIndexerByDepositor[depositorAddress][recordIndexLocation];
+         = CycleMembersIndexer[cycleId][recordIndexLocation];
         return (recordIndex.exists, recordIndex.index);
     }
 
@@ -500,7 +500,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (CycleFinancial memory)
     {
-        uint256 index = _getCycleFinancialIndex(cycleId);
+        uint256 index = _getCycleFinancialIndex(cycleFinancial.cycleId);
 
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
         return cycleFinancial;
@@ -519,9 +519,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (bool)
     {
-        bool exist = CycleMembersDeepIndexer[cycleId][depositor].exists;
+return CycleMembersDeepIndexer[cycleId][depositor].exists;
 
-        if (exist) return true;
-        else return false;
     }
 }
