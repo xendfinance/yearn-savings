@@ -821,7 +821,6 @@ contract XendFinanceGroup_Yearn_V1 is
     using Address for address payable;
 
     constructor(
-        address lendingAdapterAddress,
         address lendingServiceAddress,
         address tokenAddress,
         address groupStorageAddress,
@@ -841,10 +840,13 @@ contract XendFinanceGroup_Yearn_V1 is
         rewardConfig = IRewardConfig(rewardConfigAddress);
         xendToken = IXendToken(xendTokenAddress);
         derivativeToken = IERC20(derivativeTokenAddress);
-        LendingAdapterAddress = lendingAdapterAddress;
         TokenAddress = tokenAddress;
         TreasuryAddress = treasuryAddress;
     }
+
+    function setAdapterAddress() onlyOwner external {
+    LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
+}
 
     function withdrawFromCycleWhileItIsOngoing(uint256 cycleId)
         external
