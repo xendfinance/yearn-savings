@@ -470,7 +470,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             underlyingAmountWithdrawn
         );
 
-        record.dericateTotalWithdrawn = record.dericateTotalWithdrawn.add(derivativeAmountWithdrawn);
+        record.derivateTotalWithdrawn = record.dericateTotalWithdrawn.add(derivativeAmountWithdrawn);
 
         record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn

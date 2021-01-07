@@ -66,12 +66,12 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         RuleDefinition ruleDefinition
     ) external {
         RuleSet memory rule = RuleSet(
-            true,
-            minimum,
+           minimum,
             maximum,
             exact,
             true,
-            ruleDefinition
+            ruleDefinition,
+             true
         );
         _validateRuleCreation(ruleKey, rule);
         RuleMapping[ruleKey] = rule;

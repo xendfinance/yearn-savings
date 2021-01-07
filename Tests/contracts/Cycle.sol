@@ -1,4 +1,5 @@
 pragma solidity ^0.6.2;
+pragma experimental ABIEncoderV2;
 
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
@@ -183,11 +184,11 @@ contract Cycles is IGroupSchema, StorageOwners {
         );
     }
 
-    function getCycles() external view returns (Cycle [] memory) {
+    function getCycles() external view returns (Cycle[] memory) {
         return Cycles;
     }
 
-     function getCyclesLength() external view returns (uint256) {
+    function getCyclesLength() external view returns (uint256) {
         return Cycles.length;
     }
 
@@ -203,16 +204,17 @@ contract Cycles is IGroupSchema, StorageOwners {
         bool exist = _doesCycleMemberExist(cycleId, depositor);
         require(exist == false, "Cycle member already exist");
 
-        CycleMember memory cycleMember = CycleMember(
-            true,
-            cycleId,
-            groupId,
-            depositor,
-            totalLiquidityAsPenalty,
-            numberOfCycleStakes,
-            stakesClaimed,
-            hasWithdrawn
-        );
+        CycleMember memory cycleMember =
+         CycleMember(
+                cycleId,
+                groupId,
+                totalLiquidityAsPenalty,
+                numberOfCycleStakes,
+                stakesClaimed,
+                true,
+                 depositor,
+                hasWithdrawn
+            );
 
         uint256 index = CycleMembers.length;
 
@@ -257,21 +259,22 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 stakesClaimedBeforeMaturity
     ) external onlyStorageOracle returns (uint256) {
         lastCycleId += 1;
-        Cycle memory cycle = Cycle(
-            true,
-            lastCycleId,
-            groupId,
-            numberOfDepositors,
-            startTimeStamp,
-            duration,
-            maximumSlots,
-            hasMaximumSlots,
-            cycleStakeAmount,
-            totalStakes,
-            stakesClaimed,
-            cycleStatus,
-            stakesClaimedBeforeMaturity
-        );
+        Cycle memory cycle =
+             Cycle(
+                lastCycleId,
+                groupId,
+                numberOfDepositors,
+                startTimeStamp,
+                duration,
+                maximumSlots,
+                cycleStakeAmount,
+                totalStakes,
+                stakesClaimed,
+                hasMaximumSlots,
+                true,
+                cycleStatus,
+                stakesClaimedBeforeMaturity
+            );
 
         uint256 index = Cycles.length;
         RecordIndex memory recordIndex = RecordIndex(true, index);
@@ -294,16 +297,17 @@ contract Cycles is IGroupSchema, StorageOwners {
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = CycleIndexer[cycleId];
         require(recordIndex.exists == true, "Cycle not found");
-        CycleFinancial memory cycleFinancial = CycleFinancial(
-            true,
-            cycleId,
-            underlyingTotalDeposits,
-            underlyingTotalWithdrawn,
-            underlyingBalance,
-            derivativeBalance,
-            underylingBalanceClaimedBeforeMaturity,
-            derivativeBalanceClaimedBeforeMaturity
-        );
+        CycleFinancial memory cycleFinancial =
+            CycleFinancial(
+                true,
+                cycleId,
+                underlyingTotalDeposits,
+                underlyingTotalWithdrawn,
+                underlyingBalance,
+                derivativeBalance,
+                underylingBalanceClaimedBeforeMaturity,
+                derivativeBalanceClaimedBeforeMaturity
+            );
         CycleFinancials.push(cycleFinancial);
         CycleFinancialsIndexer[cycleId] = recordIndex;
         GroupCycleFinancialsIndexer[groupId].push(recordIndex);
@@ -362,8 +366,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     }
 
     function getCycleIndex(uint256 cycleId) external view returns (uint256) {
-       return _getCycleIndex(cycleId);
-       
+        return _getCycleIndex(cycleId);
     }
 
     function getCycleFinancialIndex(uint256 cycleId)
@@ -371,8 +374,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (uint256)
     {
-       return _getCycleFinancialIndex(cycleId);
-
+        return _getCycleFinancialIndex(cycleId);
     }
 
     function _getCycleIndex(uint256 cycleId) internal view returns (uint256) {
@@ -380,26 +382,26 @@ contract Cycles is IGroupSchema, StorageOwners {
         require(doesCycleExist == true, "Cycle not found");
 
         return CycleIndexer[cycleId].index;
-        
     }
 
     function getRecordIndexForCycleMembersIndexerByDepositor(
-        uint256 cycleId,
+        address depositorAddress,
         uint256 recordIndexLocation
     ) external view returns (bool, uint256) {
+        RecordIndex memory recordIndex =
+            CycleMembersIndexerByDepositor[depositorAddress][
+                recordIndexLocation
+            ];
 
-            RecordIndex memory recordIndex
-         = CycleMembersIndexerByDepositor[depositorAddress][recordIndexLocation];
         return (recordIndex.exists, recordIndex.index);
     }
 
     function getRecordIndexForCycleMembersIndexer(
-        address depositorAddress,
+        uint256 cycleId,
         uint256 recordIndexLocation
     ) external view returns (bool, uint256) {
-
-            RecordIndex memory recordIndex
-         = CycleMembersIndexer[cycleId][recordIndexLocation];
+        RecordIndex memory recordIndex =
+            CycleMembersIndexer[cycleId][recordIndexLocation];
         return (recordIndex.exists, recordIndex.index);
     }
 
@@ -455,12 +457,11 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (uint256)
     {
-        bool doesCycleMemberExist = CycleMembersDeepIndexer[cycleId][depositor]
-            .exists;
+        bool doesCycleMemberExist =
+            CycleMembersDeepIndexer[cycleId][depositor].exists;
         require(doesCycleMemberExist == false, "Cycle member not found");
 
-       return CycleMembersDeepIndexer[cycleId][depositor].index;
-       
+        return CycleMembersDeepIndexer[cycleId][depositor].index;
     }
 
     function _getCycleFinancialIndex(uint256 cycleId)
@@ -472,14 +473,11 @@ contract Cycles is IGroupSchema, StorageOwners {
         require(doesCycleFinancialExist == false, "Cycle financials not found");
 
         return CycleFinancialsIndexer[cycleId].index;
-        
     }
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
-        uint256 index = _getCycleMemberIndex(
-            cycleMember.cycleId,
-            cycleMember._address
-        );
+        uint256 index =
+            _getCycleMemberIndex(cycleMember.cycleId, cycleMember._address);
         CycleMembers[index] = cycleMember;
     }
 
@@ -499,7 +497,6 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 index = _getCycleIndex(cycleId);
 
         return Cycles[index];
-        
     }
 
     function _getCycleFinancial(uint256 cycleId)
@@ -507,7 +504,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (CycleFinancial memory)
     {
-        uint256 index = _getCycleFinancialIndex(cycleFinancial.cycleId);
+        uint256 index = _getCycleFinancialIndex(cycleId);
 
         CycleFinancial memory cycleFinancial = CycleFinancials[index];
         return cycleFinancial;
@@ -526,7 +523,6 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (bool)
     {
-return CycleMembersDeepIndexer[cycleId][depositor].exists;
-
+        return CycleMembersDeepIndexer[cycleId][depositor].exists;
     }
 }

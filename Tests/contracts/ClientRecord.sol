@@ -72,9 +72,6 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             derivativeTotalDeposits,
             derivativeTotalWithdrawn
         );
-        ClientRecord storage clientRecord = ClientRecords[index];
-
-     ClientRecord storage clientRecord = ClientRecords[index];
 clientRecord.underlyingTotalDeposits = underlyingTotalDeposits;
 clientRecord.underlyingTotalWithdrawn = underlyingTotalWithdrawn;
 clientRecord.derivativeBalance = derivativeBalance;

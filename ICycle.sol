@@ -1,5 +1,6 @@
 pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
+pragma experimental ABIEncoderV2;
 
 interface ICycles is IGroupSchema {
 
@@ -93,10 +94,10 @@ interface ICycles is IGroupSchema {
 
     function updateCycleMember(
         uint256 cycleId,
-        address payable depositor,
         uint256 totalLiquidityAsPenalty,
         uint256 numberOfCycleStakes,
         uint256 stakesClaimed,
+         address payable depositor,
         bool hasWithdrawn
     ) external;
 
@@ -131,10 +132,10 @@ interface ICycles is IGroupSchema {
         uint256 startTimeStamp,
         uint256 duration,
         uint256 maximumSlots,
-        bool hasMaximumSlots,
         uint256 cycleStakeAmount,
         uint256 totalStakes,
         uint256 stakesClaimed,
+         bool hasMaximumSlots,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
     ) external;

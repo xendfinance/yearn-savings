@@ -150,10 +150,10 @@ contract Groups is IGroupSchema, StorageOwners {
 
         lastGroupId += 1;
         Group memory group = Group(
-            true,
             lastGroupId,
             name,
             symbol,
+            true,
             payable(groupCreator)
         );
         uint256 index = Groups.length;
