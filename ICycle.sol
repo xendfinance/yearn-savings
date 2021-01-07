@@ -2,6 +2,11 @@ pragma solidity ^0.6.6;
 import "./IGroupSchema.sol";
 
 interface ICycles is IGroupSchema {
+
+    function getCycles() external view returns (Cycle [] memory);
+
+    function getCyclesLength() external view returns (uint256);
+
     function getCycleInfoByIndex(uint256 index)
         external
         view

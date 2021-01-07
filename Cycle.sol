@@ -183,6 +183,14 @@ contract Cycles is IGroupSchema, StorageOwners {
         );
     }
 
+    function getCycles() external view returns (Cycle [] memory) {
+        return Cycles;
+    }
+
+     function getCyclesLength() external view returns (uint256) {
+        return Cycles.length;
+    }
+
     function createCycleMember(
         uint256 cycleId,
         uint256 groupId,
