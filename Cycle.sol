@@ -354,8 +354,8 @@ contract Cycles is IGroupSchema, StorageOwners {
     }
 
     function getCycleIndex(uint256 cycleId) external view returns (uint256) {
-        uint256 index = _getCycleIndex(cycleId);
-        return index;
+       return _getCycleIndex(cycleId);
+       
     }
 
     function getCycleFinancialIndex(uint256 cycleId)
@@ -363,16 +363,16 @@ contract Cycles is IGroupSchema, StorageOwners {
         view
         returns (uint256)
     {
-        uint256 index = _getCycleFinancialIndex(cycleId);
-        return index;
+       return _getCycleFinancialIndex(cycleId);
+
     }
 
     function _getCycleIndex(uint256 cycleId) internal view returns (uint256) {
         bool doesCycleExist = CycleIndexer[cycleId].exists;
         require(doesCycleExist == true, "Cycle not found");
 
-        uint256 index = CycleIndexer[cycleId].index;
-        return index;
+        return CycleIndexer[cycleId].index;
+        
     }
 
     function getRecordIndexForCycleMembersIndexerByDepositor(
@@ -431,8 +431,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         returns (CycleMember memory)
     {
         uint256 index = _getCycleMemberIndex(cycleId, depositor);
-        CycleMember memory cycleMember = _getCycleMember(index);
-        return cycleMember;
+        return _getCycleMember(index);
     }
 
     function _getCycleMember(uint256 index)
@@ -450,10 +449,10 @@ contract Cycles is IGroupSchema, StorageOwners {
     {
         bool doesCycleMemberExist = CycleMembersDeepIndexer[cycleId][depositor]
             .exists;
-        require(doesCycleMemberExist == true, "Cycle member not found");
+        require(doesCycleMemberExist == false, "Cycle member not found");
 
-        uint256 index = CycleMembersDeepIndexer[cycleId][depositor].index;
-        return index;
+       return CycleMembersDeepIndexer[cycleId][depositor].index;
+       
     }
 
     function _getCycleFinancialIndex(uint256 cycleId)
@@ -462,10 +461,10 @@ contract Cycles is IGroupSchema, StorageOwners {
         returns (uint256)
     {
         bool doesCycleFinancialExist = CycleFinancialsIndexer[cycleId].exists;
-        require(doesCycleFinancialExist == true, "Cycle financials not found");
+        require(doesCycleFinancialExist == false, "Cycle financials not found");
 
-        uint256 index = CycleFinancialsIndexer[cycleId].index;
-        return index;
+        return CycleFinancialsIndexer[cycleId].index;
+        
     }
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
@@ -491,8 +490,8 @@ contract Cycles is IGroupSchema, StorageOwners {
     function _getCycle(uint256 cycleId) internal view returns (Cycle memory) {
         uint256 index = _getCycleIndex(cycleId);
 
-        Cycle memory cycle = Cycles[index];
-        return cycle;
+        return Cycles[index];
+        
     }
 
     function _getCycleFinancial(uint256 cycleId)

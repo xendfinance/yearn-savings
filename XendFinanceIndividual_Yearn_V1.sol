@@ -52,8 +52,6 @@ contract XendFinanceIndividual_Yearn_V1 is
     bool isDeprecated = false;
 
     address LendingAdapterAddress;
-    address TreasuryAddress;
-    address TokenAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
@@ -74,8 +72,6 @@ contract XendFinanceIndividual_Yearn_V1 is
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         derivativeToken = IERC20(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
-        TreasuryAddress = treasuryAddress;
-        TokenAddress = tokenAddress;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -268,8 +264,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
-            daiToken.approve(TreasuryAddress, commissionFees);
-            treasury.depositToken(TokenAddress);
+            daiToken.approve(address(treasury), commissionFees);
+            treasury.depositToken(address(daiToken));
         }
 
         ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(

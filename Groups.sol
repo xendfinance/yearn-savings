@@ -129,15 +129,15 @@ contract Groups is IGroupSchema, StorageOwners {
         uint256 index = _getMemberIndex(_address);
         Member memory member = Members[index];
 
-        return (member._address);
+       return member._address;
     }
 
     function _getMemberIndex(address _address) internal view returns (uint256) {
         bool doesMemberExist = MemberIndexer[_address].exists;
-        require(doesMemberExist == true, "Member not found");
+        require(doesMemberExist == false, "Member not found");
 
-        uint256 index = MemberIndexer[_address].index;
-        return index;
+       return MemberIndexer[_address].index;
+      
     }
 
     function createGroup(
@@ -183,9 +183,7 @@ contract Groups is IGroupSchema, StorageOwners {
     }
 
     function _doesGroupExist(uint256 groupId) internal view returns (bool) {
-        bool groupExist = GroupIndexer[groupId].exists;
-
-        return groupExist;
+       return GroupIndexer[groupId].exists;
     }
 
     function doesGroupExist(string calldata groupName)
@@ -201,9 +199,8 @@ contract Groups is IGroupSchema, StorageOwners {
         view
         returns (bool)
     {
-        bool groupExist = GroupIndexerByName[groupName].exists;
+        return GroupIndexerByName[groupName].exists;
 
-        return groupExist;
     }
 
     function doesMemberExist(address depositor) external view returns (bool) {
@@ -299,8 +296,8 @@ contract Groups is IGroupSchema, StorageOwners {
         view
         returns (bool)
     {
-        bool exist = GroupMembersDeepIndexer[groupId][depositor].exists;
-        return exist;
+        return GroupMembersDeepIndexer[groupId][depositor].exists;
+        
     }
 
     function getGroupIndexer(uint256 groupId)
@@ -403,8 +400,7 @@ contract Groups is IGroupSchema, StorageOwners {
         returns (uint256)
     {
         bool doesGroupExist = GroupIndexer[groupId].exists;
-        require(doesGroupExist == true, "Group not found");
-        uint256 index = GroupIndexer[groupId].index;
-        return index;
+        require(doesGroupExist == false, "Group not found");
+        return GroupIndexer[groupId].index;
     }
 }

@@ -44,8 +44,7 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
             ruleSet.exists == true,
             "No rule definitions found for rule key"
         );
-        address ruleManager = RuleModifier[ruleKey];
-        return (ruleManager);
+        return  RuleModifier[ruleKey];
     }
 
     function changeRuleCreator(string calldata ruleKey, address newRuleManager)
@@ -119,8 +118,8 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
     function _getRule(string memory ruleKey) internal returns (RuleSet memory) {
         bool ruleExist = RuleMapping[ruleKey].exists;
         require(ruleExist == true, "Rule does not exist");
-        RuleSet memory ruleSet = RuleMapping[ruleKey];
-        return ruleSet;
+        return RuleMapping[ruleKey];
+        
     }
 
     function _saveRule(string memory ruleKey, RuleSet memory ruleSet) internal {
@@ -147,7 +146,6 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
     }
 
     modifier onlyRuleCreatorOrOwner(string memory ruleKey) {
-        RuleSet memory ruleSet = _getRule(ruleKey);
         address ruleCreator = RuleModifier[ruleKey];
 
         require(

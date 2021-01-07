@@ -2,27 +2,27 @@ pragma solidity ^0.6.2;
 
 interface IGroupSchema {
     struct Group {
-        bool exists;
         uint256 id;
         string name;
         string symbol;
+        bool exists;
         address payable creatorAddress;
     }
 
     struct Cycle {
-        bool exists;
         uint256 id;
         uint256 groupId;
         uint256 numberOfDepositors;
         uint256 cycleStartTimeStamp;
         uint256 cycleDuration;
         uint256 maximumSlots;
-        bool hasMaximumSlots;
         uint256 cycleStakeAmount;
         // represents the total stakes of every cycle member deposits
         uint256 totalStakes;
         //represents the total stakes of every cycle member withdrawal
         uint256 stakesClaimed;
+        bool hasMaximumSlots;
+        bool exists;
         CycleStatus cycleStatus;
         // represents the number of cycle stakes that user's have cashed out on before the cycle has ended
         uint256 stakesClaimedBeforeMaturity;
@@ -46,13 +46,13 @@ interface IGroupSchema {
     }
 
     struct CycleMember {
-        bool exist;
         uint256 cycleId;
         uint256 groupId;
-        address payable _address;
         uint256 totalLiquidityAsPenalty;
         uint256 numberOfCycleStakes;
         uint256 stakesClaimed;
+        bool exist;
+        address payable _address;
         bool hasWithdrawn;
     }
 

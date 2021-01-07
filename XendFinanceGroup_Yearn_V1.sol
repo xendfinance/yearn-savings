@@ -121,7 +121,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
             address payable creatorAddress
         ) = groupStorage.getGroupById(_groupId);
 
-        Group memory group = Group(true, groupId, name, symbol, creatorAddress);
+        Group memory group = Group(groupId, name, symbol, true, creatorAddress);
         return group;
     }
 
@@ -137,7 +137,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
             address payable creatorAddress
         ) = groupStorage.getGroupByIndex(index);
 
-        Group memory group = Group(true, groupId, name, symbol, creatorAddress);
+        Group memory group = Group(groupId, name, symbol,true, creatorAddress);
         return group;
     }
 
@@ -249,10 +249,10 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
    
         cycleStorage.updateCycleMember(
              cycleMember.cycleId,
-            cycleMember._address,
             cycleMember.totalLiquidityAsPenalty,
             cycleMember.numberOfCycleStakes,
             cycleMember.stakesClaimed,
+            cycleMember._address,
             cycleMember.hasWithdrawn
         );
     }
@@ -302,17 +302,17 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         ) = cycleStorage.getCycleInfoById(cycleId);
 
         Cycle memory cycleInfo = Cycle(
-            true,
             id,
             groupId,
             numberOfDepositors,
             cycleStartTimeStamp,
             cycleDuration,
             maximumSlots,
-            hasMaximumSlots,
             cycleStakeAmount,
             totalStakes,
             stakesClaimed,
+            hasMaximumSlots,
+            true,
             cycleStatus,
             stakesClaimedBeforeMaturity
         );
@@ -341,17 +341,17 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         ) = cycleStorage.getCycleInfoByIndex(index);
 
         Cycle memory cycleInfo = Cycle(
-            true,
             id,
             groupId,
             numberOfDepositors,
             cycleStartTimeStamp,
             cycleDuration,
             maximumSlots,
-            hasMaximumSlots,
             cycleStakeAmount,
             totalStakes,
             stakesClaimed,
+            hasMaximumSlots,
+            true,
             cycleStatus,
             stakesClaimedBeforeMaturity
         );
@@ -473,13 +473,13 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         return
             CycleMember(
-                true,
                 cycleId,
                 groupId,
-                _address,
                 totalLiquidityAsPenalty,
                 numberOfCycleStakes,
                 stakesClaimed,
+                true,
+                _address,
                 hasWithdrawn
             );
     }
@@ -501,10 +501,10 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             cycle.cycleStartTimeStamp,
             cycle.cycleDuration,
             cycle.maximumSlots,
-            cycle.hasMaximumSlots,
             cycle.cycleStakeAmount,
             cycle.totalStakes,
             cycle.stakesClaimed,
+            cycle.hasMaximumSlots,
             cycle.cycleStatus,
             cycle.stakesClaimedBeforeMaturity
         );
@@ -639,13 +639,13 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         );
 
         CycleMember memory cycleMember = CycleMember(
-            true,
             cycleId,
             group.id,
+            0,
+            0,
+            0,
+            true,
             depositorAddress,
-            0,
-            0,
-            0,
             false
         );
 
@@ -1478,25 +1478,25 @@ contract XendFinanceGroup_Yearn_V1 is
         view
         onlyNonDeprecatedCalls
         returns (
-            bool exist,
             uint256 cycleId,
             uint256 groupId,
-            address payable _address,
             uint256 totalLiquidityAsPenalty,
             uint256 numberOfCycleStakes,
             uint256 stakesClaimed,
+            bool exist,
+            address payable _address,
             bool hasWithdrawn
         )
     {
         CycleMember memory cycleMember = _getCycleMember(index);
         return (
-            cycleMember.exist,
             cycleMember.cycleId,
             cycleMember.groupId,
-            cycleMember._address,
             cycleMember.totalLiquidityAsPenalty,
             cycleMember.numberOfCycleStakes,
             cycleMember.stakesClaimed,
+            cycleMember.exist,
+            cycleMember._address,
             cycleMember.hasWithdrawn
         );
     }
