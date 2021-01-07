@@ -49,7 +49,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     IERC20 derivativeToken;
     ITreasury treasury;
 
-    bool isDeprecated = false;
+    bool isDeprecated;
 
     address LendingAdapterAddress;
 

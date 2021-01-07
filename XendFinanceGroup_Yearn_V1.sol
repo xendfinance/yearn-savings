@@ -95,7 +95,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
 
-    bool isDeprecated = false;
+    bool isDeprecated;
 
     modifier onlyNonDeprecatedCalls() {
         require(isDeprecated == false, "Service contract has been deprecated");
