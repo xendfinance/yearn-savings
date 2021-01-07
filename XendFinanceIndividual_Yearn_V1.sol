@@ -57,7 +57,6 @@ contract XendFinanceIndividual_Yearn_V1 is
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
 
     constructor(
-        address lendingAdapterAddress,
         address lendingServiceAddress,
         address tokenAddress,
         address clientRecordStorageAddress,
@@ -68,11 +67,14 @@ contract XendFinanceIndividual_Yearn_V1 is
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
-        LendingAdapterAddress = lendingAdapterAddress;
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         derivativeToken = IERC20(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
     }
+
+     function setAdapterAddress() onlyOwner external {
+    LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
+}
 
     function deprecateContract(address newServiceAddress)
         external
