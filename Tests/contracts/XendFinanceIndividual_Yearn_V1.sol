@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.;
+pragma solidity ^0.6.2;
 
 import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
@@ -10,7 +10,7 @@ import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
-import "./Tests/contracts/XendToken/IERC20.sol";
+import "./IERC20.sol";
 import "./Address.sol";
 import "./ISavingsConfig.sol";
 import "./ISavingsConfigSchema.sol";
