@@ -60,7 +60,7 @@ module.exports = function (deployer) {
       "RewardConfigContract address: " + RewardConfigContract.address
     );
 
-    await deployer.deploy(XendTokenContract, "Xend Token", "$XEND","18","200000000000000000000000000")
+    await deployer.deploy(xendTokenContract, "Xend Token", "$XEND", "18", "200000000000000000000000000")
 
     console.log("Xend Token Contract address", xendTokenContract.address);
 
@@ -88,7 +88,8 @@ module.exports = function (deployer) {
       xendTokenContract.address,
       ClientRecordContract.address,
       RewardConfigContract.address,
-      derivativeContract
+      derivativeContract,
+      TreasuryContract.address
     );
 
     console.log(

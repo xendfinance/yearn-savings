@@ -316,6 +316,8 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _getDivisor() internal returns (uint256) {
         (
+            uint256 minimumDivisor,
+            uint256 maximumDivisor,
             uint256 exactDivisor,
             bool appliesDivisor,
             RuleDefinition ruleDefinitionDivisor
@@ -335,6 +337,8 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function _getDividend() internal returns (uint256) {
         (
+            uint256 minimumDividend,
+            uint256 maximumDividend,
             uint256 exactDividend,
             bool appliesDividend,
             RuleDefinition ruleDefinitionDividend
@@ -470,7 +474,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             underlyingAmountWithdrawn
         );
 
-        record.derivateTotalWithdrawn = record.dericateTotalWithdrawn.add(derivativeAmountWithdrawn);
+        record.derivativeTotalWithdrawn = record.derivativeTotalWithdrawn.add(derivativeAmountWithdrawn);
 
         record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn

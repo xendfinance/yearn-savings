@@ -91,7 +91,6 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         ruleSet.exact = exact;
         ruleSet.exists = false;
         ruleSet.ruleDefinition = ruleDefinition;
-        _validateRuleCreation(ruleKey, ruleSet);
         _saveRule(ruleKey, ruleSet);
     }
 
