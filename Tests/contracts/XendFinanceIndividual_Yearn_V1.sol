@@ -258,12 +258,10 @@ contract XendFinanceIndividual_Yearn_V1 is
             commissionFees
         );
 
-        bool isSuccessful = daiToken.safeTransfer(
+      daiToken.safeTransfer(
             recipient,
             amountToSendToDepositor
         );
-
-        require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
             daiToken.approve(address(treasury), commissionFees);

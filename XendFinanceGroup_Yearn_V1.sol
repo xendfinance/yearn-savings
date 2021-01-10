@@ -1540,13 +1540,12 @@ contract XendFinanceGroup_Yearn_V1 is
         _startCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
 
-        uint256 blockNumber = block.number;
-        uint256 blockTimestamp = currentTimeStamp;
+
 
         emit CycleStartedEvent(
             cycleId,
-            blockTimestamp,
-            blockNumber,
+            currentTimeStamp,
+            block.number,
             derivativeAmount,
             cycleFinancial.underlyingTotalDeposits
         );
