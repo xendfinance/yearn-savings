@@ -111,7 +111,5 @@ module.exports = function (deployer) {
     );
 
     console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
-
-   
   });
 };

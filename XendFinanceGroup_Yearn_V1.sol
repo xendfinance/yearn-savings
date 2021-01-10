@@ -1128,7 +1128,7 @@ contract XendFinanceGroup_Yearn_V1 is
         }
 
         if (withdrawalResolution.amountToSendToMember > 0) {
-            daiToken.transfer(
+            daiToken.safeTransfer(
                 cycleMember._address,
                 withdrawalResolution.amountToSendToMember
             );
