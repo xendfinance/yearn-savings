@@ -1137,13 +1137,13 @@ contract XendFinanceGroup_Yearn_V1 is
         }
 
         uint256 totalUnderlyingAmountSentOut = withdrawalResolution
-            .amountToSendToTreasury + withdrawalResolution.amountToSendToMember;
+            .amountToSendToTreasury.add(withdrawalResolution.amountToSendToMember);
 
-        cycle.stakesClaimed += stakesHoldings;
-        cycleFinancial.underlyingTotalWithdrawn += totalUnderlyingAmountSentOut;
+        cycle.stakesClaimed = cycle.stakesClaimed.add(stakesHoldings);
+        cycleFinancial.underlyingTotalWithdrawn = cycleFinancial.underlyingTotalWithdrawn.add(totalUnderlyingAmountSentOut);
 
         cycleMember.hasWithdrawn = true;
-        cycleMember.stakesClaimed += stakesHoldings;
+        cycleMember.stakesClaimed = cycleMember.stakesClaimed.add(stakesHoldings);
         uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
         _rewardUserWithTokens(
             cycle.cycleDuration,
@@ -1189,14 +1189,10 @@ contract XendFinanceGroup_Yearn_V1 is
                 cycleMemberAddress,
                 numberOfRewardTokens
             );
-
-            _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
+    emit XendTokenReward(now, cycleMemberAddress, numberOfRewardTokens);
         }
 
         
-    }
-    function _emitXendTokenReward(address member, uint amount) internal {
-        emit XendTokenReward(now, member, amount);
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)
@@ -1405,10 +1401,9 @@ contract XendFinanceGroup_Yearn_V1 is
     {
         Cycle memory cycle = _getCycleById(cycleId);
         require(cycle.cycleStatus == CycleStatus.ONGOING);
-        uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp +
-            cycle.cycleDuration;
+        uint256 cycleEndTimeStamp = cycle.cycleStartTimeStamp.add(cycle.cycleDuration);
 
-        if (cycleEndTimeStamp >= now) return cycleEndTimeStamp - now;
+        if (cycleEndTimeStamp >= now) return cycleEndTimeStamp.sub(now);
         else return 0;
     }
 
@@ -1422,7 +1417,7 @@ contract XendFinanceGroup_Yearn_V1 is
         require(cycle.cycleStatus == CycleStatus.NOT_STARTED);
 
         if (cycle.cycleStartTimeStamp >= now)
-            return cycle.cycleStartTimeStamp - now;
+            return cycle.cycleStartTimeStamp.sub(now);
         else return 0;
     }
 
@@ -1553,13 +1548,12 @@ contract XendFinanceGroup_Yearn_V1 is
         _startCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
 
-        uint256 blockNumber = block.number;
-        uint256 blockTimestamp = currentTimeStamp;
+       
 
         emit CycleStartedEvent(
             cycleId,
-            blockTimestamp,
-            blockNumber,
+            currentTimeStamp,
+            block.number,
             derivativeAmount,
             cycleFinancial.underlyingTotalDeposits
         );
@@ -1581,8 +1575,8 @@ contract XendFinanceGroup_Yearn_V1 is
 
         uint256 balanceAfterDeposit = lendingService.userShares();
 
-        uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
-        return amountOfyDai;
+        return balanceAfterDeposit.sub(balanceBeforeDeposit);
+     
     }
 
     function createGroup(string calldata name, string calldata symbol)
@@ -1606,9 +1600,7 @@ contract XendFinanceGroup_Yearn_V1 is
         require(nameInBytes.length > 0, "Group name cannot be empty");
         require(symbolInBytes.length > 0, "Group sysmbol cannot be empty");
 
-        bool nameExist = groupStorage.doesGroupExist(name);
-
-        require(nameExist == false, "Group name has already been used");
+        require(groupStorage.doesGroupExist(name) == true, "Group name has already been used");
     }
 
     function getGroupByIndex(uint256 index)

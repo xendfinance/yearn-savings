@@ -97,19 +97,19 @@ module.exports = function (deployer) {
       XendFinanceIndividual_Yearn_V1Contract.address
     );
 
-    await deployer.deploy(
-      XendFinanceGroup_Yearn_V1Contract,
-      DaiLendingServiceContract.address,
-      YDerivativeContract,
-      GroupsContract.address,
-      CyclesContract.address,
-      TreasuryContract.address,
-      SavingsConfigContract.address,
-      RewardConfigContract.address,
-      xendTokenContract.address,
-      derivativeContract
-    );
+    // await deployer.deploy(
+    //   XendFinanceGroup_Yearn_V1Contract,
+    //   DaiLendingServiceContract.address,
+    //   YDerivativeContract,
+    //   GroupsContract.address,
+    //   CyclesContract.address,
+    //   TreasuryContract.address,
+    //   SavingsConfigContract.address,
+    //   RewardConfigContract.address,
+    //   xendTokenContract.address,
+    //   derivativeContract
+    // );
 
-    console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
+    //console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
   });
 };

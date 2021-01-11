@@ -387,7 +387,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             "Could not complete deposit process from token contract"
         );
 
-        daiToken.approve(LendingAdapterAddress, amountTransferrable);
+        daiToken.safeApprove(LendingAdapterAddress, amountTransferrable);
 
         uint256 balanceBeforeDeposit = lendingService.userShares();
 

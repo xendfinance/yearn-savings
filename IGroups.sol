@@ -3,14 +3,13 @@ import "./IGroupSchema.sol";
 
 interface IGroups is IGroupSchema {
 
-    function getXendTokensReward(address depositorAddress)
+    function getXendTokensReward(address payable receiverAddress)
         external
         view
         returns (uint256);
 
-    function setXendTokensReward(address depositorAddress, uint256 amount)
+    function setXendTokensReward(address payable depositorAddress, uint256 amount)
         external;
-        
     function getLengthOfTokenAddressesUsedInDeposit()
         external
         view

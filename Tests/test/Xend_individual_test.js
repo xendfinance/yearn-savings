@@ -213,10 +213,19 @@ contract("XendFinanceIndividual", () => {
     
     var approvedAmountToSpend = BigInt(100000000000000000000); //   10,000 Dai
     
-    approveDai(xendFinanceIndividualContract.address,account1,approvedAmountToSpend);
+    //approveDai(xendFinanceIndividualContract.address,account1,approvedAmountToSpend);
 
-    var result = await xendFinanceIndividualContract.deposit();
+    await daiContract.methods.approve(xendFinanceIndividualContract.address, approvedAmountToSpend).send({ from: account1 });
+
+    let allowance = await daiContract.methods.allowance(account1, xendFinanceIndividualContract.address).call({from: account1});
+    console.log(allowance, 'allowance')
+    var result = await xendFinanceIndividualContract.deposit({from : account1});
 
     console.log(result, 'result')
+
+    //get client record
+    let clientRecordData = await xendFinanceIndividualContract.getClientRecord(account1);
+
+    console.log(clientRecordData, 'lol')
   });
 });

@@ -42,19 +42,20 @@ contract Groups is IGroupSchema, StorageOwners {
     address[] tokenAddresses;
     uint256 totalEthersDeposited;
     mapping(address => uint256) totalTokensDeposited;
-
-     function getXendTokensReward(address depositorAddress)
+   function getXendTokensReward(address payable receiverAddress)
         external
         view
         returns (uint256)
     {
-        return XendTokensReward[tokenAddress];
+        return XendTokensReward[receiverAddress];
     }
 
-    function setXendTokensReward(address depositorAddress, uint amount)
-        external
-    {
-        XendTokensReward[tokenAddress] =  XendTokensReward[tokenAddress].add(amount);
+   function setXendTokensReward(
+        address payable receiverAddress,
+        uint256 amount
+    ) external {
+        XendTokensReward[receiverAddress] = XendTokensReward[receiverAddress]
+            .add(amount);
     }
 
     function getLengthOfTokenAddressesUsedInDeposit()
