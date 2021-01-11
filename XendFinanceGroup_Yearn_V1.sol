@@ -30,6 +30,8 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
         uint256 amountToSendToTreasury;
     }
 
+    event XendTokenReward(uint256 date, address indexed member, uint256 amount);
+
     event UnderlyingAssetDeposited(
         uint256 indexed cycleId,
         address payable indexed memberAddress,
@@ -1183,7 +1185,18 @@ contract XendFinanceGroup_Yearn_V1 is
 
         if (numberOfRewardTokens > 0) {
             xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
+             groupStorage.setXendTokensReward(
+                cycleMemberAddress,
+                numberOfRewardTokens
+            );
+
+            _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
         }
+
+        
+    }
+    function _emitXendTokenReward(address member, uint amount) internal {
+        emit XendTokenReward(now, member, amount);
     }
 
     function _computeAmountToChargeAsPenalites(uint256 worthOfMemberDepositNow)
@@ -1540,12 +1553,13 @@ contract XendFinanceGroup_Yearn_V1 is
         _startCycle(cycle);
         _updateCycleFinancials(cycleFinancial);
 
-
+        uint256 blockNumber = block.number;
+        uint256 blockTimestamp = currentTimeStamp;
 
         emit CycleStartedEvent(
             cycleId,
-            currentTimeStamp,
-            block.number,
+            blockTimestamp,
+            blockNumber,
             derivativeAmount,
             cycleFinancial.underlyingTotalDeposits
         );
