@@ -11,6 +11,13 @@ contract StorageOwners {
     function changeStorageOracleStatus(address oracle, bool status) external onlyOwner {
         storageOracles[oracle] = status;
 }
+  function activateStorageOracle(address oracle) external onlyOwner {
+        storageOracles[oracle] = true;
+    }
+
+    function deactivateStorageOracle(address oracle) external onlyOwner {
+        storageOracles[oracle] = false;
+    }
 
     function reAssignStorageOracle(address newOracle)
         external
