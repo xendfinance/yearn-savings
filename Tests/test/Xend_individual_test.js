@@ -221,11 +221,11 @@ contract("XendFinanceIndividual", () => {
     console.log(allowance, 'allowance')
     var result = await xendFinanceIndividualContract.deposit({from : account1});
 
-    console.log(result, 'result')
+    assert(result.receipt.status == true, "transaction failed");
 
     //get client record
     let clientRecordData = await xendFinanceIndividualContract.getClientRecord(account1);
 
-    console.log(clientRecordData, 'lol')
+    
   });
 });
