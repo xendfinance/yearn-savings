@@ -6,6 +6,7 @@ import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
+import "./SafeERC20.sol";
 // import "./IDaiLendingService.sol";
 import "./IClientRecord.sol";
 // import "./IERC20.sol";
@@ -25,6 +26,10 @@ contract XendFinanceIndividual_Yearn_V1 is
     ISavingsConfigSchema
 {
     using SafeMath for uint256;
+    
+    using SafeERC20 for IFToken;
+    
+    using SafeERC20 for IBEP20;
 
     using Address for address payable;
 
@@ -41,6 +46,13 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 derivativeAmount,
         uint256 balance
     );
+    
+    struct FixedDepositRecord{
+        address depositorAddress;
+        uint256 amount;
+        uint256 depositDateInSeconds;
+        uint256 lockPeriodInSeconds;
+    }
 
     //IDaiLendingService lendingService;
     IForTubeBankService fortubeService;
@@ -57,8 +69,6 @@ contract XendFinanceIndividual_Yearn_V1 is
     //address LendingAdapterAddress;
 
     address FortubeBankAdapter;
-    address TreasuryAddress;
-    address TokenAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
@@ -79,8 +89,6 @@ contract XendFinanceIndividual_Yearn_V1 is
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         fBusdToken = IFToken(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
-        TreasuryAddress = treasuryAddress;
-        TokenAddress = tokenAddress;
     }
 
     function deprecateContract(address newServiceAddress)
@@ -303,8 +311,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
-            busdToken.approve(TreasuryAddress, commissionFees);
-            treasury.depositToken(TokenAddress);
+            busdToken.approve(address(treasury), commissionFees);
+            treasury.depositToken(address(busdToken));
         }
 
         ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
@@ -332,7 +340,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         require(
             derivativeBalance >= derivativeAmount,
-            "Withdrawal cannot be processes, reason: Insufficient Balance"
+            "Withdrawal cannot be processe, reason: Insufficient Balance"
         );
     }
 
@@ -405,6 +413,85 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         _deposit(depositorAddress);
     }
+    
+    function fixedDeposit(uint256 depositDateInSeconds, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
+        address payable depositorAddress = msg.sender;
+        
+        address recipient = address(this);
+        
+         uint256 amountTransferrable = busdToken.allowance(
+            depositorAddress,
+            recipient
+        );
+
+        require(
+            amountTransferrable > 0,
+            "Approve an amount > 0 for token before proceeding"
+        );
+        bool isSuccessful = busdToken.transferFrom(
+            depositorAddress,
+            recipient,
+            amountTransferrable
+        );
+        require(
+            isSuccessful == true,
+            "Could not complete deposit process from token contract"
+        );
+       
+
+        uint256 balanceBeforeDeposit = fBusdToken.balanceOf(address(this));
+        
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
+
+         busdToken.approve(FortubeBankAdapter, amountTransferrable);
+
+        fortubeService.Save(amountTransferrable);
+
+        uint256 balanceAfterDeposit = fBusdToken.balanceOf(address(this));
+
+        uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
+        
+        
+        
+        ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
+            depositorAddress,
+            amountTransferrable,
+            amountOfyDai
+        );
+        FixedDepositRecord memory fixedDepositRecord = FixedDepositRecord(
+            depositorAddress,
+            amountOfyDai,
+            depositDateInSeconds,
+            lockPeriodInSeconds
+            );
+
+        bool exists = clientRecordStorage.doesClientRecordExist(
+            depositorAddress
+        );
+
+        if (exists) _updateClientRecord(clientRecord);
+        else {
+            clientRecordStorage.createClientRecord(
+                clientRecord._address,
+                clientRecord.underlyingTotalDeposits,
+                clientRecord.underlyingTotalWithdrawn,
+                clientRecord.derivativeBalance,
+                clientRecord.derivativeTotalDeposits,
+                clientRecord.derivativeTotalWithdrawn
+            );
+        }
+
+        emit UnderlyingAssetDeposited(
+            depositorAddress,
+            amountTransferrable,
+            amountOfyDai,
+            clientRecord.derivativeBalance
+        );
+        
+    }
+    
+   
+    
 
     function _deposit(address payable depositorAddress) internal {
         address recipient = address(this);

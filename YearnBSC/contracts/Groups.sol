@@ -3,6 +3,7 @@ pragma solidity ^0.6.0;
 import "./IGroupSchema.sol";
 import "./StorageOwners.sol";
 import "./SafeMath.sol";
+pragma experimental ABIEncoderV2;
 
 contract Groups is IGroupSchema, StorageOwners {
     
@@ -146,6 +147,10 @@ contract Groups is IGroupSchema, StorageOwners {
         Member memory member = Members[index];
 
         return (member._address);
+    }
+    
+    function getGroup() external view returns (Group [] memory) {
+        return Groups;
     }
 
     function _getMemberIndex(address _address) internal view returns (uint256) {

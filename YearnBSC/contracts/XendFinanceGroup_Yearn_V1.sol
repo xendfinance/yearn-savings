@@ -3,14 +3,14 @@
 pragma solidity ^0.6.6;
 import "./ISavingsConfig.sol";
 import "./ITreasury.sol";
-import "./Ownable.sol";
+// import "./Ownable.sol";
 import "./IGroups.sol";
 import "./ICycle.sol";
 import "./IGroupSchema.sol";
 import "./IForTubeBankService.sol";
-import "./IBEP20.sol";
+// import "./IBEP20.sol";
 import "./IFToken.sol";
-import "./Address.sol";
+//import "./Address.sol";
 import "./IRewardConfig.sol";
 import "./SafeMath.sol";
 import "./IXendToken.sol";
@@ -28,7 +28,25 @@ struct WithdrawalResolution {
     uint256 amountToSendToMember;
     uint256 amountToSendToTreasury;
 }
+ event GroupCreated(
+        uint256 indexed groupId,
+        address payable indexed groupCreator
+    );
 
+    event CycleCreated(
+        uint256 indexed cycleId,
+        uint256 maximumSlots,
+        bool hasMaximumSlots,
+        uint256 stakeAmount,
+        uint256 expectedCycleStartTimeStamp,
+        uint256 cycleDuration
+    );
+    
+    event CycleStarted(
+        uint256 indexed cycleId,
+        uint256 cycleStartTimeStamp
+        );
+    
 event UnderlyingAssetDeposited(
     uint256 indexed cycleId,
     address payable indexed memberAddress,
@@ -50,35 +68,8 @@ event DerivativeAssetWithdrawn(
     address tokenAddress
 );
 
-event GroupCreated(
-    uint256 indexed groupId,
-    address payable indexed groupCreator
-);
 
-event CycleCreated(
-    uint256 indexed cycleId,
-    uint256 maximumSlots,
-    bool hasMaximumSlots,
-    uint256 stakeAmount,
-    uint256 expectedCycleStartTimeStamp,
-    uint256 cycleDuration
-);
 
-event MemberJoinedCycle(
-    uint256 indexed cycleId,
-    address payable indexed memberAddress,
-    uint256 groupId
-);
-
-event MemberJoinedGroup(address payable memberAddress, uint256 groupId);
-
-event CycleStartedEvent(
-    uint256 indexed cycleId,
-    uint256 indexed blockTimeStamp,
-    uint256 blockNumber
-    //uint256 totalDerivativeAmount,
-    //uint256 totalUnderlyingAmount
-);
 
 IForTubeBankService forTubeBankService;
 IBEP20 busdToken;
@@ -729,15 +720,18 @@ function _joinCycle(
         cycle,
         didCycleMemberExistBeforeNow
     );
+    
+    uint amountToDeductFromClient = cycle.cycleStakeAmount.mul(numberOfStakes);
 
     CycleDepositResult memory result = _addDepositorToCycle(
         cycleId,
         cycle.cycleStakeAmount,
         numberOfStakes,
+        amountToDeductFromClient,
         depositorAddress
     );
     
-    uint amountToDeductFromClient = cycle.cycleStakeAmount.mul(numberOfStakes);
+    
 
     uint256 derivativeAmount = _lendCycleDeposit(allowance,amountToDeductFromClient);
 
@@ -762,11 +756,9 @@ function _joinCycle(
     if (!didCycleMemberExistBeforeNow) {
         cycle.numberOfDepositors = cycle.numberOfDepositors.add(1);
 
-        emit MemberJoinedCycle(cycleId, depositorAddress, result.group.id);
     }
 
     if (!didGroupMemberExistBeforeNow) {
-        emit MemberJoinedGroup(depositorAddress, result.group.id);
     }
 
     _updateCycle(cycle);
@@ -814,6 +806,7 @@ function _addDepositorToCycle(
     uint256 cycleId,
     uint256 cycleAmountForStake,
     uint256 numberOfStakes,
+    uint256 amountToDeductFromClient,
     address payable depositorAddress
 ) internal returns (CycleDepositResult memory) {
     Group memory group = _getCycleGroup(cycleId);
@@ -844,11 +837,7 @@ function _addDepositorToCycle(
         cycleMember = _getCycleMember(depositorAddress, cycleId);
     }
 
-    uint256 underlyingAmount = _processMemberDeposit(
-        numberOfStakes,
-        cycleAmountForStake,
-        depositorAddress
-    );
+    uint256 underlyingAmount = amountToDeductFromClient;
 
     cycleMember = _saveMemberDeposit(
         doesCycleMemberExist,
@@ -883,40 +872,40 @@ function _saveMemberDeposit(
     return cycleMember;
 }
 
-function _processMemberDeposit(
-    uint256 numberOfStakes,
-    uint256 amountForStake,
-    address payable depositorAddress
-) internal returns (uint256 underlyingAmount) {
-    uint256 expectedAmount = numberOfStakes.mul(amountForStake);
+// function _processMemberDeposit(
+//     uint256 numberOfStakes,
+//     uint256 amountForStake,
+//     address payable depositorAddress
+// ) internal returns (uint256 underlyingAmount) {
+//     uint256 expectedAmount = numberOfStakes.mul(amountForStake);
 
-    address recipient = address(this);
-    uint256 amountTransferrable = busdToken.allowance(
-        depositorAddress,
-        recipient
-    );
+//     address recipient = address(this);
+//     uint256 amountTransferrable = busdToken.allowance(
+//         depositorAddress,
+//         recipient
+//     );
 
-    require(
-        amountTransferrable > 0,
-        "Approve an amount > 0 for token before proceeding"
-    );
-    require(
-        amountTransferrable >= expectedAmount,
-        "Token allowance does not cover stake claim"
-    );
+//     require(
+//         amountTransferrable > 0,
+//         "Approve an amount > 0 for token before proceeding"
+//     );
+//     require(
+//         amountTransferrable >= expectedAmount,
+//         "Token allowance does not cover stake claim"
+//     );
 
-    bool isSuccessful = busdToken.transferFrom(
-        depositorAddress,
-        recipient,
-        expectedAmount
-    );
-    require(
-        isSuccessful == true,
-        "Could not complete deposit process from token contract"
-    );
+//     bool isSuccessful = busdToken.transferFrom(
+//         depositorAddress,
+//         recipient,
+//         expectedAmount
+//     );
+//     require(
+//         isSuccessful == true,
+//         "Could not complete deposit process from token contract"
+//     );
 
-    return expectedAmount;
-}
+//     return expectedAmount;
+// }
 
 function _endCycle(uint256 cycleId)
     internal
@@ -933,7 +922,7 @@ function _endCycle(uint256 cycleId)
     uint256 derivativeBalanceToWithdraw = cycleFinancial.derivativeBalance -
         cycleFinancial.derivativeBalanceClaimedBeforeMaturity;
         
-        ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
+        //ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
 
     fbusdToken.approve(
         ForTubeBankAdapterAddress,
@@ -976,7 +965,7 @@ function _redeemLending(uint256 derivativeBalance)
     
     uint256 balanceBeforeWithdraw = forTubeBankService.UserBUSDBalance(address(this));
     
-    ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
+   // ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
     
     bool isSuccessful = fbusdToken.approve(ForTubeBankAdapterAddress,derivativeBalance);
     
@@ -1021,7 +1010,7 @@ Ownable
 {
 using SafeMath for uint256;
 
-using Address for address payable;
+//using Address for address payable;
 
 constructor(
     address forTubeBankServiceAddress,
@@ -1045,6 +1034,10 @@ constructor(
     fbusdToken = IFToken(derivativeTokenAddress);
     TokenAddress = tokenAddress;
     TreasuryAddress = treasuryAddress;
+}
+
+function setAdapterAddress() onlyOwner external {
+    ForTubeBankAdapterAddress = forTubeBankService.GetForTubeAdapterAddress();
 }
 
 function withdrawFromCycleWhileItIsOngoing(uint256 cycleId)
@@ -1653,14 +1646,10 @@ function activateCycle(uint256 cycleId)
 
     uint256 blockNumber = block.number;
     uint256 blockTimestamp = currentTimeStamp;
+    
+    emit CycleStarted(cycleId, currentTimeStamp);
 
-    emit CycleStartedEvent(
-        cycleId,
-        blockTimestamp,
-        blockNumber
-        //derivativeAmount,
-        //cycleFinancial.underlyingTotalDeposits
-    );
+   
 }
 
 function endCycle(uint256 cycleId) external onlyNonDeprecatedCalls {
@@ -1675,8 +1664,10 @@ function createGroup(string calldata name, string calldata symbol)
     _validateGroupNameAndSymbolIsAvailable(name, symbol);
 
     uint256 groupId = groupStorage.createGroup(name, symbol, msg.sender);
-
+    
     emit GroupCreated(groupId, msg.sender);
+
+    
 }
 
 function _validateGroupNameAndSymbolIsAvailable(
@@ -1723,15 +1714,17 @@ function createCycle(
     );
 
     cycleStorage.createCycleFinancials(cycleId, groupId, 0, 0, 0, 0, 0, 0);
+    
+     emit CycleCreated(
+            cycleId,
+            maximumSlots,
+            hasMaximumSlots,
+            cycleStakeAmount,
+            startTimeStamp,
+            duration
+        );
 
-    emit CycleCreated(
-        cycleId,
-        maximumSlots,
-        hasMaximumSlots,
-        cycleStakeAmount,
-        startTimeStamp,
-        duration
-    );
+  
 }
 
 function joinCycle(uint256 cycleId, uint256 numberOfStakes)

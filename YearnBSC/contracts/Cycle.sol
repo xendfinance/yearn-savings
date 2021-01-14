@@ -14,6 +14,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     CycleFinancial[] private CycleFinancials;
     
     
+    
 
     //Mapping that enables ease of traversal of the cycle records. Key is cycle id
     mapping(uint256 => RecordIndex) private CycleIndexer;
@@ -115,6 +116,10 @@ contract Cycles is IGroupSchema, StorageOwners {
     
     function getCycles() external view returns (Cycle [] memory) {
         return Cycles;
+    }
+    
+    function getCycleMember() external view returns (CycleMember [] memory) {
+        return CycleMembers;
     }
 
     function getCycleFinancialsByIndex(uint256 index)
@@ -453,6 +458,8 @@ contract Cycles is IGroupSchema, StorageOwners {
     {
         return _getCycleMemberIndex(cycleId, memberAddress);
     }
+    
+    
 
     function _getCycleMember(uint256 cycleId, address payable depositor)
         internal
