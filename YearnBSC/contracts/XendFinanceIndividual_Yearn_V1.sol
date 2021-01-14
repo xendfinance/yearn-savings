@@ -48,11 +48,13 @@ contract XendFinanceIndividual_Yearn_V1 is
     );
     
     struct FixedDepositRecord{
-        address depositorAddress;
         uint256 amount;
         uint256 depositDateInSeconds;
         uint256 lockPeriodInSeconds;
     }
+    
+    mapping (address => FixedDepositRecord) fixedDepositRecords;
+    
 
     //IDaiLendingService lendingService;
     IForTubeBankService fortubeService;
@@ -242,6 +244,12 @@ contract XendFinanceIndividual_Yearn_V1 is
                 derivativeTotalWithdrawn
             );
     }
+    
+    function getIndividualDepositRecordByAddress(address _depositorAddress) external view returns (uint256, uint256, uint256) {
+        return (
+            fixedDepositRecords[_depositorAddress].amount, fixedDepositRecords[_depositorAddress].depositDateInSeconds, fixedDepositRecords[_depositorAddress].lockPeriodInSeconds
+            );
+    }
 
     function withdraw(uint256 derivativeAmount)
         external
@@ -342,6 +350,18 @@ contract XendFinanceIndividual_Yearn_V1 is
             derivativeBalance >= derivativeAmount,
             "Withdrawal cannot be processe, reason: Insufficient Balance"
         );
+    }
+    
+    function _validateLockTimeHasElapsed (address payable recipient) internal view returns (uint256) {
+        
+        FixedDepositRecord memory individualRecord = fixedDepositRecords[recipient];
+        
+        uint256 lockPeriod = individualRecord.lockPeriodInSeconds;
+        
+        uint256 currentTimeStamp = now;
+        
+        require(currentTimeStamp >= lockPeriod, "Funds are still locked, wait until lock period expires");
+    
     }
 
     function _computeXendFinanceCommisions(uint256 worthOfMemberDepositNow)
@@ -458,12 +478,14 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable,
             amountOfyDai
         );
-        FixedDepositRecord memory fixedDepositRecord = FixedDepositRecord(
-            depositorAddress,
-            amountOfyDai,
-            depositDateInSeconds,
-            lockPeriodInSeconds
-            );
+        
+
+        FixedDepositRecord memory depositRecord = fixedDepositRecords[depositorAddress];
+        
+        depositRecord.amount = amountOfyDai;
+        depositRecord.depositDateInSeconds = depositDateInSeconds;
+        depositRecord.lockPeriodInSeconds = lockPeriodInSeconds;
+            
 
         bool exists = clientRecordStorage.doesClientRecordExist(
             depositorAddress
@@ -488,6 +510,73 @@ contract XendFinanceIndividual_Yearn_V1 is
             clientRecord.derivativeBalance
         );
         
+    }
+    
+    function WithdrawFromFixedDeposit (uint256 derivativeAmount) external onlyNonDeprecatedCalls {
+        
+        address payable recipient = msg.sender;
+        
+           _validateUserBalanceIsSufficient(recipient, derivativeAmount);
+           
+           _validateLockTimeHasElapsed(recipient);
+
+        uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance(address(this));
+        
+        FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
+
+         bool isApprovalSuccessful = fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
+         
+         require(isApprovalSuccessful == true, 'could not approve fbusd token for adapter contract');
+        
+         fortubeService.WithdrawBySharesOnly(derivativeAmount);
+
+        uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance(address(this));
+
+        require(balanceAfterWithdraw>balanceBeforeWithdraw, "Balance before needs to be greater than balance after");
+
+        uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
+            balanceBeforeWithdraw
+        );
+        
+
+        uint256 commissionFees = _computeXendFinanceCommisions(
+            amountOfUnderlyingAssetWithdrawn
+        );
+
+        require(amountOfUnderlyingAssetWithdrawn>commissionFees, "Amount to be withdrawn must be greater than commision fees");
+        
+    
+        uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
+            commissionFees
+        );
+            
+        //busdToken.approve(recipient, amountToSendToDepositor);
+
+        bool isSuccessful = busdToken.transfer(
+            recipient,
+            amountToSendToDepositor
+        );
+
+        require(isSuccessful == true, "Could not complete withdrawal");
+
+        if (commissionFees > 0) {
+            busdToken.approve(address(treasury), commissionFees);
+            treasury.depositToken(address(busdToken));
+        }
+
+        ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
+            recipient,
+            amountOfUnderlyingAssetWithdrawn,
+            derivativeAmount
+        );
+        _updateClientRecord(clientRecord);
+
+        emit DerivativeAssetWithdrawn(
+            recipient,
+            amountOfUnderlyingAssetWithdrawn,
+            derivativeAmount,
+            clientRecord.derivativeBalance
+        );
     }
     
    
