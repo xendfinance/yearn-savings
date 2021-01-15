@@ -14,11 +14,11 @@ import "./Address.sol";
 import "./ISavingsConfig.sol";
 import "./ISavingsConfigSchema.sol";
 import "./ITreasury.sol";
-
+import "./IRewardConfig.sol";
 import "./IBEP20.sol";
 import "./IForTubeBankService.sol";
 import "./IFToken.sol";
-
+import "./IXendToken.sol";
 
 contract XendFinanceIndividual_Yearn_V1 is
     Ownable,
@@ -47,6 +47,12 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
     
+      event XendTokenReward (
+        uint date,
+        address payable indexed member,
+        uint amount
+    );
+    
     struct FixedDepositRecord{
         uint256 amount;
         uint256 depositDateInSeconds;
@@ -63,7 +69,9 @@ contract XendFinanceIndividual_Yearn_V1 is
     IFToken fBusdToken;   //  BEP20 - fBUSD Testnet TODO: change to mainnet
     IClientRecord clientRecordStorage;
     ISavingsConfig savingsConfig;
+    IRewardConfig rewardConfig;
     //IERC20 derivativeToken;
+    IXendToken xendToken;
     ITreasury treasury;
 
     bool isDeprecated = false;
@@ -82,7 +90,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         address clientRecordStorageAddress,
         address savingsConfigAddress,
         address derivativeTokenAddress,
-        address treasuryAddress
+        address rewardConfigAddress,
+        address treasuryAddress,
+        address xendTokenAddress
     ) public {
         fortubeService = IForTubeBankService(fortubeServiceAddress);
         busdToken = IBEP20(tokenAddress);
@@ -90,7 +100,9 @@ contract XendFinanceIndividual_Yearn_V1 is
        // FortubeBankAdapter = fortubeBankAdapterAddress;
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         fBusdToken = IFToken(derivativeTokenAddress);
+        rewardConfig = IRewardConfig(rewardConfigAddress);
         treasury = ITreasury(treasuryAddress);
+        xendToken = IXendToken(xendTokenAddress);
     }
 
     function deprecateContract(address newServiceAddress)
@@ -512,7 +524,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         
     }
     
-    function WithdrawFromFixedDeposit (uint256 derivativeAmount) external onlyNonDeprecatedCalls {
+    function WithdrawFromFixedDeposit (uint256 derivativeAmount, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
         
         address payable recipient = msg.sender;
         
@@ -563,6 +575,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             busdToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(busdToken));
         }
+        
+        _rewardUserWithTokens(
+        lockPeriodInSeconds,
+        derivativeAmount,
+        recipient
+        
+    );
 
         ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
             recipient,
@@ -702,6 +721,30 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         return record;
     }
+    
+     function _emitXendTokenReward(address payable member, uint256 amount) internal {
+    emit XendTokenReward(now, member, amount);
+}
+
+function _rewardUserWithTokens(
+    uint256 totalLockPeriod,
+    uint256 amountDeposited,
+    address payable recipient
+) internal {
+    uint256 numberOfRewardTokens = rewardConfig
+        .CalculateIndividualSavingsReward(
+        totalLockPeriod,
+        amountDeposited
+    );
+
+    if (numberOfRewardTokens > 0) {
+        xendToken.mint(recipient, numberOfRewardTokens);
+        
+          _emitXendTokenReward(recipient, numberOfRewardTokens);
+
+    }
+
+}
 
     function _updateClientRecord(ClientRecord memory clientRecord) internal {
         clientRecordStorage.updateClientRecord(
