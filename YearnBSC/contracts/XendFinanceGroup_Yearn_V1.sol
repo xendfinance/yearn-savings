@@ -1100,19 +1100,24 @@ function _withdrawFromCycleWhileItIsOngoing(
    
     //get's the crypto equivalent of a members derivative balance. Crytpo here refers to DAI. this is gotten after the user's ydai balance has been converted to dai
     uint256 underlyingAmountThatMemberDepositIsWorth = cycleFinancial.underlyingBalance.div(outstandingStakesBalance);
-
+    
+    //members capital
+    
+    //get member cycle stake and multiply it by stake amount 
+    
+   
     uint256 initialUnderlyingDepositByMember = cycleMember.numberOfCycleStakes.mul(
         cycle.cycleStakeAmount
     );
 
     //deduct charges for early withdrawal
     uint256 amountToChargeAsPenalites = _computeAmountToChargeAsPenalites(
-        underlyingAmountThatMemberDepositIsWorth
+        initialUnderlyingDepositByMember
     );
 
     //deduct xend finance fees
     uint256 amountToChargeAsFees = _computeXendFinanceCommisions(
-        underlyingAmountThatMemberDepositIsWorth
+        initialUnderlyingDepositByMember
     );
 
     uint256 totalDeductible = amountToChargeAsPenalites.add(
@@ -1647,7 +1652,7 @@ function activateCycle(uint256 cycleId)
     uint256 blockNumber = block.number;
     uint256 blockTimestamp = currentTimeStamp;
     
-    emit CycleStarted(cycleId, currentTimeStamp);
+    emit CycleStarted(cycleId, cycle.cycleStartTimeStamp);
 
    
 }
