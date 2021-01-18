@@ -921,7 +921,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
         //deduct charges for early withdrawal
         uint256 amountToChargeAsPenalites = _computeAmountToChargeAsPenalites(
-            underlyingAmountThatMemberDepositIsWorth
+            derivativeBalanceForMember
         );
 
         //deduct xend finance fees
