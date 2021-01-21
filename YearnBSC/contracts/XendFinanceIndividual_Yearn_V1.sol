@@ -19,6 +19,8 @@ import "./IBEP20.sol";
 import "./IForTubeBankService.sol";
 import "./IFToken.sol";
 import "./IXendToken.sol";
+pragma experimental ABIEncoderV2;
+
 
 contract XendFinanceIndividual_Yearn_V1 is
     Ownable,
@@ -54,13 +56,24 @@ contract XendFinanceIndividual_Yearn_V1 is
     );
     
     struct FixedDepositRecord{
+        uint256 recordId;
+        address depositorId;
         uint256 amount;
         uint256 depositDateInSeconds;
         uint256 lockPeriodInSeconds;
     }
     
-    mapping (address => FixedDepositRecord) fixedDepositRecords; //This tracks the struct of Fixed Deposit record for a use
     
+    FixedDepositRecord[] fixedDepositRecords;
+    
+    mapping(uint => FixedDepositRecord) DepositRecordMapping;
+    
+    
+    mapping (address => mapping(uint => FixedDepositRecord)) DepositRecordToDepositorMapping; //depositor address to depositor cycle mapping
+    
+     mapping(address=>uint) DepositorToDepositorRecordIndexMapping; //  This tracks the number of records by index created by a depositor
+
+    mapping(address=>mapping(uint=>uint)) DepositorToRecordIndexToRecordIDMapping; //  This maps the depositor to the record index and then to the record ID
 
     //IDaiLendingService lendingService;
     IForTubeBankService fortubeService;
@@ -84,6 +97,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
     
     mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
+    
+    uint recordId = 0;
 
     constructor(
         //address fortubeBankAdapterAddress,
@@ -267,10 +282,55 @@ contract XendFinanceIndividual_Yearn_V1 is
             );
     }
     
-    function getIndividualDepositRecordByAddress(address _depositorAddress) external view returns (uint256, uint256, uint256) {
-        return (
-            fixedDepositRecords[_depositorAddress].amount, fixedDepositRecords[_depositorAddress].depositDateInSeconds, fixedDepositRecords[_depositorAddress].lockPeriodInSeconds
-            );
+  function GetRecordIndexFromDepositor(address member) external view returns(uint){
+
+        return DepositorToDepositorRecordIndexMapping[member];
+    }
+    
+     function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint){
+
+      mapping(uint=>uint) storage depositorCreatedRecordIndexToRecordId = DepositorToRecordIndexToRecordIDMapping[depositor];
+
+      return depositorCreatedRecordIndexToRecordId[recordIndex];
+    }
+    
+     function _CreateDepositorRecordMapping(uint recordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address depositor) internal  {
+
+        DepositRecordMapping[recordId].recordId = recordId;
+        DepositRecordMapping[recordId].amount = amount;
+        DepositRecordMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
+        DepositRecordMapping[recordId].depositDateInSeconds = depositDateInSeconds;
+
+
+        //  Set the Cycle start time
+        DepositRecordMapping[recordId].depositorId = depositor;
+
+
+    }
+    
+     function _CreateMemberToCycleIndexToCycleIDMapping(address depositor, uint recordId) internal  {
+      // Increase the number of cycles joined by the member
+      DepositorToDepositorRecordIndexMapping[depositor] = DepositorToDepositorRecordIndexMapping[depositor].add(1);
+
+      uint DepositorCreatedRecordIndex = DepositorToDepositorRecordIndexMapping[depositor];
+      mapping(uint=>uint) storage depositorCreatedRecordIndexToRecordId = DepositorToRecordIndexToRecordIDMapping[depositor];
+      depositorCreatedRecordIndexToRecordId[DepositorCreatedRecordIndex] = recordId;
+    }
+    
+    function _CreateDepositorAddressToDepositRecordMapping (address depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds) internal {
+        mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[depositor];
+        
+        depositorAddressMapping[recordId].recordId = recordId;
+        depositorAddressMapping[recordId].depositorId = depositor;
+        depositorAddressMapping[recordId].amount = amountDeposited;
+        depositorAddressMapping[recordId].depositDateInSeconds = depositDateInSeconds;
+        depositorAddressMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
+        
+        fixedDepositRecords.push(depositorAddressMapping[recordId]);
+    }
+    
+    function _CreateDepositRecordMapping (address) internal {
+        
     }
 
     function withdraw(uint256 derivativeAmount)
@@ -376,11 +436,11 @@ contract XendFinanceIndividual_Yearn_V1 is
     
     function _validateLockTimeHasElapsedAndBalanceIsSufficient (address payable recipient) internal view returns (uint256) {
         
-        FixedDepositRecord memory individualRecord = fixedDepositRecords[recipient];
+       mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[recipient];
         
-        uint256 lockPeriod = individualRecord.lockPeriodInSeconds;
+       uint256 lockPeriod = depositorAddressMapping[recordId].lockPeriodInSeconds;
         
-        uint256 fixedDepositBalance = individualRecord.amount;
+        uint256 fixedDepositBalance = depositorAddressMapping[recordId].amount;
         
         uint256 currentTimeStamp = now;
         
@@ -505,12 +565,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountOfyDai
         );
         
-
-        FixedDepositRecord storage depositRecord = fixedDepositRecords[depositorAddress];
+        recordId.add(1);
         
-        depositRecord.amount = amountTransferrable;
-        depositRecord.depositDateInSeconds = depositDateInSeconds;
-        depositRecord.lockPeriodInSeconds = lockPeriodInSeconds;
+        _CreateDepositorRecordMapping(recordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress);
+        
+        _CreateMemberToCycleIndexToCycleIDMapping(depositorAddress, recordId);
+        
+        _CreateDepositorAddressToDepositRecordMapping(depositorAddress, recordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds);
             
 
         bool exists = clientRecordStorage.doesClientRecordExist(
@@ -538,13 +599,17 @@ contract XendFinanceIndividual_Yearn_V1 is
         
     }
     
-    function WithdrawFromFixedDeposit (uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
+    function WithdrawFromFixedDeposit (uint recordId) external onlyNonDeprecatedCalls {
         
         address payable recipient = msg.sender;
         
-        FixedDepositRecord memory individualRecord = fixedDepositRecords[recipient];
+        mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[recipient];
           
-          uint256 derivativeAmount = individualRecord.amount;
+          uint256 derivativeAmount = depositorAddressMapping[recordId].amount;
+          
+          uint256 depositDate = depositorAddressMapping[recordId].depositDateInSeconds;
+          
+          uint256 lockPeriod = depositorAddressMapping[recordId].lockPeriodInSeconds;
         
            _validateUserBalanceIsSufficient(recipient, derivativeAmount);
            
@@ -596,14 +661,11 @@ contract XendFinanceIndividual_Yearn_V1 is
             treasury.depositToken(address(busdToken));
         }
         
-        FixedDepositRecord storage depositRecord = fixedDepositRecords[recipient];
-        
-        depositRecord.amount = depositRecord.amount.sub(derivativeAmount);
-        depositRecord.depositDateInSeconds = 0;
-        depositRecord.lockPeriodInSeconds = 0;
+       _CreateDepositorAddressToDepositRecordMapping(recipient, recordId, derivativeAmount, lockPeriod, depositDate);
+    
         
         _rewardUserWithTokens(
-        lockPeriodInSeconds,
+        lockPeriod,
         derivativeAmount,
         recipient
         );
