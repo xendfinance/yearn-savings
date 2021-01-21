@@ -59,7 +59,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 lockPeriodInSeconds;
     }
     
-    mapping (address => FixedDepositRecord) fixedDepositRecords;
+    mapping (address => FixedDepositRecord) fixedDepositRecords; //This tracks the struct of Fixed Deposit record for a use
     
 
     //IDaiLendingService lendingService;
@@ -82,6 +82,8 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
+    
+    mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
 
     constructor(
         //address fortubeBankAdapterAddress,
@@ -117,7 +119,15 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
         fBusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
+    
+      function _UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) internal onlyNonDeprecatedCalls {
+        MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
+    }
 
+        function GetMemberXendTokenReward(address member) external returns(uint) {
+        return MemberToXendTokenRewardMapping[member];
+    }
+    
     function doesClientRecordExist(address depositor)
         external
         view
@@ -364,13 +374,17 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
     }
     
-    function _validateLockTimeHasElapsed (address payable recipient) internal view returns (uint256) {
+    function _validateLockTimeHasElapsedAndBalanceIsSufficient (address payable recipient) internal view returns (uint256) {
         
         FixedDepositRecord memory individualRecord = fixedDepositRecords[recipient];
         
         uint256 lockPeriod = individualRecord.lockPeriodInSeconds;
         
+        uint256 fixedDepositBalance = individualRecord.amount;
+        
         uint256 currentTimeStamp = now;
+        
+        require(fixedDepositBalance > 0, "Insufficient funds");
         
         require(currentTimeStamp >= lockPeriod, "Funds are still locked, wait until lock period expires");
     
@@ -446,7 +460,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         _deposit(depositorAddress);
     }
     
-    function fixedDeposit(uint256 depositDateInSeconds, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
+    function FixedDeposit(uint256 depositDateInSeconds, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
         address payable depositorAddress = msg.sender;
         
         address recipient = address(this);
@@ -492,9 +506,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
         
 
-        FixedDepositRecord memory depositRecord = fixedDepositRecords[depositorAddress];
+        FixedDepositRecord storage depositRecord = fixedDepositRecords[depositorAddress];
         
-        depositRecord.amount = amountOfyDai;
+        depositRecord.amount = amountTransferrable;
         depositRecord.depositDateInSeconds = depositDateInSeconds;
         depositRecord.lockPeriodInSeconds = lockPeriodInSeconds;
             
@@ -524,13 +538,19 @@ contract XendFinanceIndividual_Yearn_V1 is
         
     }
     
-    function WithdrawFromFixedDeposit (uint256 derivativeAmount, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
+    function WithdrawFromFixedDeposit (uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
         
         address payable recipient = msg.sender;
         
+        FixedDepositRecord memory individualRecord = fixedDepositRecords[recipient];
+          
+          uint256 derivativeAmount = individualRecord.amount;
+        
            _validateUserBalanceIsSufficient(recipient, derivativeAmount);
            
-           _validateLockTimeHasElapsed(recipient);
+           _validateLockTimeHasElapsedAndBalanceIsSufficient(recipient);
+           
+           
 
         uint256 balanceBeforeWithdraw = fortubeService.UserBUSDBalance(address(this));
         
@@ -576,12 +596,17 @@ contract XendFinanceIndividual_Yearn_V1 is
             treasury.depositToken(address(busdToken));
         }
         
+        FixedDepositRecord storage depositRecord = fixedDepositRecords[recipient];
+        
+        depositRecord.amount = depositRecord.amount.sub(derivativeAmount);
+        depositRecord.depositDateInSeconds = 0;
+        depositRecord.lockPeriodInSeconds = 0;
+        
         _rewardUserWithTokens(
         lockPeriodInSeconds,
         derivativeAmount,
         recipient
-        
-    );
+        );
 
         ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
             recipient,
@@ -739,7 +764,7 @@ function _rewardUserWithTokens(
 
     if (numberOfRewardTokens > 0) {
         xendToken.mint(recipient, numberOfRewardTokens);
-        
+        _UpdateMemberToXendTokeRewardMapping(recipient,numberOfRewardTokens);
           _emitXendTokenReward(recipient, numberOfRewardTokens);
 
     }
