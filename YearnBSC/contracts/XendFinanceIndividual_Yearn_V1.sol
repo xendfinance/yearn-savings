@@ -58,10 +58,13 @@ contract XendFinanceIndividual_Yearn_V1 is
     struct FixedDepositRecord{
         uint256 recordId;
         address depositorId;
+        bool hasWithdrawn;
         uint256 amount;
         uint256 depositDateInSeconds;
         uint256 lockPeriodInSeconds;
     }
+    
+    uint minLockPeriod = 7890000;
     
     
     FixedDepositRecord[] fixedDepositRecords;
@@ -98,7 +101,7 @@ contract XendFinanceIndividual_Yearn_V1 is
     
     mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
     
-    uint recordId = 0;
+    uint256 lastRecordId;
 
     constructor(
         //address fortubeBankAdapterAddress,
@@ -282,6 +285,10 @@ contract XendFinanceIndividual_Yearn_V1 is
             );
     }
     
+    function setMinimumLockPeriod (uint minimumLockPeriod) external onlyNonDeprecatedCalls onlyOwner {
+        minLockPeriod = minimumLockPeriod;
+    }
+    
   function GetRecordIndexFromDepositor(address member) external view returns(uint){
 
         return DepositorToDepositorRecordIndexMapping[member];
@@ -294,29 +301,46 @@ contract XendFinanceIndividual_Yearn_V1 is
       return depositorCreatedRecordIndexToRecordId[recordIndex];
     }
     
-     function _CreateDepositorRecordMapping(uint recordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address depositor) internal  {
+     function _CreateDepositRecordMapping(uint recordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address depositor, bool hasWithdrawn) internal  {
+         
+         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[recordId];
 
-        DepositRecordMapping[recordId].recordId = recordId;
-        DepositRecordMapping[recordId].amount = amount;
-        DepositRecordMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
-        DepositRecordMapping[recordId].depositDateInSeconds = depositDateInSeconds;
-
-        DepositRecordMapping[recordId].depositorId = depositor;
+        _fixedDeposit.recordId = recordId;
+        _fixedDeposit.amount = amount;
+        _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
+        _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
+        _fixedDeposit.hasWithdrawn = hasWithdrawn;
+        _fixedDeposit.depositorId = depositor;
+        
+        fixedDepositRecords.push(_fixedDeposit);
 
 
     }
     
-    function GetRecordById(uint depositRecordId) external view returns(uint recordId, address depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds) {
+    // function _UpdateDepositRecordAfterWithdrawal(uint recordId, uint amount, uint lockPeriodInSeconds, uint depositDateInSeconds, address depositor, bool hasWithdrawn) internal returns(FixedDepositRecord memory) {
+    //     FixedDepositRecord storage record = DepositRecordMapping[recordId];
+    //     record.recordId = recordId;
+    //     record.amount = amount;
+    //     record.lockPeriodInSeconds = lockPeriodInSeconds;
+    //     record.depositDateInSeconds = depositDateInSeconds;
+    //     record.depositorId = depositor;
+    //     record.hasWithdrawn = hasWithdrawn;
+    //     return record;
+    // }
+    
+    function GetRecordById(uint depositRecordId) external view returns(uint recordId, address depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn) {
         
         FixedDepositRecord memory records = DepositRecordMapping[depositRecordId];
         
-        return(records.recordId, records.depositorId, records.amount, records.depositDateInSeconds, records.lockPeriodInSeconds);
+        return(records.recordId, records.depositorId, records.amount, records.depositDateInSeconds, records.lockPeriodInSeconds, records.hasWithdrawn);
     }
     
+    function GetRecords() external view returns (FixedDepositRecord [] memory) {
+        return fixedDepositRecords;
+    }
     
-    
-     function _CreateMemberToCycleIndexToCycleIDMapping(address depositor, uint recordId) internal  {
-      // Increase the number of cycles joined by the member
+     function _CreateDepositorToDepositRecordIndexToRecordIDMapping(address depositor, uint recordId) internal  {
+      
       DepositorToDepositorRecordIndexMapping[depositor] = DepositorToDepositorRecordIndexMapping[depositor].add(1);
 
       uint DepositorCreatedRecordIndex = DepositorToDepositorRecordIndexMapping[depositor];
@@ -324,7 +348,7 @@ contract XendFinanceIndividual_Yearn_V1 is
       depositorCreatedRecordIndexToRecordId[DepositorCreatedRecordIndex] = recordId;
     }
     
-    function _CreateDepositorAddressToDepositRecordMapping (address depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds) internal {
+    function _CreateDepositorAddressToDepositRecordMapping (address depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) internal {
         mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[depositor];
         
         depositorAddressMapping[recordId].recordId = recordId;
@@ -332,8 +356,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         depositorAddressMapping[recordId].amount = amountDeposited;
         depositorAddressMapping[recordId].depositDateInSeconds = depositDateInSeconds;
         depositorAddressMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
+        depositorAddressMapping[recordId].hasWithdrawn = hasWithdrawn;
         
-        fixedDepositRecords.push(depositorAddressMapping[recordId]);
     }
     
    
@@ -439,7 +463,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
     }
     
-    function _validateLockTimeHasElapsedAndBalanceIsSufficient (address payable recipient) internal view returns (uint256) {
+    function _validateLockTimeHasElapsedAndBalanceIsSufficient (address payable recipient, uint256 recordId) internal view returns (uint256) {
         
        mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[recipient];
         
@@ -447,9 +471,14 @@ contract XendFinanceIndividual_Yearn_V1 is
         
         uint256 fixedDepositBalance = depositorAddressMapping[recordId].amount;
         
+        bool hasWithdrawn = depositorAddressMapping[recordId].hasWithdrawn;
+          
+         require(hasWithdrawn == false, 'Individual has already withdrawn');
+        
         uint256 currentTimeStamp = now;
         
         require(fixedDepositBalance > 0, "Insufficient funds");
+        
         
         require(currentTimeStamp >= lockPeriod, "Funds are still locked, wait until lock period expires");
     
@@ -534,6 +563,8 @@ contract XendFinanceIndividual_Yearn_V1 is
             depositorAddress,
             recipient
         );
+        
+        require(lockPeriodInSeconds >= minLockPeriod, "Minimum lock period must be 3 months");
 
         require(
             amountTransferrable > 0,
@@ -570,13 +601,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountOfyDai
         );
         
-        recordId.add(1);
+        lastRecordId += 1;
         
-        _CreateDepositorRecordMapping(recordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress);
+        _CreateDepositRecordMapping(lastRecordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
         
-        _CreateMemberToCycleIndexToCycleIDMapping(depositorAddress, recordId);
+        _CreateDepositorToDepositRecordIndexToRecordIDMapping(depositorAddress, lastRecordId);
         
-        _CreateDepositorAddressToDepositRecordMapping(depositorAddress, recordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds);
+        _CreateDepositorAddressToDepositRecordMapping(depositorAddress, lastRecordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, false);
             
 
         bool exists = clientRecordStorage.doesClientRecordExist(
@@ -604,21 +635,23 @@ contract XendFinanceIndividual_Yearn_V1 is
         
     }
     
-    function WithdrawFromFixedDeposit (uint recordId) external onlyNonDeprecatedCalls {
+    function WithdrawFromFixedDeposit (uint recordId, uint amount) external onlyNonDeprecatedCalls {
         
         address payable recipient = msg.sender;
         
         mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[recipient];
           
-          uint256 derivativeAmount = depositorAddressMapping[recordId].amount;
+          uint256 derivativeAmount = amount;
           
           uint256 depositDate = depositorAddressMapping[recordId].depositDateInSeconds;
           
           uint256 lockPeriod = depositorAddressMapping[recordId].lockPeriodInSeconds;
+          
+          
         
            _validateUserBalanceIsSufficient(recipient, derivativeAmount);
            
-           _validateLockTimeHasElapsedAndBalanceIsSufficient(recipient);
+           _validateLockTimeHasElapsedAndBalanceIsSufficient(recipient, recordId);
            
            
 
@@ -665,8 +698,8 @@ contract XendFinanceIndividual_Yearn_V1 is
             busdToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(busdToken));
         }
-        
-       _CreateDepositorAddressToDepositRecordMapping(recipient, recordId, derivativeAmount, lockPeriod, depositDate);
+        _CreateDepositRecordMapping(recordId, derivativeAmount, lockPeriod, depositDate, msg.sender, true);
+       _CreateDepositorAddressToDepositRecordMapping(recipient, recordId, derivativeAmount, lockPeriod, depositDate, true);
     
         
         _rewardUserWithTokens(
