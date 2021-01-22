@@ -301,12 +301,19 @@ contract XendFinanceIndividual_Yearn_V1 is
         DepositRecordMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
         DepositRecordMapping[recordId].depositDateInSeconds = depositDateInSeconds;
 
-
-        //  Set the Cycle start time
         DepositRecordMapping[recordId].depositorId = depositor;
 
 
     }
+    
+    function GetRecordById(uint depositRecordId) external view returns(uint recordId, address depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds) {
+        
+        FixedDepositRecord memory records = DepositRecordMapping[depositRecordId];
+        
+        return(records.recordId, records.depositorId, records.amount, records.depositDateInSeconds, records.lockPeriodInSeconds);
+    }
+    
+    
     
      function _CreateMemberToCycleIndexToCycleIDMapping(address depositor, uint recordId) internal  {
       // Increase the number of cycles joined by the member
@@ -329,9 +336,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         fixedDepositRecords.push(depositorAddressMapping[recordId]);
     }
     
-    function _CreateDepositRecordMapping (address) internal {
-        
-    }
+   
 
     function withdraw(uint256 derivativeAmount)
         external
