@@ -142,7 +142,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
     }
 
-        function GetMemberXendTokenReward(address member) external returns(uint) {
+        function GetMemberXendTokenReward(address member) external view returns(uint) {
         return MemberToXendTokenRewardMapping[member];
     }
     
