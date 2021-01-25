@@ -10,6 +10,14 @@ interface IClientRecordSchema {
         uint256 derivativeTotalDeposits;
         uint256 derivativeTotalWithdrawn;
     }
+     struct FixedDepositRecord{
+        uint256 recordId;
+        address payable depositorId;
+        bool hasWithdrawn;
+        uint256 amount;
+        uint256 depositDateInSeconds;
+        uint256 lockPeriodInSeconds;
+    }
 
     struct RecordIndex {
         bool exists;
