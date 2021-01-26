@@ -36,7 +36,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
 
     function getRecordIndex(address depositor) external view returns (uint256) {
         RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
-        require(recordIndex.exists == false, "member record not found");
+        require(recordIndex.exists, "member record not found");
         return recordIndex.index;
     }
 
@@ -50,8 +50,8 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
         require(
-            recordIndex.exists == false,
-            "depositor record alreaddy exists"
+            !recordIndex.exists,
+            "depositor record already exists"
         );
         ClientRecord memory clientRecord = ClientRecord(
             true,
@@ -77,7 +77,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         uint256 derivativeTotalWithdrawn
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
-        require(recordIndex.exists == false, "depositor record not found");
+        require(recordIndex.exists, "depositor record not found");
         ClientRecord memory clientRecord = ClientRecord(
             true,
             _address,
@@ -134,7 +134,7 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
         )
     {
         RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
-        require(recordIndex.exists == false, "depositor record not found");
+        require(recordIndex.exists, "depositor record not found");
         uint256 index = recordIndex.index;
 
         ClientRecord memory clientRecord = ClientRecords[index];

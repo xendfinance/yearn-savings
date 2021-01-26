@@ -202,7 +202,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         bool hasWithdrawn
     ) external onlyStorageOracle {
         bool exist = _doesCycleMemberExist(cycleId, depositor);
-        require(exist == false, "Cycle member already exist");
+        require(!exist, "Cycle member already exist");
 
         CycleMember memory cycleMember =
             CycleMember(
@@ -459,7 +459,7 @@ contract Cycles is IGroupSchema, StorageOwners {
     {
         bool doesCycleMemberExist =
             CycleMembersDeepIndexer[cycleId][depositor].exists;
-        require(doesCycleMemberExist == false, "Cycle member not found");
+        require(doesCycleMemberExist, "Cycle member not found");
 
         return CycleMembersDeepIndexer[cycleId][depositor].index;
     }
@@ -470,7 +470,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         returns (uint256)
     {
         bool doesCycleFinancialExist = CycleFinancialsIndexer[cycleId].exists;
-        require(doesCycleFinancialExist == false, "Cycle financials not found");
+        require(doesCycleFinancialExist, "Cycle financials not found");
 
         return CycleFinancialsIndexer[cycleId].index;
     }

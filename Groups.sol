@@ -135,7 +135,7 @@ contract Groups is IGroupSchema, StorageOwners {
 
         bool exist = _doesMemberExist(depositor);
 
-        require(exist == false, "Member already exists");
+        require(!exist, "Member already exists");
 
         RecordIndex memory recordIndex = RecordIndex(true, Members.length);
 
@@ -152,7 +152,7 @@ contract Groups is IGroupSchema, StorageOwners {
 
     function _getMemberIndex(address _address) internal view returns (uint256) {
         bool doesMemberExist = MemberIndexer[_address].exists;
-        require(doesMemberExist == false, "Member not found");
+        require(doesMemberExist, "Member not found");
 
        return MemberIndexer[_address].index;
       
@@ -164,7 +164,7 @@ contract Groups is IGroupSchema, StorageOwners {
         address groupCreator
     ) external onlyStorageOracle returns (uint256) {
         bool exist = _doesGroupExist(name);
-        require(exist == false, "Group name has already been used");
+        require(!exist, "Group name has already been used");
 
         lastGroupId += 1;
         Group memory group = Group(
@@ -234,7 +234,7 @@ contract Groups is IGroupSchema, StorageOwners {
         onlyStorageOracle
     {
         bool exist = _doesGroupMemberExist(groupId, depositor);
-        require(exist == false, "Group member exists");
+        require(!exist, "Group member exists");
 
         RecordIndex memory recordIndex = RecordIndex(true, GroupMembers.length);
 
@@ -418,7 +418,7 @@ contract Groups is IGroupSchema, StorageOwners {
         returns (uint256)
     {
         bool doesGroupExist = GroupIndexer[groupId].exists;
-        require(doesGroupExist == false, "Group not found");
+        require(doesGroupExist, "Group not found");
         return GroupIndexer[groupId].index;
     }
 }

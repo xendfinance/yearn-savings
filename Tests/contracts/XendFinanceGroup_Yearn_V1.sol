@@ -100,7 +100,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     bool isDeprecated;
 
     modifier onlyNonDeprecatedCalls() {
-        require(isDeprecated == false, "Service contract has been deprecated");
+        require(!isDeprecated, "Service contract has been deprecated");
         _;
     }
 }
@@ -798,7 +798,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
 
         bool isCreatorOrMember = msg.sender == group.creatorAddress;
 
-        if (isCreatorOrMember == false) {
+        if (!isCreatorOrMember) {
             uint256 index = _getCycleMemberIndex(cycleId, msg.sender);
             CycleMember memory cycleMember = _getCycleMember(index);
 

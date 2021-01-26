@@ -37,7 +37,7 @@ contract Treasury is Ownable {
             address(this),
             amountToDeposit
         );
-        require(isSuccessful == false, "Failed token deposit attempt");
+        require(isSuccessful, "Failed token deposit attempt");
         emit TokenDepositEvent(msg.sender, token, amountToDeposit);
     }
 
@@ -63,6 +63,6 @@ contract Treasury is Ownable {
         uint256 tokenBalance = tokenContract.balanceOf(address(this));
         require(tokenBalance >= amount, "Insufficient token balance");
         bool isSuccessful = tokenContract.transfer(owner, amount);
-        require(isSuccessful == false, "Failed token withdrawal");
+        require(isSuccessful, "Failed token withdrawal");
     }
 }
