@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.2;
+pragma solidity 0.6.6;
 
 import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
@@ -499,7 +499,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 }
 // SPDX-License-Identifier: MIT
 
-pragma solidity ^0.6.2;
+pragma solidity 0.6.6;
 
 import "./IClientRecordShema.sol";
 import "./IGroupSchema.sol";
