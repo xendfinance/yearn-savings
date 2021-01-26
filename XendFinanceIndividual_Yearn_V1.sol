@@ -322,7 +322,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
 
         require(
-            appliesDivisor == true,
+            appliesDivisor,
             "unsupported rule defintion for rule set"
         );
 
@@ -343,7 +343,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
 
         require(
-            appliesDividend == true,
+            appliesDividend,
             "unsupported rule defintion for rule set"
         );
 
@@ -383,7 +383,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable
         );
         require(
-            isSuccessful == true,
+            isSuccessful,
             "Could not complete deposit process from token contract"
         );
 
@@ -821,7 +821,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
 
         require(
-            appliesDivisor == true,
+            appliesDivisor,
             "unsupported rule defintion for rule set"
         );
 
@@ -842,7 +842,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
 
         require(
-            appliesDividend == true,
+            appliesDividend,
             "unsupported rule defintion for rule set"
         );
 
@@ -882,7 +882,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable
         );
         require(
-            isSuccessful == true,
+            isSuccessful,
             "Could not complete deposit process from token contract"
         );
 

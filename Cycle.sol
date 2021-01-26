@@ -296,7 +296,7 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 derivativeBalanceClaimedBeforeMaturity
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = CycleIndexer[cycleId];
-        require(recordIndex.exists == true, "Cycle not found");
+        require(recordIndex.exists, "Cycle not found");
         CycleFinancial memory cycleFinancial =
             CycleFinancial(
                 true,
@@ -379,7 +379,7 @@ contract Cycles is IGroupSchema, StorageOwners {
 
     function _getCycleIndex(uint256 cycleId) internal view returns (uint256) {
         bool doesCycleExist = CycleIndexer[cycleId].exists;
-        require(doesCycleExist == true, "Cycle not found");
+        require(doesCycleExist, "Cycle not found");
 
         return CycleIndexer[cycleId].index;
     }

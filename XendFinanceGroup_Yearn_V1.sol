@@ -172,7 +172,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
         returns (Member memory)
     {
         bool memberExists = groupStorage.doesMemberExist(depositor);
-        if (throwOnNotFound) require(memberExists == true, "Member not found");
+        if (throwOnNotFound) require(memberExists, "Member not found");
 
         if (!memberExists) {
             groupStorage.createMember(depositor);
@@ -192,7 +192,7 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
         );
 
         if (throwOnNotFound)
-            require(groupMemberExists == true, "Member not found");
+            require(groupMemberExists, "Member not found");
 
         if (!groupMemberExists) {
             groupStorage.createGroupMember(groupId, depositor);
@@ -266,9 +266,9 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     ) internal {
         bool doesGroupExist = doesGroupExist(groupId);
 
-        require(doesGroupExist == true, "Group not found");
+        require(doesGroupExist, "Group not found");
 
-        if (hasMaximumSlots == true) {
+        if (hasMaximumSlots) {
             require(maximumsSlots > 0, "Maximum slot settings cannot be empty");
         }
     }
@@ -436,7 +436,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             depositor
         );
 
-        require(cycleMemberExists == true, "Cycle Member not found");
+        require(cycleMemberExists, "Cycle Member not found");
 
         uint256 index = _getCycleMemberIndex(_cycleId, depositor);
 
@@ -608,7 +608,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         bool didCycleMemberExistBeforeNow
     ) internal view {
         bool hasMaximumSlots = cycle.hasMaximumSlots;
-        if (hasMaximumSlots == true && didCycleMemberExistBeforeNow == false) {
+        if (hasMaximumSlots && !didCycleMemberExistBeforeNow) {
             require(
                 cycle.numberOfDepositors < cycle.maximumSlots,
                 "Maximum slot for depositors has been reached"
@@ -687,7 +687,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             numberOfCycleStakes
         );
 
-        if (didCycleMemberExistBeforeNow == true)
+        if (didCycleMemberExistBeforeNow)
             _updateCycleMember(cycleMember);
         else _CreateCycleMember(cycleMember);
 
@@ -722,7 +722,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             expectedAmount
         );
         require(
-            isSuccessful == true,
+            isSuccessful,
             "Could not complete deposit process from token contract"
         );
 
@@ -734,7 +734,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         returns (Cycle memory, CycleFinancial memory)
     {
         bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
-        require(isCycleReadyToBeEnded == true, "Cycle is still ongoing");
+        require(isCycleReadyToBeEnded, "Cycle is still ongoing");
 
         Cycle memory cycle = _getCycleById(cycleId);
         CycleFinancial memory cycleFinancial = _getCycleFinancialByCycleId(
@@ -805,7 +805,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             isCreatorOrMember = cycleMember._address == msg.sender;
         }
 
-        require(isCreatorOrMember == true, "unauthorized access to contract");
+        require(isCreatorOrMember, "unauthorized access to contract");
         _;
     }
 }
@@ -865,7 +865,7 @@ contract XendFinanceGroup_Yearn_V1 is
         bool isCycleReadyToBeEnded = _isCycleReadyToBeEnded(cycleId);
 
         require(
-            isCycleReadyToBeEnded == false,
+            !isCycleReadyToBeEnded,
             "Cycle has already ended, use normal withdrawl route"
         );
 
@@ -879,7 +879,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         require(
-            memberExistInCycle == true,
+            memberExistInCycle,
             "You are not a member of this cycle"
         );
 
@@ -888,7 +888,7 @@ contract XendFinanceGroup_Yearn_V1 is
         CycleMember memory cycleMember = _getCycleMember(index);
 
         require(
-            cycleMember.hasWithdrawn == false,
+            !cycleMember.hasWithdrawn,
             "Funds have already been withdrawn"
         );
 
@@ -994,7 +994,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         require(
-            memberExistInCycle == true,
+            memberExistInCycle,
             "You are not a member of this cycle"
         );
 
@@ -1070,7 +1070,7 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         require(
-            memberExistInCycle == true,
+            memberExistInCycle,
             "You are not a member of this cycle"
         );
 
@@ -1078,7 +1078,7 @@ contract XendFinanceGroup_Yearn_V1 is
         CycleMember memory cycleMember = _getCycleMember(index);
 
         require(
-            cycleMember.hasWithdrawn == false,
+            !cycleMember.hasWithdrawn,
             "Funds have already been withdrawn"
         );
 
@@ -1207,7 +1207,7 @@ contract XendFinanceGroup_Yearn_V1 is
             RuleDefinition ruleDefinition
         ) = savingsConfig.getRuleSet(PERCENTAGE_AS_PENALTY);
 
-        require(applies == true, "unsupported rule defintion for rule set");
+        require(applies, "unsupported rule defintion for rule set");
 
         require(
             ruleDefinition == RuleDefinition.VALUE,
@@ -1250,7 +1250,7 @@ contract XendFinanceGroup_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
 
         require(
-            appliesDivisor == true,
+            appliesDivisor,
             "unsupported rule defintion for rule set"
         );
 
@@ -1271,7 +1271,7 @@ contract XendFinanceGroup_Yearn_V1 is
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
 
         require(
-            appliesDividend == true,
+            appliesDividend,
             "unsupported rule defintion for rule set"
         );
 
@@ -1295,7 +1295,7 @@ contract XendFinanceGroup_Yearn_V1 is
             RuleDefinition ruleDefinition
         ) = savingsConfig.getRuleSet(PERCENTAGE_PAYOUT_TO_USERS);
 
-        require(applies == true, "unsupported rule defintion for rule set");
+        require(applies, "unsupported rule defintion for rule set");
 
         require(
             ruleDefinition == RuleDefinition.VALUE,
@@ -1600,7 +1600,7 @@ contract XendFinanceGroup_Yearn_V1 is
         require(nameInBytes.length > 0, "Group name cannot be empty");
         require(symbolInBytes.length > 0, "Group sysmbol cannot be empty");
 
-        require(groupStorage.doesGroupExist(name) == true, "Group name has already been used");
+        require(groupStorage.doesGroupExist(name), "Group name has already been used");
     }
 
     function getGroupByIndex(uint256 index)

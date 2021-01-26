@@ -22,7 +22,7 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         RuleSet memory ruleSet = RuleMapping[ruleKey];
 
         require(
-            ruleSet.exists == true,
+            ruleSet.exists,
             "No rule definitions found for rule key"
         );
 
@@ -41,7 +41,7 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
     {
         RuleSet memory ruleSet = RuleMapping[ruleKey];
         require(
-            ruleSet.exists == true,
+            ruleSet.exists,
             "No rule definitions found for rule key"
         );
         return  RuleModifier[ruleKey];
@@ -99,7 +99,7 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         onlyRuleCreatorOrOwner(ruleKey)
     {
         RuleSet memory ruleSet = _getRule(ruleKey);
-        require(ruleSet.applies == true, "Rule set is already disabled");
+        require(ruleSet.applies, "Rule set is already disabled");
         ruleSet.applies = false;
         _saveRule(ruleKey, ruleSet);
     }
@@ -109,14 +109,14 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         onlyRuleCreatorOrOwner(ruleKey)
     {
         RuleSet memory ruleSet = _getRule(ruleKey);
-        require(ruleSet.applies == false, "Rule set is already enabled");
+        require(!ruleSet.applies, "Rule set is already enabled");
         ruleSet.applies = true;
         _saveRule(ruleKey, ruleSet);
     }
 
     function _getRule(string memory ruleKey) internal returns (RuleSet memory) {
         bool ruleExist = RuleMapping[ruleKey].exists;
-        require(ruleExist == true, "Rule does not exist");
+        require(ruleExist, "Rule does not exist");
         return RuleMapping[ruleKey];
         
     }
@@ -129,7 +129,7 @@ contract SavingsConfig is ISavingsConfigSchema, Ownable {
         internal
     {
         bool ruleExist = RuleMapping[ruleKey].exists;
-        require(ruleExist == false, "Rule configuration has already been set");
+        require(!ruleExist, "Rule configuration has already been set");
 
         if (rule.ruleDefinition == RuleDefinition.RANGE) {
             require(
