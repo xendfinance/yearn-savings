@@ -515,13 +515,11 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountOfyDai
         );
         
-        lastRecordId += 1;
+        clientRecordStorage.CreateDepositRecordMapping(amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
         
-        clientRecordStorage.CreateDepositRecordMapping(lastRecordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
+        clientRecordStorage.CreateDepositorToDepositRecordIndexToRecordIDMapping(depositorAddress, clientRecordStorage.GetRecordId());
         
-        clientRecordStorage.CreateDepositorToDepositRecordIndexToRecordIDMapping(depositorAddress, lastRecordId);
-        
-        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(depositorAddress, lastRecordId, amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, false);
+        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(depositorAddress, clientRecordStorage.GetRecordId(), amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, false);
             
 
         bool exists = clientRecordStorage.doesClientRecordExist(
@@ -555,7 +553,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         
          FixedDepositRecord memory depositRecord = _getFixedDepositRecordById(recordId);
           
-          uint256 derivativeAmount = depositRecord.amount;
+          uint256 derivativeAmount = amount;
           
           uint256 depositDate = depositRecord.depositDateInSeconds;
           
@@ -612,7 +610,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             busdToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(busdToken));
         }
-        clientRecordStorage.CreateDepositRecordMapping(recordId, derivativeAmount, lockPeriod, depositDate, msg.sender, true);
+        clientRecordStorage.CreateDepositRecordMapping( derivativeAmount, lockPeriod, depositDate, msg.sender, true);
        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(recipient, depositRecord.recordId, depositRecord.amount, lockPeriod, depositDate, true);
     
         

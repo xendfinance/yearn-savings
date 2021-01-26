@@ -10,7 +10,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     
     using SafeMath for uint256;
     
-    
+    uint DepositRecordId = 0;
     
     FixedDepositRecord[] fixedDepositRecords;
     
@@ -167,11 +167,13 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
       return depositorCreatedRecordIndexToRecordId[recordIndex];
     }
     
-     function CreateDepositRecordMapping(uint recordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
+     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
          
-         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[recordId];
+         DepositRecordId += 1;
+         
+         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[DepositRecordId];
 
-        _fixedDeposit.recordId = recordId;
+        _fixedDeposit.recordId = DepositRecordId;
         _fixedDeposit.amount = amount;
         _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
         _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
@@ -205,6 +207,10 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         return fixedDepositRecords;
     }
     
+    function GetRecordId() external view returns (uint){
+        return DepositRecordId;
+    }
+    
      function CreateDepositorToDepositRecordIndexToRecordIDMapping(address payable depositor, uint recordId) external onlyStorageOracle {
       
       DepositorToDepositorRecordIndexMapping[depositor] = DepositorToDepositorRecordIndexMapping[depositor].add(1);
@@ -215,7 +221,9 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     }
     
     function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external onlyStorageOracle {
+        
         mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[depositor];
+        
         
         depositorAddressMapping[recordId].recordId = recordId;
         depositorAddressMapping[recordId].depositorId = depositor;
