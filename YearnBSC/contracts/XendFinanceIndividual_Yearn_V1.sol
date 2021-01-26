@@ -508,13 +508,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
         
         
-        
-        ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
-            depositorAddress,
-            amountTransferrable,
-            amountOfyDai
-        );
-        
+    
         clientRecordStorage.CreateDepositRecordMapping(amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
         
         clientRecordStorage.CreateDepositorToDepositRecordIndexToRecordIDMapping(depositorAddress, clientRecordStorage.GetRecordId());
@@ -522,27 +516,12 @@ contract XendFinanceIndividual_Yearn_V1 is
         clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(depositorAddress, clientRecordStorage.GetRecordId(), amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, false);
             
 
-        bool exists = clientRecordStorage.doesClientRecordExist(
-            depositorAddress
-        );
-
-        if (exists) _updateClientRecord(clientRecord);
-        else {
-            clientRecordStorage.createClientRecord(
-                clientRecord._address,
-                clientRecord.underlyingTotalDeposits,
-                clientRecord.underlyingTotalWithdrawn,
-                clientRecord.derivativeBalance,
-                clientRecord.derivativeTotalDeposits,
-                clientRecord.derivativeTotalWithdrawn
-            );
-        }
-
+      
         emit UnderlyingAssetDeposited(
             depositorAddress,
             amountTransferrable,
             amountOfyDai,
-            clientRecord.derivativeBalance
+            amountTransferrable
         );
         
     }
@@ -620,18 +599,12 @@ contract XendFinanceIndividual_Yearn_V1 is
         recipient
         );
 
-        ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
-            recipient,
-            amountOfUnderlyingAssetWithdrawn,
-            derivativeAmount
-        );
-        _updateClientRecord(clientRecord);
 
         emit DerivativeAssetWithdrawn(
             recipient,
             amountOfUnderlyingAssetWithdrawn,
             derivativeAmount,
-            clientRecord.derivativeBalance
+            derivativeAmount
         );
     }
     
