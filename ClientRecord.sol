@@ -7,6 +7,8 @@ pragma experimental ABIEncoderV2;
 
 contract ClientRecord is IClientRecordSchema, StorageOwners {
 
+    uint DepositRecordId = 0;
+
     using SafeMath for uint256;
     
     FixedDepositRecord[] fixedDepositRecords;
@@ -176,16 +178,9 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
 
     }
     
-    // function _UpdateDepositRecordAfterWithdrawal(uint recordId, uint amount, uint lockPeriodInSeconds, uint depositDateInSeconds, address depositor, bool hasWithdrawn) internal returns(FixedDepositRecord memory) {
-    //     FixedDepositRecord storage record = DepositRecordMapping[recordId];
-    //     record.recordId = recordId;
-    //     record.amount = amount;
-    //     record.lockPeriodInSeconds = lockPeriodInSeconds;
-    //     record.depositDateInSeconds = depositDateInSeconds;
-    //     record.depositorId = depositor;
-    //     record.hasWithdrawn = hasWithdrawn;
-    //     return record;
-    // }
+   function GetRecordId() external view returns (uint){
+        return DepositRecordId;
+    }
     
     function GetRecordById(uint depositRecordId) external view returns(uint recordId, address payable depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn) {
         
