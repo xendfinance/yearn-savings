@@ -55,7 +55,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             !recordIndex.exists,
             "depositor record already exists"
         );
-        ClientRecord memory clientRecord = ClientRecord(
+        ClientRecord storage clientRecord = ClientRecord(
             true,
             _address,
             underlyingTotalDeposits,
@@ -80,7 +80,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
         require(recordIndex.exists, "depositor record not found");
-        ClientRecord memory clientRecord = ClientRecord(
+        ClientRecord storage clientRecord = ClientRecord(
             true,
             _address,
             underlyingTotalDeposits,
