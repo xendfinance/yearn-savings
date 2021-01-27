@@ -28,7 +28,6 @@ const RewardConfigContract = artifacts.require("RewardConfig");
 
 const xendTokenContract = artifacts.require("XendToken");
 
-const yxendTokenContract = artifacts.require("YXendToken");
 
 const EsusuServiceContract = artifacts.require("EsusuService");
 
@@ -97,22 +96,21 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
     groups.address
   );
 
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
-
-  let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
+  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
 
   let daiLendingService = await DaiLendingServiceContract.deployed();
 
   let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
 
     contractInstance = await XendFinanceIndividual_Yearn_V1.new(
-      daiLendingAdapter.address,
       daiLendingService.address,
-      xendToken.address,
+      DaiContractAddress,
       clientRecord.address,
       savingsConfig.address,
-      yXend.address,
-      treasury.address
+      yDaiContractAddress,
+      rewardConfig.address,
+      treasury.address,
+      xendToken.address,
     );
   });
 
@@ -148,7 +146,7 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
     groups.address
   );
 
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
+  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
 
   let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
 
@@ -157,13 +155,14 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
   let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
 
     const instance = await XendFinanceIndividual_Yearn_V1.new(
-      daiLendingAdapter.address,
       daiLendingService.address,
-      xendToken.address,
+      DaiContractAddress,
       clientRecord.address,
       savingsConfig.address,
-      yXend.address,
-      treasury.address
+      yDaiContractAddress,
+      rewardConfig.address,
+      treasury.address,
+      xendToken.address,
     );
 
     console.log(instance.address);
@@ -202,22 +201,22 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
       groups.address
     );
   
-    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 2000000);
+    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
   
-    let yXend = await yxendTokenContract.deployed("YXend Token", "YXTK", 18, 2000000);
   
     let daiLendingService = await DaiLendingServiceContract.deployed();
   
     let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
   
       const instance = await XendFinanceIndividual_Yearn_V1.new(
-        daiLendingAdapter.address,
         daiLendingService.address,
-        xendToken.address,
-        clientRecord.address,
-        savingsConfig.address,
-        yXend.address,
-        treasury.address
+      DaiContractAddress,
+      clientRecord.address,
+      savingsConfig.address,
+      yDaiContractAddress,
+      rewardConfig.address,
+      treasury.address,
+      xendToken.address,
       );
   
        
