@@ -9,12 +9,14 @@ import "./ReentrancyGuard.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
 import "./IDaiLendingService.sol";
+import "./IRewardConfig.sol";
 import "./IClientRecord.sol";
 import "./IERC20.sol";
 import "./Address.sol";
 import "./ISavingsConfig.sol";
 import "./ISavingsConfigSchema.sol";
 import "./ITreasury.sol";
+import "./IXendToken.sol";
 
 contract XendFinanceIndividual_Yearn_V1 is
     Ownable,
@@ -45,16 +47,22 @@ contract XendFinanceIndividual_Yearn_V1 is
     IDaiLendingService lendingService;
     IERC20 daiToken;
     IClientRecord clientRecordStorage;
+    IRewardConfig rewardConfig;
     ISavingsConfig savingsConfig;
     IERC20 derivativeToken;
     ITreasury treasury;
+    IXendToken xendToken;
 
     bool isDeprecated;
 
+    mapping(address => uint256) MemberToXendTokenRewardMapping; //  This tracks the total amount of xend token rewards a member has received
+
     address LendingAdapterAddress;
 
-    string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
-    string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
+    string constant XEND_FINANCE_COMMISION_DIVISOR =
+        "XEND_FINANCE_COMMISION_DIVISOR";
+    string constant XEND_FINANCE_COMMISION_DIVIDEND =
+        "XEND_FINANCE_COMMISION_DIVIDEND";
 
     constructor(
         address lendingServiceAddress,
@@ -62,19 +70,23 @@ contract XendFinanceIndividual_Yearn_V1 is
         address clientRecordStorageAddress,
         address savingsConfigAddress,
         address derivativeTokenAddress,
+        address rewardConfigAddress,
+        address xendTokenAddress,
         address treasuryAddress
     ) public {
         lendingService = IDaiLendingService(lendingServiceAddress);
         daiToken = IERC20(tokenAddress);
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
         savingsConfig = ISavingsConfig(savingsConfigAddress);
+        rewardConfig = IRewardConfig(rewardConfigAddress);
         derivativeToken = IERC20(derivativeTokenAddress);
         treasury = ITreasury(treasuryAddress);
+        xendToken = IXendToken(xendTokenAddress);
     }
 
-     function setAdapterAddress() onlyOwner external {
-    LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
-}
+    function setAdapterAddress() external onlyOwner {
+        LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
+    }
 
     function deprecateContract(address newServiceAddress)
         external
@@ -83,10 +95,27 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         isDeprecated = true;
         clientRecordStorage.reAssignStorageOracle(newServiceAddress);
-        uint256 derivativeTokenBalance = derivativeToken.balanceOf(
-            address(this)
-        );
+        uint256 derivativeTokenBalance =
+            derivativeToken.balanceOf(address(this));
         derivativeToken.safeTransfer(newServiceAddress, derivativeTokenBalance);
+    }
+
+    function _UpdateMemberToXendTokeRewardMapping(
+        address member,
+        uint256 rewardAmount
+    ) internal onlyNonDeprecatedCalls {
+        MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[
+            member
+        ]
+            .add(rewardAmount);
+    }
+
+    function GetMemberXendTokenReward(address member)
+        external
+        view
+        returns (uint256)
+    {
+        return MemberToXendTokenRewardMapping[member];
     }
 
     function doesClientRecordExist(address depositor)
@@ -133,9 +162,8 @@ contract XendFinanceIndividual_Yearn_V1 is
             uint256 derivativeTotalWithdrawn
         )
     {
-        ClientRecord memory clientRecord = _getClientRecordByAddress(
-            msg.sender
-        );
+        ClientRecord memory clientRecord =
+            _getClientRecordByAddress(msg.sender);
 
         return (
             clientRecord._address,
@@ -235,8 +263,73 @@ contract XendFinanceIndividual_Yearn_V1 is
         _withdraw(recipient, derivativeAmount);
     }
 
+    function WithdrawFromFixedDeposit(
+        uint256 recordId,
+        uint256 derivativeAmount
+    ) external onlyNonDeprecatedCalls {
+        address payable recipient = msg.sender;
+
+        FixedDepositRecord memory depositRecord =
+            _getFixedDepositRecordById(recordId);
+
+        uint256 depositDate = depositRecord.depositDateInSeconds;
+
+        uint256 lockPeriod = depositRecord.lockPeriodInSeconds;
+
+        _validateLockTimeHasElapsedAndHasNotWithdrawn(recordId);
+
+        uint256 balanceBeforeWithdraw = lendingService.userDaiBalance();
+
+        lendingService.WithdrawBySharesOnly(derivativeAmount);
+
+        uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
+
+        uint256 amountOfUnderlyingAssetWithdrawn =
+            balanceBeforeWithdraw.sub(balanceAfterWithdraw);
+
+        uint256 commissionFees =
+            _computeXendFinanceCommisions(amountOfUnderlyingAssetWithdrawn);
+
+        uint256 amountToSendToDepositor =
+            amountOfUnderlyingAssetWithdrawn.sub(commissionFees);
+
+        daiToken.safeTransfer(recipient, amountToSendToDepositor);
+
+        if (commissionFees > 0) {
+            daiToken.approve(address(treasury), commissionFees);
+            treasury.depositToken(address(daiToken));
+        }
+
+        clientRecordStorage.UpdateDepositRecordMapping(
+            recordId,
+            derivativeAmount,
+            lockPeriod,
+            depositDate,
+            msg.sender,
+            true
+        );
+        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(
+            recipient,
+            depositRecord.recordId,
+            depositRecord.amount,
+            lockPeriod,
+            depositDate,
+            true
+        );
+
+        _rewardUserWithTokens(lockPeriod, derivativeAmount, recipient);
+
+        emit DerivativeAssetWithdrawn(
+            recipient,
+            amountOfUnderlyingAssetWithdrawn,
+            derivativeAmount,
+            derivativeAmount
+        );
+    }
+
     function _withdraw(address payable recipient, uint256 derivativeAmount)
-        internal nonReentrant
+        internal
+        nonReentrant
     {
         _validateUserBalanceIsSufficient(recipient, derivativeAmount);
 
@@ -246,33 +339,28 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 balanceAfterWithdraw = lendingService.userDaiBalance();
 
-        uint256 amountOfUnderlyingAssetWithdrawn = balanceBeforeWithdraw.sub(
-            balanceAfterWithdraw
-        );
+        uint256 amountOfUnderlyingAssetWithdrawn =
+            balanceBeforeWithdraw.sub(balanceAfterWithdraw);
 
-        uint256 commissionFees = _computeXendFinanceCommisions(
-            amountOfUnderlyingAssetWithdrawn
-        );
+        uint256 commissionFees =
+            _computeXendFinanceCommisions(amountOfUnderlyingAssetWithdrawn);
 
-        uint256 amountToSendToDepositor = amountOfUnderlyingAssetWithdrawn.sub(
-            commissionFees
-        );
+        uint256 amountToSendToDepositor =
+            amountOfUnderlyingAssetWithdrawn.sub(commissionFees);
 
-      daiToken.safeTransfer(
-            recipient,
-            amountToSendToDepositor
-        );
+        daiToken.safeTransfer(recipient, amountToSendToDepositor);
 
         if (commissionFees > 0) {
             daiToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(daiToken));
         }
 
-        ClientRecord memory clientRecord = _updateClientRecordAfterWithdrawal(
-            recipient,
-            amountOfUnderlyingAssetWithdrawn,
-            derivativeAmount
-        );
+        ClientRecord memory clientRecord =
+            _updateClientRecordAfterWithdrawal(
+                recipient,
+                amountOfUnderlyingAssetWithdrawn,
+                derivativeAmount
+            );
         _updateClientRecord(clientRecord);
 
         emit DerivativeAssetWithdrawn(
@@ -312,6 +400,26 @@ contract XendFinanceIndividual_Yearn_V1 is
         return worthOfMemberDepositNow.mul(dividend).div(divisor).div(100);
     }
 
+    function _validateLockTimeHasElapsedAndHasNotWithdrawn(uint256 recordId)
+        internal
+    {
+        FixedDepositRecord memory depositRecord =
+            _getFixedDepositRecordById(recordId);
+
+        uint256 lockPeriod = depositRecord.lockPeriodInSeconds;
+
+        bool hasWithdrawn = depositRecord.hasWithdrawn;
+
+        require(!hasWithdrawn, "Individual has already withdrawn");
+
+        uint256 currentTimeStamp = now;
+
+        require(
+            currentTimeStamp >= lockPeriod,
+            "Funds are still locked, wait until lock period expires"
+        );
+    }
+
     function _getDivisor() internal returns (uint256) {
         (
             uint256 minimumDivisor,
@@ -321,10 +429,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             RuleDefinition ruleDefinitionDivisor
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVISOR);
 
-        require(
-            appliesDivisor,
-            "unsupported rule defintion for rule set"
-        );
+        require(appliesDivisor, "unsupported rule defintion for rule set");
 
         require(
             ruleDefinitionDivisor == RuleDefinition.VALUE,
@@ -342,10 +447,7 @@ contract XendFinanceIndividual_Yearn_V1 is
             RuleDefinition ruleDefinitionDividend
         ) = savingsConfig.getRuleSet(XEND_FINANCE_COMMISION_DIVIDEND);
 
-        require(
-            appliesDividend,
-            "unsupported rule defintion for rule set"
-        );
+        require(appliesDividend, "unsupported rule defintion for rule set");
 
         require(
             ruleDefinitionDividend == RuleDefinition.VALUE,
@@ -366,22 +468,41 @@ contract XendFinanceIndividual_Yearn_V1 is
         _deposit(depositorAddress);
     }
 
-    function _deposit(address payable depositorAddress) internal {
+    function _getFixedDepositRecordById(uint256 recordId)
+        internal
+        returns (FixedDepositRecord memory)
+    {
+        (
+            uint256 recordId,
+            address payable depositorId,
+            uint256 amount,
+            uint256 depositDateInSeconds,
+            uint256 lockPeriodInSeconds,
+            bool hasWithdrawn
+        ) = clientRecordStorage.GetRecordById(recordId);
+    }
+
+    function FixedDeposit(
+        uint256 depositDateInSeconds,
+        uint256 lockPeriodInSeconds
+    ) external onlyNonDeprecatedCalls {
+        address payable depositorAddress = msg.sender;
+
         address recipient = address(this);
-        uint256 amountTransferrable = daiToken.allowance(
-            depositorAddress,
-            recipient
-        );
+
+        uint256 amountTransferrable =
+            daiToken.allowance(depositorAddress, recipient);
 
         require(
             amountTransferrable > 0,
             "Approve an amount > 0 for token before proceeding"
         );
-        bool isSuccessful = daiToken.transferFrom(
-            depositorAddress,
-            recipient,
-            amountTransferrable
-        );
+        bool isSuccessful =
+            daiToken.transferFrom(
+                depositorAddress,
+                recipient,
+                amountTransferrable
+            );
         require(
             isSuccessful,
             "Could not complete deposit process from token contract"
@@ -396,15 +517,76 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balanceAfterDeposit = lendingService.userShares();
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
-        ClientRecord memory clientRecord = _updateClientRecordAfterDeposit(
-            depositorAddress,
+
+        clientRecordStorage.CreateDepositRecordMapping(
             amountTransferrable,
-            amountOfyDai
+            lockPeriodInSeconds,
+            depositDateInSeconds,
+            depositorAddress,
+            false
         );
 
-        bool exists = clientRecordStorage.doesClientRecordExist(
-            depositorAddress
+        clientRecordStorage
+            .CreateDepositorToDepositRecordIndexToRecordIDMapping(
+            depositorAddress,
+            clientRecordStorage.GetRecordId()
         );
+
+        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(
+            depositorAddress,
+            clientRecordStorage.GetRecordId(),
+            amountTransferrable,
+            lockPeriodInSeconds,
+            depositDateInSeconds,
+            false
+        );
+
+        emit UnderlyingAssetDeposited(
+            depositorAddress,
+            amountTransferrable,
+            amountOfyDai,
+            amountTransferrable
+        );
+    }
+
+    function _deposit(address payable depositorAddress) internal {
+        address recipient = address(this);
+        uint256 amountTransferrable =
+            daiToken.allowance(depositorAddress, recipient);
+
+        require(
+            amountTransferrable > 0,
+            "Approve an amount > 0 for token before proceeding"
+        );
+        bool isSuccessful =
+            daiToken.transferFrom(
+                depositorAddress,
+                recipient,
+                amountTransferrable
+            );
+        require(
+            isSuccessful,
+            "Could not complete deposit process from token contract"
+        );
+
+        daiToken.approve(LendingAdapterAddress, amountTransferrable);
+
+        uint256 balanceBeforeDeposit = lendingService.userShares();
+
+        lendingService.save(amountTransferrable);
+
+        uint256 balanceAfterDeposit = lendingService.userShares();
+
+        uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
+        ClientRecord memory clientRecord =
+            _updateClientRecordAfterDeposit(
+                depositorAddress,
+                amountTransferrable,
+                amountOfyDai
+            );
+
+        bool exists =
+            clientRecordStorage.doesClientRecordExist(depositorAddress);
 
         if (exists) _updateClientRecord(clientRecord);
         else {
@@ -433,15 +615,16 @@ contract XendFinanceIndividual_Yearn_V1 is
     ) internal returns (ClientRecord memory) {
         bool exists = clientRecordStorage.doesClientRecordExist(client);
         if (!exists) {
-            ClientRecord memory record = ClientRecord(
-                true,
-                client,
-                underlyingAmountDeposited,
-                0,
-                derivativeAmountDeposited,
-                derivativeAmountDeposited,
-                0
-            );
+            ClientRecord memory record =
+                ClientRecord(
+                    true,
+                    client,
+                    underlyingAmountDeposited,
+                    0,
+                    derivativeAmountDeposited,
+                    derivativeAmountDeposited,
+                    0
+                );
 
             return record;
         } else {
@@ -472,7 +655,9 @@ contract XendFinanceIndividual_Yearn_V1 is
             underlyingAmountWithdrawn
         );
 
-        record.derivativeTotalWithdrawn = record.derivativeTotalWithdrawn.add(derivativeAmountWithdrawn);
+        record.derivativeTotalWithdrawn = record.derivativeTotalWithdrawn.add(
+            derivativeAmountWithdrawn
+        );
 
         record.derivativeBalance = record.derivativeBalance.sub(
             derivativeAmountWithdrawn
@@ -490,6 +675,33 @@ contract XendFinanceIndividual_Yearn_V1 is
             clientRecord.derivativeTotalDeposits,
             clientRecord.derivativeTotalWithdrawn
         );
+    }
+
+    function _emitXendTokenReward(address payable member, uint256 amount)
+        internal
+    {
+        emit XendTokenReward(now, member, amount);
+    }
+
+    function _rewardUserWithTokens(
+        uint256 totalLockPeriod,
+        uint256 amountDeposited,
+        address payable recipient
+    ) internal {
+        uint256 numberOfRewardTokens =
+            rewardConfig.CalculateIndividualSavingsReward(
+                totalLockPeriod,
+                amountDeposited
+            );
+
+        if (numberOfRewardTokens > 0) {
+            xendToken.mint(recipient, numberOfRewardTokens);
+            _UpdateMemberToXendTokeRewardMapping(
+                recipient,
+                numberOfRewardTokens
+            );
+            _emitXendTokenReward(recipient, numberOfRewardTokens);
+        }
     }
 
     modifier onlyNonDeprecatedCalls() {

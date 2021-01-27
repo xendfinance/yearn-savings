@@ -58,4 +58,20 @@ interface IClientRecord is IClientRecordSchema {
     function deactivateStorageOracle(address oracle) external;
 
     function reAssignStorageOracle(address newOracle) external;
+
+     function GetRecordIndexFromDepositor(address member) external view returns(uint);
+     
+     function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint);
+      
+     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;
+    
+     function UpdateDepositRecordMapping(uint DepositRecordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;
+
+     function GetRecordById(uint depositRecordId) external view returns(uint recordId, address payable depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn);
+     
+     function GetRecords() external view returns (FixedDepositRecord [] memory);
+     
+     function CreateDepositorToDepositRecordIndexToRecordIDMapping(address payable depositor, uint recordId) external;
+     
+     function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external;
 }
