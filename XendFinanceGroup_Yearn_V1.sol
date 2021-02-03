@@ -707,7 +707,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         );
 
         bool isSuccessful =
-            daiToken.transferFrom(depositorAddress, recipient, expectedAmount);
+            daiToken.safeTransferFrom(daiToken, depositorAddress, recipient, expectedAmount);
         require(
             isSuccessful,
             "Could not complete deposit process from token contract"
@@ -938,17 +938,19 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         uint256 totalUnderlyingAmountSentOut =
-            withdrawalResolution.amountToSendToTreasury +
-                withdrawalResolution.amountToSendToMember;
+            withdrawalResolution.amountToSendToTreasury.add(
+                withdrawalResolution.amountToSendToMember);
 
-        cycle.stakesClaimedBeforeMaturity += numberOfStakesByMember;
+        cycle.stakesClaimedBeforeMaturity = cycle.stakesClaimedBeforeMaturity.add(numberOfStakesByMember);
         cycleFinancial
-            .underylingBalanceClaimedBeforeMaturity += totalUnderlyingAmountSentOut;
+            .underylingBalanceClaimedBeforeMaturity = cycleFinancial
+            .underylingBalanceClaimedBeforeMaturity.add(totalUnderlyingAmountSentOut);
         cycleFinancial
-            .derivativeBalanceClaimedBeforeMaturity += derivativeBalanceForMember;
+            .derivativeBalanceClaimedBeforeMaturity = cycleFinancial
+            .derivativeBalanceClaimedBeforeMaturity.add(derivativeBalanceForMember);
 
         cycleMember.hasWithdrawn = true;
-        cycleMember.stakesClaimed += numberOfStakesByMember;
+        cycleMember.stakesClaimed = cycleMember.stakesClaimed.add(numberOfStakesByMember);
 
         _updateCycle(cycle);
         _updateCycleMember(cycleMember);
