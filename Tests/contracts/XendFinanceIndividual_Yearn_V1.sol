@@ -44,6 +44,12 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
 
+    event XendTokenReward(
+        uint256 date,
+        address payable recipient,
+        uint256 amount
+    );
+
     IDaiLendingService lendingService;
     IERC20 daiToken;
     IClientRecord clientRecordStorage;
@@ -518,7 +524,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
 
-        clientRecordStorage.CreateDepositRecordMapping(
+       uint recordId = clientRecordStorage.CreateDepositRecordMapping(
             amountTransferrable,
             lockPeriodInSeconds,
             depositDateInSeconds,
@@ -526,15 +532,16 @@ contract XendFinanceIndividual_Yearn_V1 is
             false
         );
 
+
         clientRecordStorage
             .CreateDepositorToDepositRecordIndexToRecordIDMapping(
             depositorAddress,
-            clientRecordStorage.GetRecordId()
+            recordId
         );
 
         clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(
             depositorAddress,
-            clientRecordStorage.GetRecordId(),
+            recordId,
             amountTransferrable,
             lockPeriodInSeconds,
             depositDateInSeconds,

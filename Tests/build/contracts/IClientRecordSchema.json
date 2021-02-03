@@ -1,34 +1,33 @@
 {
   "contractName": "IClientRecordSchema",
   "abi": [],
-  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0x35ae5fa5945bc4a4c41fb711fd7092a85598176dcf6347693f438ef6cbe57538\",\"urls\":[\"bzz-raw://e6e51d8ab3b5517fd2e99b80d4fc061e004492c0cff9fc54decf73077f426cd8\",\"dweb:/ipfs/QmNn2xLU65jkDaCA3BetnXeS1DZcXwc1Umj4mgr2ATWBFm\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.6.6+commit.6c089d02\"},\"language\":\"Solidity\",\"output\":{\"abi\":[],\"devdoc\":{\"methods\":{}},\"userdoc\":{\"methods\":{}}},\"settings\":{\"compilationTarget\":{\"/Users/mac/Desktop/BinaryHiils/yearn-savings/Tests/contracts/IClientRecordShema.sol\":\"IClientRecordSchema\"},\"evmVersion\":\"byzantium\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":true,\"runs\":200},\"remappings\":[]},\"sources\":{\"/Users/mac/Desktop/BinaryHiils/yearn-savings/Tests/contracts/IClientRecordShema.sol\":{\"keccak256\":\"0xc6a681888f8353f26140b390b88f70e5da66bee361a8711a090cf550b937e5ac\",\"urls\":[\"bzz-raw://b866b240a119b11acced73d7860a24fd45b9855006b123ce75405a464296619a\",\"dweb:/ipfs/QmaG8SYSdfEb3pBMPXQ6JGerd6MPdiToQNE7dVVpwNADiY\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "pragma solidity ^0.6.6;\n\ninterface IClientRecordSchema {\n    struct ClientRecord {\n        bool exists;\n        address payable _address;\n        uint256 underlyingTotalDeposits;\n        uint256 underlyingTotalWithdrawn;\n        uint256 derivativeBalance;\n        uint256 derivativeTotalDeposits;\n        uint256 derivativeTotalWithdrawn;\n    }\n\n    struct RecordIndex {\n        bool exists;\n        uint256 index;\n    }\n}\n",
-  "sourcePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/IClientRecordShema.sol",
+  "source": "pragma solidity 0.6.6;\n\ninterface IClientRecordSchema {\n    struct ClientRecord {\n        bool exists;\n        address payable _address;\n        uint256 underlyingTotalDeposits;\n        uint256 underlyingTotalWithdrawn;\n        uint256 derivativeBalance;\n        uint256 derivativeTotalDeposits;\n        uint256 derivativeTotalWithdrawn;\n    }\n struct FixedDepositRecord{\n        uint256 recordId;\n        address payable depositorId;\n        bool hasWithdrawn;\n        uint256 amount;\n        uint256 depositDateInSeconds;\n        uint256 lockPeriodInSeconds;\n    }\n    struct RecordIndex {\n        bool exists;\n        uint256 index;\n    }\n}\n",
+  "sourcePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/Tests/contracts/IClientRecordShema.sol",
   "ast": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/Tests/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
-        8946
+        4204
       ]
     },
-    "id": 8947,
+    "id": 4205,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8925,
+        "id": 4170,
         "literals": [
           "solidity",
-          "^",
           "0.6",
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:13"
+        "src": "0:22:7"
       },
       {
         "abstract": false,
@@ -37,26 +36,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 8946,
+        "id": 4204,
         "linearizedBaseContracts": [
-          8946
+          4204
         ],
         "name": "IClientRecordSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "IClientRecordSchema.ClientRecord",
-            "id": 8940,
+            "id": 4185,
             "members": [
               {
                 "constant": false,
-                "id": 8927,
+                "id": 4172,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "91:11:13",
+                "scope": 4185,
+                "src": "90:11:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -64,10 +63,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 8926,
+                  "id": 4171,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "91:4:13",
+                  "src": "90:4:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -78,13 +77,13 @@
               },
               {
                 "constant": false,
-                "id": 8929,
+                "id": 4174,
                 "mutability": "mutable",
                 "name": "_address",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "112:24:13",
+                "scope": 4185,
+                "src": "111:24:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -92,10 +91,10 @@
                   "typeString": "address payable"
                 },
                 "typeName": {
-                  "id": 8928,
+                  "id": 4173,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "112:15:13",
+                  "src": "111:15:7",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -107,13 +106,13 @@
               },
               {
                 "constant": false,
-                "id": 8931,
+                "id": 4176,
                 "mutability": "mutable",
                 "name": "underlyingTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "146:31:13",
+                "scope": 4185,
+                "src": "145:31:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -121,10 +120,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8930,
+                  "id": 4175,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:7:13",
+                  "src": "145:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -135,13 +134,13 @@
               },
               {
                 "constant": false,
-                "id": 8933,
+                "id": 4178,
                 "mutability": "mutable",
                 "name": "underlyingTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "187:32:13",
+                "scope": 4185,
+                "src": "186:32:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -149,10 +148,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8932,
+                  "id": 4177,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "187:7:13",
+                  "src": "186:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -163,13 +162,13 @@
               },
               {
                 "constant": false,
-                "id": 8935,
+                "id": 4180,
                 "mutability": "mutable",
                 "name": "derivativeBalance",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "229:25:13",
+                "scope": 4185,
+                "src": "228:25:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -177,10 +176,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8934,
+                  "id": 4179,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "229:7:13",
+                  "src": "228:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -191,13 +190,13 @@
               },
               {
                 "constant": false,
-                "id": 8937,
+                "id": 4182,
                 "mutability": "mutable",
                 "name": "derivativeTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "264:31:13",
+                "scope": 4185,
+                "src": "263:31:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -205,10 +204,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8936,
+                  "id": 4181,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "264:7:13",
+                  "src": "263:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -219,13 +218,13 @@
               },
               {
                 "constant": false,
-                "id": 8939,
+                "id": 4184,
                 "mutability": "mutable",
                 "name": "derivativeTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "305:32:13",
+                "scope": 4185,
+                "src": "304:32:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -233,10 +232,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8938,
+                  "id": 4183,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "305:7:13",
+                  "src": "304:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -248,23 +247,80 @@
             ],
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
-            "scope": 8946,
-            "src": "61:283:13",
+            "scope": 4204,
+            "src": "60:283:7",
             "visibility": "public"
           },
           {
-            "canonicalName": "IClientRecordSchema.RecordIndex",
-            "id": 8945,
+            "canonicalName": "IClientRecordSchema.FixedDepositRecord",
+            "id": 4198,
             "members": [
               {
                 "constant": false,
-                "id": 8942,
+                "id": 4187,
                 "mutability": "mutable",
-                "name": "exists",
+                "name": "recordId",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8945,
-                "src": "379:11:13",
+                "scope": 4198,
+                "src": "380:16:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4186,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "380:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4189,
+                "mutability": "mutable",
+                "name": "depositorId",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "406:27:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address_payable",
+                  "typeString": "address payable"
+                },
+                "typeName": {
+                  "id": 4188,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "406:15:7",
+                  "stateMutability": "payable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4191,
+                "mutability": "mutable",
+                "name": "hasWithdrawn",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "443:17:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -272,10 +328,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 8941,
+                  "id": 4190,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "379:4:13",
+                  "src": "443:4:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -286,13 +342,13 @@
               },
               {
                 "constant": false,
-                "id": 8944,
+                "id": 4193,
                 "mutability": "mutable",
-                "name": "index",
+                "name": "amount",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8945,
-                "src": "400:13:13",
+                "scope": 4198,
+                "src": "470:14:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -300,10 +356,133 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8943,
+                  "id": 4192,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "400:7:13",
+                  "src": "470:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4195,
+                "mutability": "mutable",
+                "name": "depositDateInSeconds",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "494:28:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4194,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "494:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4197,
+                "mutability": "mutable",
+                "name": "lockPeriodInSeconds",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "532:27:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4196,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "532:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "FixedDepositRecord",
+            "nodeType": "StructDefinition",
+            "scope": 4204,
+            "src": "345:221:7",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "IClientRecordSchema.RecordIndex",
+            "id": 4203,
+            "members": [
+              {
+                "constant": false,
+                "id": 4200,
+                "mutability": "mutable",
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4203,
+                "src": "600:11:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 4199,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "600:4:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4202,
+                "mutability": "mutable",
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4203,
+                "src": "621:13:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4201,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "621:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -315,37 +494,36 @@
             ],
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
-            "scope": 8946,
-            "src": "350:70:13",
+            "scope": 4204,
+            "src": "571:70:7",
             "visibility": "public"
           }
         ],
-        "scope": 8947,
-        "src": "25:397:13"
+        "scope": 4205,
+        "src": "24:619:7"
       }
     ],
-    "src": "0:423:13"
+    "src": "0:644:7"
   },
   "legacyAST": {
-    "absolutePath": "/Users/njokuscript/Desktop/programming/yearn_savings/Tests/contracts/IClientRecordShema.sol",
+    "absolutePath": "/Users/mac/Desktop/BinaryHiils/yearn-savings/Tests/contracts/IClientRecordShema.sol",
     "exportedSymbols": {
       "IClientRecordSchema": [
-        8946
+        4204
       ]
     },
-    "id": 8947,
+    "id": 4205,
     "nodeType": "SourceUnit",
     "nodes": [
       {
-        "id": 8925,
+        "id": 4170,
         "literals": [
           "solidity",
-          "^",
           "0.6",
           ".6"
         ],
         "nodeType": "PragmaDirective",
-        "src": "0:23:13"
+        "src": "0:22:7"
       },
       {
         "abstract": false,
@@ -354,26 +532,26 @@
         "contractKind": "interface",
         "documentation": null,
         "fullyImplemented": true,
-        "id": 8946,
+        "id": 4204,
         "linearizedBaseContracts": [
-          8946
+          4204
         ],
         "name": "IClientRecordSchema",
         "nodeType": "ContractDefinition",
         "nodes": [
           {
             "canonicalName": "IClientRecordSchema.ClientRecord",
-            "id": 8940,
+            "id": 4185,
             "members": [
               {
                 "constant": false,
-                "id": 8927,
+                "id": 4172,
                 "mutability": "mutable",
                 "name": "exists",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "91:11:13",
+                "scope": 4185,
+                "src": "90:11:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -381,10 +559,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 8926,
+                  "id": 4171,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "91:4:13",
+                  "src": "90:4:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -395,13 +573,13 @@
               },
               {
                 "constant": false,
-                "id": 8929,
+                "id": 4174,
                 "mutability": "mutable",
                 "name": "_address",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "112:24:13",
+                "scope": 4185,
+                "src": "111:24:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -409,10 +587,10 @@
                   "typeString": "address payable"
                 },
                 "typeName": {
-                  "id": 8928,
+                  "id": 4173,
                   "name": "address",
                   "nodeType": "ElementaryTypeName",
-                  "src": "112:15:13",
+                  "src": "111:15:7",
                   "stateMutability": "payable",
                   "typeDescriptions": {
                     "typeIdentifier": "t_address_payable",
@@ -424,13 +602,13 @@
               },
               {
                 "constant": false,
-                "id": 8931,
+                "id": 4176,
                 "mutability": "mutable",
                 "name": "underlyingTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "146:31:13",
+                "scope": 4185,
+                "src": "145:31:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -438,10 +616,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8930,
+                  "id": 4175,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "146:7:13",
+                  "src": "145:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -452,13 +630,13 @@
               },
               {
                 "constant": false,
-                "id": 8933,
+                "id": 4178,
                 "mutability": "mutable",
                 "name": "underlyingTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "187:32:13",
+                "scope": 4185,
+                "src": "186:32:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -466,10 +644,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8932,
+                  "id": 4177,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "187:7:13",
+                  "src": "186:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -480,13 +658,13 @@
               },
               {
                 "constant": false,
-                "id": 8935,
+                "id": 4180,
                 "mutability": "mutable",
                 "name": "derivativeBalance",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "229:25:13",
+                "scope": 4185,
+                "src": "228:25:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -494,10 +672,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8934,
+                  "id": 4179,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "229:7:13",
+                  "src": "228:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -508,13 +686,13 @@
               },
               {
                 "constant": false,
-                "id": 8937,
+                "id": 4182,
                 "mutability": "mutable",
                 "name": "derivativeTotalDeposits",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "264:31:13",
+                "scope": 4185,
+                "src": "263:31:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -522,10 +700,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8936,
+                  "id": 4181,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "264:7:13",
+                  "src": "263:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -536,13 +714,13 @@
               },
               {
                 "constant": false,
-                "id": 8939,
+                "id": 4184,
                 "mutability": "mutable",
                 "name": "derivativeTotalWithdrawn",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8940,
-                "src": "305:32:13",
+                "scope": 4185,
+                "src": "304:32:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -550,10 +728,10 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8938,
+                  "id": 4183,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "305:7:13",
+                  "src": "304:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -565,23 +743,80 @@
             ],
             "name": "ClientRecord",
             "nodeType": "StructDefinition",
-            "scope": 8946,
-            "src": "61:283:13",
+            "scope": 4204,
+            "src": "60:283:7",
             "visibility": "public"
           },
           {
-            "canonicalName": "IClientRecordSchema.RecordIndex",
-            "id": 8945,
+            "canonicalName": "IClientRecordSchema.FixedDepositRecord",
+            "id": 4198,
             "members": [
               {
                 "constant": false,
-                "id": 8942,
+                "id": 4187,
                 "mutability": "mutable",
-                "name": "exists",
+                "name": "recordId",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8945,
-                "src": "379:11:13",
+                "scope": 4198,
+                "src": "380:16:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4186,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "380:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4189,
+                "mutability": "mutable",
+                "name": "depositorId",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "406:27:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_address_payable",
+                  "typeString": "address payable"
+                },
+                "typeName": {
+                  "id": 4188,
+                  "name": "address",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "406:15:7",
+                  "stateMutability": "payable",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_address_payable",
+                    "typeString": "address payable"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4191,
+                "mutability": "mutable",
+                "name": "hasWithdrawn",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "443:17:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -589,10 +824,10 @@
                   "typeString": "bool"
                 },
                 "typeName": {
-                  "id": 8941,
+                  "id": 4190,
                   "name": "bool",
                   "nodeType": "ElementaryTypeName",
-                  "src": "379:4:13",
+                  "src": "443:4:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_bool",
                     "typeString": "bool"
@@ -603,13 +838,13 @@
               },
               {
                 "constant": false,
-                "id": 8944,
+                "id": 4193,
                 "mutability": "mutable",
-                "name": "index",
+                "name": "amount",
                 "nodeType": "VariableDeclaration",
                 "overrides": null,
-                "scope": 8945,
-                "src": "400:13:13",
+                "scope": 4198,
+                "src": "470:14:7",
                 "stateVariable": false,
                 "storageLocation": "default",
                 "typeDescriptions": {
@@ -617,10 +852,133 @@
                   "typeString": "uint256"
                 },
                 "typeName": {
-                  "id": 8943,
+                  "id": 4192,
                   "name": "uint256",
                   "nodeType": "ElementaryTypeName",
-                  "src": "400:7:13",
+                  "src": "470:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4195,
+                "mutability": "mutable",
+                "name": "depositDateInSeconds",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "494:28:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4194,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "494:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4197,
+                "mutability": "mutable",
+                "name": "lockPeriodInSeconds",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4198,
+                "src": "532:27:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4196,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "532:7:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_uint256",
+                    "typeString": "uint256"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              }
+            ],
+            "name": "FixedDepositRecord",
+            "nodeType": "StructDefinition",
+            "scope": 4204,
+            "src": "345:221:7",
+            "visibility": "public"
+          },
+          {
+            "canonicalName": "IClientRecordSchema.RecordIndex",
+            "id": 4203,
+            "members": [
+              {
+                "constant": false,
+                "id": 4200,
+                "mutability": "mutable",
+                "name": "exists",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4203,
+                "src": "600:11:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_bool",
+                  "typeString": "bool"
+                },
+                "typeName": {
+                  "id": 4199,
+                  "name": "bool",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "600:4:7",
+                  "typeDescriptions": {
+                    "typeIdentifier": "t_bool",
+                    "typeString": "bool"
+                  }
+                },
+                "value": null,
+                "visibility": "internal"
+              },
+              {
+                "constant": false,
+                "id": 4202,
+                "mutability": "mutable",
+                "name": "index",
+                "nodeType": "VariableDeclaration",
+                "overrides": null,
+                "scope": 4203,
+                "src": "621:13:7",
+                "stateVariable": false,
+                "storageLocation": "default",
+                "typeDescriptions": {
+                  "typeIdentifier": "t_uint256",
+                  "typeString": "uint256"
+                },
+                "typeName": {
+                  "id": 4201,
+                  "name": "uint256",
+                  "nodeType": "ElementaryTypeName",
+                  "src": "621:7:7",
                   "typeDescriptions": {
                     "typeIdentifier": "t_uint256",
                     "typeString": "uint256"
@@ -632,24 +990,24 @@
             ],
             "name": "RecordIndex",
             "nodeType": "StructDefinition",
-            "scope": 8946,
-            "src": "350:70:13",
+            "scope": 4204,
+            "src": "571:70:7",
             "visibility": "public"
           }
         ],
-        "scope": 8947,
-        "src": "25:397:13"
+        "scope": 4205,
+        "src": "24:619:7"
       }
     ],
-    "src": "0:423:13"
+    "src": "0:644:7"
   },
   "compiler": {
     "name": "solc",
     "version": "0.6.6+commit.6c089d02.Emscripten.clang"
   },
   "networks": {},
-  "schemaVersion": "3.2.5",
-  "updatedAt": "2020-10-27T19:23:53.522Z",
+  "schemaVersion": "3.3.2",
+  "updatedAt": "2021-02-03T07:10:43.744Z",
   "devdoc": {
     "methods": {}
   },

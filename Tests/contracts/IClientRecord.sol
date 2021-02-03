@@ -1,5 +1,6 @@
 pragma solidity ^0.6.6;
 import "./IClientRecordShema.sol";
+pragma experimental ABIEncoderV2;
 
 interface IClientRecord is IClientRecordSchema {
     function doesClientRecordExist(address depositor)
@@ -63,7 +64,7 @@ interface IClientRecord is IClientRecordSchema {
      
      function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint);
       
-     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;
+     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external returns (uint);
     
      function UpdateDepositRecordMapping(uint DepositRecordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;
 
