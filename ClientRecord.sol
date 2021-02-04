@@ -80,7 +80,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     ) external onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
         require(recordIndex.exists, "depositor record not found");
-        ClientRecord storage clientRecord = ClientRecord(
+        ClientRecord memory clientRecord = ClientRecord(
             true,
             _address,
             underlyingTotalDeposits,
