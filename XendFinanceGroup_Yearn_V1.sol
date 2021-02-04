@@ -91,6 +91,8 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
+    uint _groupCreatorRewardPercent;
+
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
 
@@ -833,6 +835,11 @@ contract XendFinanceGroup_Yearn_V1 is
         TreasuryAddress = treasuryAddress;
     }
 
+     function setGroupCreatorRewardPercent (uint percent) external onlyOwner {
+            _groupCreatorRewardPercent = percent;
+            
+        }
+
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
@@ -1059,11 +1066,19 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 initialUnderlyingDepositByMember =
             stakesHoldings.mul(cycle.cycleStakeAmount);
 
+        Group memory group = _getGroup(cycle.groupId);
+
+        uint groupCreator = group.creatorAddress;
+
+        
+
         //deduct xend finance fees
         uint256 amountToChargeAsFees =
             _computeXendFinanceCommisions(
                 underlyingAmountThatMemberDepositIsWorth
             );
+
+            uint creatorReward = (_groupCreatorRewardPercent.div(100)).mul(amountToChargeAsFees);
 
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
             .sub(amountToChargeAsFees);
@@ -1084,6 +1099,7 @@ contract XendFinanceGroup_Yearn_V1 is
                 withdrawalResolution.amountToSendToTreasury
             );
             treasury.depositToken(TokenAddress);
+            daiToken.safeTransfer(groupCreator, creatorReward);
         }
 
         if (withdrawalResolution.amountToSendToMember > 0) {
