@@ -91,6 +91,8 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
+    uint _groupCreatorRewardPercent;
+
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
 
@@ -247,6 +249,8 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
 
 contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     using SafeMath for uint256;
+
+    using SafeERC20 for IERC20;
 
     function _updateCycleMember(CycleMember memory cycleMember) internal {
         cycleStorage.updateCycleMember(
@@ -706,12 +710,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             "Token allowance does not cover stake claim"
         );
 
-        bool isSuccessful =
-            daiToken.transferFrom(depositorAddress, recipient, expectedAmount);
-        require(
-            isSuccessful,
-            "Could not complete deposit process from token contract"
-        );
+            daiToken.safeTransferFrom(depositorAddress, recipient, expectedAmount);
+       
 
         return expectedAmount;
     }
@@ -833,6 +833,11 @@ contract XendFinanceGroup_Yearn_V1 is
         TreasuryAddress = treasuryAddress;
     }
 
+     function setGroupCreatorRewardPercent (uint percent) external onlyOwner {
+            _groupCreatorRewardPercent = percent;
+            
+        }
+
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
@@ -938,17 +943,19 @@ contract XendFinanceGroup_Yearn_V1 is
         );
 
         uint256 totalUnderlyingAmountSentOut =
-            withdrawalResolution.amountToSendToTreasury +
-                withdrawalResolution.amountToSendToMember;
+            withdrawalResolution.amountToSendToTreasury.add(
+                withdrawalResolution.amountToSendToMember);
 
-        cycle.stakesClaimedBeforeMaturity += numberOfStakesByMember;
+        cycle.stakesClaimedBeforeMaturity = cycle.stakesClaimedBeforeMaturity.add(numberOfStakesByMember);
         cycleFinancial
-            .underylingBalanceClaimedBeforeMaturity += totalUnderlyingAmountSentOut;
+            .underylingBalanceClaimedBeforeMaturity = cycleFinancial
+            .underylingBalanceClaimedBeforeMaturity.add(totalUnderlyingAmountSentOut);
         cycleFinancial
-            .derivativeBalanceClaimedBeforeMaturity += derivativeBalanceForMember;
+            .derivativeBalanceClaimedBeforeMaturity = cycleFinancial
+            .derivativeBalanceClaimedBeforeMaturity.add(derivativeBalanceForMember);
 
         cycleMember.hasWithdrawn = true;
-        cycleMember.stakesClaimed += numberOfStakesByMember;
+        cycleMember.stakesClaimed = cycleMember.stakesClaimed.add(numberOfStakesByMember);
 
         _updateCycle(cycle);
         _updateCycleMember(cycleMember);
@@ -1057,11 +1064,19 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 initialUnderlyingDepositByMember =
             stakesHoldings.mul(cycle.cycleStakeAmount);
 
+        Group memory group = _getGroup(cycle.groupId);
+
+        address groupCreator = group.creatorAddress;
+
+        
+
         //deduct xend finance fees
         uint256 amountToChargeAsFees =
             _computeXendFinanceCommisions(
                 underlyingAmountThatMemberDepositIsWorth
             );
+
+            uint256 creatorReward = (_groupCreatorRewardPercent.div(100)).mul(amountToChargeAsFees);
 
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
             .sub(amountToChargeAsFees);
@@ -1082,6 +1097,7 @@ contract XendFinanceGroup_Yearn_V1 is
                 withdrawalResolution.amountToSendToTreasury
             );
             treasury.depositToken(TokenAddress);
+            daiToken.safeTransfer(groupCreator, creatorReward);
         }
 
         if (withdrawalResolution.amountToSendToMember > 0) {

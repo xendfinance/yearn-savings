@@ -250,6 +250,8 @@ contract XendFinanceGroupHelpers is XendFinanceGroupContainer_Yearn_V1 {
 contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
     using SafeMath for uint256;
 
+    using SafeERC20 for IERC20;
+
     function _updateCycleMember(CycleMember memory cycleMember) internal {
         cycleStorage.updateCycleMember(
             cycleMember.cycleId,
@@ -708,12 +710,8 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             "Token allowance does not cover stake claim"
         );
 
-        bool isSuccessful =
-            daiToken.safeTransferFrom(daiToken, depositorAddress, recipient, expectedAmount);
-        require(
-            isSuccessful,
-            "Could not complete deposit process from token contract"
-        );
+            daiToken.safeTransferFrom(depositorAddress, recipient, expectedAmount);
+       
 
         return expectedAmount;
     }
@@ -1068,7 +1066,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
         Group memory group = _getGroup(cycle.groupId);
 
-        uint groupCreator = group.creatorAddress;
+        address groupCreator = group.creatorAddress;
 
         
 
@@ -1078,7 +1076,7 @@ contract XendFinanceGroup_Yearn_V1 is
                 underlyingAmountThatMemberDepositIsWorth
             );
 
-            uint creatorReward = (_groupCreatorRewardPercent.div(100)).mul(amountToChargeAsFees);
+            uint256 creatorReward = (_groupCreatorRewardPercent.div(100)).mul(amountToChargeAsFees);
 
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
             .sub(amountToChargeAsFees);
