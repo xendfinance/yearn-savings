@@ -91,7 +91,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
-    uint _groupCreatorRewardPercent;
+    uint256 _groupCreatorRewardPercent;
 
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";

@@ -91,7 +91,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
-    uint _groupCreatorRewardPercent;
+    uint256 _groupCreatorRewardPercent;
 
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
@@ -864,16 +864,14 @@ contract XendFinanceGroup_Yearn_V1 is
         Cycle memory cycle = _getCycleById(cycleId);
         CycleFinancial memory cycleFinancial =
             _getCycleFinancialByCycleId(cycleId);
-        bool memberExistInCycle =
-            cycleStorage.doesCycleMemberExist(cycleId, memberAddress);
+        
 
-        require(memberExistInCycle, "You are not a member of this cycle");
+        require(cycleStorage.doesCycleMemberExist(cycleId, memberAddress), "You are not a member of this cycle");
 
-        uint256 index = _getCycleMemberIndex(cycle.id, memberAddress);
+       
 
-        CycleMember memory cycleMember = _getCycleMember(index);
+        CycleMember memory cycleMember = _getCycleMemberInfo(cycleId, memberAddress);
 
-        require(!cycleMember.hasWithdrawn, "Funds have already been withdrawn");
 
         uint256 numberOfStakesByMember = cycleMember.numberOfCycleStakes;
         //uint256 pricePerFullShare = lendingService.getPricePerFullShare();
@@ -1020,6 +1018,18 @@ contract XendFinanceGroup_Yearn_V1 is
         );
     }
 
+    function _getCycleMemberInfo(uint256 cycleId, address payable memberAddress) internal returns (CycleMember memory) {
+
+        require(cycleStorage.doesCycleMemberExist(cycleId, memberAddress), "You are not a member of this cycle");
+
+        uint256 index = _getCycleMemberIndex(cycleId, memberAddress);
+        CycleMember memory cycleMember = _getCycleMember(index);
+
+        require(!cycleMember.hasWithdrawn, "Funds have already been withdrawn");
+
+        return cycleMember;
+    }
+
     function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
         internal
         nonReentrant
@@ -1028,29 +1038,19 @@ contract XendFinanceGroup_Yearn_V1 is
         Cycle memory cycle;
         CycleFinancial memory cycleFinancial;
 
-        if (_isCycleReadyToBeEnded(cycleId)) {
+       
             (cycle, cycleFinancial) = _endCycle(cycleId);
-        } else {
-            cycle = _getCycleById(cycleId);
-            cycleFinancial = _getCycleFinancialByCycleId(cycleId);
-        }
+       
 
-        bool memberExistInCycle =
-            cycleStorage.doesCycleMemberExist(cycleId, memberAddress);
-
-        require(memberExistInCycle, "You are not a member of this cycle");
-
-        uint256 index = _getCycleMemberIndex(cycleId, memberAddress);
-        CycleMember memory cycleMember = _getCycleMember(index);
-
-        require(!cycleMember.hasWithdrawn, "Funds have already been withdrawn");
+            
+    CycleMember memory cycleMember = _getCycleMemberInfo(cycleId, memberAddress);
 
         //how many stakes a cycle member has
         uint256 stakesHoldings = cycleMember.numberOfCycleStakes;
 
         //getting the underlying asset amount that backs 1 stake amount
         uint256 totalStakesLeftWhenTheCycleEnded =
-            cycle.totalStakes - cycle.stakesClaimedBeforeMaturity;
+            cycle.totalStakes.sub(cycle.stakesClaimedBeforeMaturity);
         uint256 underlyingAssetForStake =
             cycleFinancial.underlyingBalance.div(
                 totalStakesLeftWhenTheCycleEnded
@@ -1064,10 +1064,8 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 initialUnderlyingDepositByMember =
             stakesHoldings.mul(cycle.cycleStakeAmount);
 
-        Group memory group = _getGroup(cycle.groupId);
-
-        address groupCreator = group.creatorAddress;
-
+      
+        
         
 
         //deduct xend finance fees
@@ -1097,7 +1095,7 @@ contract XendFinanceGroup_Yearn_V1 is
                 withdrawalResolution.amountToSendToTreasury
             );
             treasury.depositToken(TokenAddress);
-            daiToken.safeTransfer(groupCreator, creatorReward);
+            daiToken.safeTransfer(_getGroupCreator(cycle.groupId), creatorReward);
         }
 
         if (withdrawalResolution.amountToSendToMember > 0) {
@@ -1133,6 +1131,14 @@ contract XendFinanceGroup_Yearn_V1 is
         _updateCycleMember(cycleMember);
 
         return withdrawalResolution.amountToSendToMember;
+    }
+
+    function _getGroupCreator(uint256 groupId) internal returns (address) {
+          Group memory group = _getGroup(groupId);
+
+        address groupCreator = group.creatorAddress;
+
+        return groupCreator;
     }
 
     function deprecateContract(address newServiceAddress)
