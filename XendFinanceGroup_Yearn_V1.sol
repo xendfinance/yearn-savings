@@ -91,7 +91,7 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
-    uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
+    uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the cooperative savings
 
     uint256 _groupCreatorRewardPercent;
 

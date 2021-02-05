@@ -63,6 +63,12 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     mapping(address => uint256) MemberToXendTokenRewardMapping; //  This tracks the total amount of xend token rewards a member has received
 
+      uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
+
+       function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
+
     address LendingAdapterAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR =
@@ -707,6 +713,8 @@ contract XendFinanceIndividual_Yearn_V1 is
                 recipient,
                 numberOfRewardTokens
             );
+             //  increase the total number of xend token rewards distributed
+            _totalTokenReward = _totalTokenReward.add(numberOfRewardTokens);
             _emitXendTokenReward(recipient, numberOfRewardTokens);
         }
     }

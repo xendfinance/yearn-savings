@@ -44,6 +44,8 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
 
+    event XendTokenReward(uint256 date, address indexed member, uint256 amount);
+
     IDaiLendingService lendingService;
     IERC20 daiToken;
     IClientRecord clientRecordStorage;
@@ -58,6 +60,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     mapping(address => uint256) MemberToXendTokenRewardMapping; //  This tracks the total amount of xend token rewards a member has received
 
     address LendingAdapterAddress;
+
+    uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
 
     string constant XEND_FINANCE_COMMISION_DIVISOR =
         "XEND_FINANCE_COMMISION_DIVISOR";
@@ -87,6 +91,12 @@ contract XendFinanceIndividual_Yearn_V1 is
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
+
+
+
+            function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
 
     function deprecateContract(address newServiceAddress)
         external
@@ -700,6 +710,9 @@ contract XendFinanceIndividual_Yearn_V1 is
                 recipient,
                 numberOfRewardTokens
             );
+             //  increase the total number of xend token rewards distributed
+            _totalTokenReward = _totalTokenReward.add(numberOfRewardTokens);
+            
             _emitXendTokenReward(recipient, numberOfRewardTokens);
         }
     }
