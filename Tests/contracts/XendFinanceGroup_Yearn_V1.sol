@@ -1088,8 +1088,10 @@ contract XendFinanceGroup_Yearn_V1 is
 
         uint256 creatorReward =  amountToChargeAsFees.mul(_groupCreatorRewardPercent).div(_feePrecision.mul(100));
 
+        uint256 finalAmountToChargeAsFees = amountToChargeAsFees.sub(creatorReward);
+
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
-            .sub(amountToChargeAsFees);
+            .sub(finalAmountToChargeAsFees);
 
         WithdrawalResolution memory withdrawalResolution =
             _computeAmountToSendToParties(
@@ -1099,7 +1101,7 @@ contract XendFinanceGroup_Yearn_V1 is
 
         withdrawalResolution.amountToSendToTreasury = withdrawalResolution
             .amountToSendToTreasury
-            .add(amountToChargeAsFees);
+            .add(finalAmountToChargeAsFees);
 
         if (withdrawalResolution.amountToSendToTreasury > 0) {
             daiToken.approve(
