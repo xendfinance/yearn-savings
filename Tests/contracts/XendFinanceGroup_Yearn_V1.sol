@@ -91,6 +91,8 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
     address TokenAddress;
     address TreasuryAddress;
 
+    uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
+
     uint256 _groupCreatorRewardPercent;
 
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
@@ -842,6 +844,10 @@ contract XendFinanceGroup_Yearn_V1 is
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
 
+            function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
+
     function withdrawFromCycleWhileItIsOngoing(uint256 cycleId)
         external
         onlyNonDeprecatedCalls
@@ -1171,6 +1177,10 @@ contract XendFinanceGroup_Yearn_V1 is
                 cycleMemberAddress,
                 numberOfRewardTokens
             );
+
+              //  increase the total number of xend token rewards distributed
+            _totalTokenReward = _totalTokenReward.add(numberOfRewardTokens);
+            
             emit XendTokenReward(now, cycleMemberAddress, numberOfRewardTokens);
         }
     }
