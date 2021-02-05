@@ -44,7 +44,11 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
 
-    event XendTokenReward(uint256 date, address indexed member, uint256 amount);
+    event XendTokenReward(
+        uint256 date,
+        address payable recipient,
+        uint256 amount
+    );
 
     IDaiLendingService lendingService;
     IERC20 daiToken;
@@ -59,9 +63,11 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     mapping(address => uint256) MemberToXendTokenRewardMapping; //  This tracks the total amount of xend token rewards a member has received
 
-    address LendingAdapterAddress;
+      uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
 
-    uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
+      
+
+    address LendingAdapterAddress;
 
     string constant XEND_FINANCE_COMMISION_DIVISOR =
         "XEND_FINANCE_COMMISION_DIVISOR";
@@ -92,9 +98,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
 
-
-
-            function GetTotalTokenRewardDistributed() external view returns(uint256){
+     function GetTotalTokenRewardDistributed() external view returns(uint256){
             return _totalTokenReward;
         }
 
@@ -528,7 +532,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
 
-        clientRecordStorage.CreateDepositRecordMapping(
+       uint recordId = clientRecordStorage.CreateDepositRecordMapping(
             amountTransferrable,
             lockPeriodInSeconds,
             depositDateInSeconds,
@@ -536,15 +540,16 @@ contract XendFinanceIndividual_Yearn_V1 is
             false
         );
 
+
         clientRecordStorage
             .CreateDepositorToDepositRecordIndexToRecordIDMapping(
             depositorAddress,
-            clientRecordStorage.GetRecordId()
+            recordId
         );
 
         clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(
             depositorAddress,
-            clientRecordStorage.GetRecordId(),
+            recordId,
             amountTransferrable,
             lockPeriodInSeconds,
             depositDateInSeconds,
@@ -712,7 +717,6 @@ contract XendFinanceIndividual_Yearn_V1 is
             );
              //  increase the total number of xend token rewards distributed
             _totalTokenReward = _totalTokenReward.add(numberOfRewardTokens);
-            
             _emitXendTokenReward(recipient, numberOfRewardTokens);
         }
     }

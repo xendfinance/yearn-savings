@@ -65,9 +65,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
       uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
 
-       function GetTotalTokenRewardDistributed() external view returns(uint256){
-            return _totalTokenReward;
-        }
+      
 
     address LendingAdapterAddress;
 
@@ -99,6 +97,10 @@ contract XendFinanceIndividual_Yearn_V1 is
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
+
+     function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
 
     function deprecateContract(address newServiceAddress)
         external
