@@ -95,6 +95,8 @@ contract XendFinanceGroupContainer_Yearn_V1 is IGroupSchema {
 
     uint256 _groupCreatorRewardPercent;
 
+    uint256 _feePrecision = 10;     //  This determines the lower limit of the fee to be charged. With precsion of 10, it means our fee can have a precision of 0.1% and above
+
     string constant PERCENTAGE_PAYOUT_TO_USERS = "PERCENTAGE_PAYOUT_TO_USERS";
     string constant PERCENTAGE_AS_PENALTY = "PERCENTAGE_AS_PENALTY";
 
@@ -840,6 +842,10 @@ contract XendFinanceGroup_Yearn_V1 is
             
         }
 
+          function UpdateFeePrecision(uint256 feePrecision) onlyOwner external{
+            _feePrecision = feePrecision;
+        }
+
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
     }
@@ -1080,7 +1086,7 @@ contract XendFinanceGroup_Yearn_V1 is
                 underlyingAmountThatMemberDepositIsWorth
             );
 
-            uint256 creatorReward = (_groupCreatorRewardPercent.div(100)).mul(amountToChargeAsFees);
+        uint256 creatorReward =  amountToChargeAsFees.mul(_groupCreatorRewardPercent).div(_feePrecision.mul(100));
 
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
             .sub(amountToChargeAsFees);
