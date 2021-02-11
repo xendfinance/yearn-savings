@@ -1,13 +1,12 @@
 pragma solidity 0.6.6;
-
-
+import "./SafeMath.sol";
 import "./IClientRecordShema.sol";
 import "./StorageOwners.sol";
 pragma experimental ABIEncoderV2;
 
 contract ClientRecord is IClientRecordSchema, StorageOwners {
 
-    uint DepositRecordId = 0;
+    uint256 DepositRecordId;
 
     using SafeMath for uint256;
     
@@ -55,7 +54,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             !recordIndex.exists,
             "depositor record already exists"
         );
-        ClientRecord storage clientRecord = ClientRecord(
+        ClientRecord memory clientRecord = ClientRecord(
             true,
             _address,
             underlyingTotalDeposits,
@@ -155,20 +154,20 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
         return DepositorToDepositorRecordIndexMapping[member];
     }
     
-     function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint){
+     function GetRecordIdFromRecordIndexAndDepositorRecord(uint256 recordIndex, address depositor) external view returns(uint){
 
       mapping(uint=>uint) storage depositorCreatedRecordIndexToRecordId = DepositorToRecordIndexToRecordIDMapping[depositor];
 
       return depositorCreatedRecordIndexToRecordId[recordIndex];
     }
     
-     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
+     function CreateDepositRecordMapping(uint256 amount, uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
           
           DepositRecordId += 1;
 
          FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[DepositRecordId];
 
-        _fixedDeposit.recordId = recordId;
+        _fixedDeposit.recordId = DepositRecordId;
         _fixedDeposit.amount = amount;
         _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
         _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
@@ -180,12 +179,12 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
 
     }
 
-     function UpdateDepositRecordMapping(uint DepositRecordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
+     function UpdateDepositRecordMapping(uint256 depositRecordId, uint256 amount, uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
          
          
-         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[DepositRecordId];
+         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[depositRecordId];
 
-        _fixedDeposit.recordId = DepositRecordId;
+        _fixedDeposit.recordId = depositRecordId;
         _fixedDeposit.amount = amount;
         _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
         _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
