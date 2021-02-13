@@ -1091,7 +1091,7 @@ contract XendFinanceGroup_Yearn_V1 is
         uint256 finalAmountToChargeAsFees = amountToChargeAsFees.sub(creatorReward);
 
         underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
-            .sub(finalAmountToChargeAsFees);
+            .sub(finalAmountToChargeAsFees.add(creatorReward));
 
         WithdrawalResolution memory withdrawalResolution =
             _computeAmountToSendToParties(
