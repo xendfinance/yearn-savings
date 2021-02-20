@@ -837,7 +837,7 @@ contract XendFinanceGroup_Yearn_V1 is
         TreasuryAddress = treasuryAddress;
     }
 
-     function setGroupCreatorRewardPercent (uint percent) external onlyOwner {
+     function setGroupCreatorRewardPercent (uint256 percent) external onlyOwner {
             _groupCreatorRewardPercent = percent;
             
         }

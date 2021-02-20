@@ -26,7 +26,7 @@ const XendFinanceIndividual_Yearn_V1 = artifacts.require(
 
 const RewardConfigContract = artifacts.require("RewardConfig");
 
-const xendTokenContract = artifacts.require("XendToken");
+const XendTokenContract = artifacts.require("XendToken");
 
 
 const EsusuServiceContract = artifacts.require("EsusuService");
@@ -43,7 +43,7 @@ const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
     
 const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
 
-const unlockedAddress = "0xD826f15158057d65c22228bc859137c40a634767";
+const unlockedAddress = "0xdcd024536877075bfb2ffb1db9655ae331045b4e";
 
 
 //  Approve a smart contract address or normal address to spend on behalf of the owner
@@ -80,48 +80,30 @@ var account1Balance;
 var account2Balance;
 var account3Balance;
 
+   
 
 
-contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
-  let contractInstance;
+
+contract("XendFinanceIndividual_Yearn_V1", () => {
+  let contractInstance = null;
+  let cycleContract = null;
+  let groupsContract = null;
+  let xendTokenContract = null;
+  let daiLendingService = null;
+  let rewardConfigContract = null;
+  let clientRecordContract = null;
+  let savingsConfigContract = null
  
 
   beforeEach(async () => {
 
-  let clientRecord = await ClientRecordContract.deployed();
+    clientRecordContract = await ClientRecordContract.deployed();
+    savingsConfigContract =  await SavingsConfigContract.deployed();
+    xendTokenContract = await XendTokenContract.deployed();
+    daiLendingService  = await DaiLendingServiceContract.deployed();  
+    contractInstance = await XendFinanceIndividual_Yearn_V1.deployed();
 
-  let savingsConfig =  await SavingsConfigContract.deployed();
-
-  let groups = await GroupsContract.deployed();
-
-  let treasury = await TreasuryContract.deployed();
-
-  let esusuService = await EsusuServiceContract.deployed();
-
-  let rewardConfig = await RewardConfigContract.deployed(
-    esusuService.address,
-    groups.address
-  );
-
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-  let daiLendingService = await DaiLendingServiceContract.deployed();
-
-  let daiLendingAdapter = await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
-
-    contractInstance = await XendFinanceIndividual_Yearn_V1.new(
-      daiLendingService.address,
-      DaiContractAddress,
-      clientRecord.address,
-      savingsConfig.address,
-      yDaiContractAddress,
-      rewardConfig.address,
-      treasury.address,
-      xendToken.address,
-    );
-  });
-
-    //  Get the addresses and Balances of at least 2 accounts to be used in the test
+      //  Get the addresses and Balances of at least 2 accounts to be used in the test
             //  Send DAI to the addresses
             web3.eth.getAccounts().then(function(accounts){
 
@@ -168,6 +150,11 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
               });
           });
 
+  });
+
+
+  
+
 
       
 
@@ -188,59 +175,20 @@ contract("XendFinanceIndividual_Yearn_V1", async (accounts) => {
 
    it("should deposit and withdraw", async () => {
 
-    let clientRecord = await ClientRecordContract.deployed();
-
-    let savingsConfig =  await SavingsConfigContract.deployed();
-  
-    let groups = await GroupsContract.deployed();
-  
-    let esusuService = await EsusuServiceContract.deployed();
-  
-    let treasury = await TreasuryContract.deployed();
-  
-    let rewardConfig = await RewardConfigContract.deployed(
-      esusuService.address,
-      groups.address
-    );
-  
-    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-  
-  
-    let daiLendingService = await DaiLendingServiceContract.deployed();
-  
-    await DaiLendingAdapterContract.deployed(DaiLendingServiceContract.address);
-  
-      const instance = await XendFinanceIndividual_Yearn_V1.new(
-      daiLendingService.address,
-      DaiContractAddress,
-      clientRecord.address,
-      savingsConfig.address,
-      yDaiContractAddress,
-      rewardConfig.address,
-      xendToken.address,
-      treasury.address,
-      );
-
-      await clientRecord.activateStorageOracle(instance.address, {from :account1});
-  
-      await xendToken.grantAccess(instance.address, {from : account1});
-
       //  Give allowance to the xend finance individual to spend DAI on behalf of account 1 and 2
         var approvedAmountToSpend = BigInt(1000000000000000000000); //   1,000 Dai
-      
-        approveDai(instance.address,account1,approvedAmountToSpend);
 
         let amountToWithdraw = BigInt(1000000000000000000000);
       
-        await approveDai(instance.address, account1, approvedAmountToSpend);
+        await approveDai(contractInstance.address, account1, approvedAmountToSpend);
 
         //await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]})
 
-        const depositResult = await instance.deposit({from : account1});
+       await contractInstance.deposit({from : account1});
 
-        assert(depositResult.receipt.status == true, "tx receipt status is true")
+  
 
-        const withdrawResult = await instance.withdraw(amountToWithdraw);
+        const withdrawResult = await contractInstance.withdraw(amountToWithdraw);
 
         assert(withdrawResult.receipt.status == true, "tx receipt status is true")
 

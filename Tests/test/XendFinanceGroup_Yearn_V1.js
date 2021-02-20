@@ -298,42 +298,7 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
       //should throw error cause cycle member does not exist
        await utils.shouldThrow(instance.getCycleMember(1));
 
-      await cycles.activateStorageOracle(accounts[3], {from : accounts[0]});
-
-      let numberOfCycleStakes = 3;
-
-      await cycles.createCycleMember(1, 1, accounts[1], 0, numberOfCycleStakes, 0, false, {from : accounts[3]});
-
-      let stakesClaimedBeforeMaturity = numberOfCycleStakes;
-      
-      //increase cycle stake
-      const result = await cycles.updateCycle(1, 0, startTimeStamp, duration, 10, true, 100, 0, 0, 0, stakesClaimedBeforeMaturity, {from: accounts[3]});
-
-      assert(result.receipt.status == true, "tx reciept is true");
-
-      // increase derivative balance
-      let totalDerivativeBalance = 1000;
-
-      let numberOfStakes = 10;
-
-      let numberOfDepositorStakes = 3;
-
-      let derivativeBalanceClaimedBeforeMaturity = (totalDerivativeBalance / numberOfStakes ) * numberOfDepositorStakes;
-
-      const updateCycleFinancialsResultA = await cycles.updateCycleFinancials(1, 0, 0, 0, totalDerivativeBalance, 0, derivativeBalanceClaimedBeforeMaturity, {from : accounts[3]});
-
-      assert(updateCycleFinancialsResultA.receipt.status == true, 'tx receipt status is true')
-      
-      // increase underlying total withdrawn
-      let underlyingBalance = totalDerivativeBalance;
-
-      let underlyingTotalWithdrawn = underlyingBalance;
-
-      const updateCycleFinancialsResultB = await cycles.updateCycleFinancials(1, 0, underlyingTotalWithdrawn, underlyingBalance, totalDerivativeBalance, 0, derivativeBalanceClaimedBeforeMaturity, {from : accounts[3]});
-
-      assert(updateCycleFinancialsResultB.receipt.status == true, 'tx receipt status is true')
-
-      await cycles.activateStorageOracle(instance.address);
+     
 
       // should Throw An Error If Cycle Duration Has Not Elapsed And Cycle Is Ongoing
       await utils.shouldThrow(instance.endCycle(1));
@@ -344,18 +309,6 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
       await utils.shouldThrow(instance.withdrawFromCycle(1));
       
       await instance.joinCycle(1, numberOfStakes);
-
-      //should throw error because no rule definitions found for rule key;
-      await utils.shouldThrow(instance.withdrawFromCycle(1));
-
-      let exact = 10/100;
-
-      let exactPenalty = 5/100;
-
-      //create savings rule config
-      await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 5, 1);
-
-      await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 10, 1);
 
       const withdrawFromCycleWhileItIsOngoingResult  = await instance.withdrawFromCycleWhileItIsOngoing(1);
 
@@ -385,20 +338,9 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
 
     let daiLendingService = await DaiLendingServiceContract.deployed();
   
-    let daiLendingAdapter = await DaiLendingAdapterContract.deployed(daiLendingService.address);
+    let daiLendingAdapter = await DaiLendingAdapterContract.deployed();
   
-      contractInstance = await XendFinanceGroup_Yearn_V1.new(
-        daiLendingService.address,
-        DaiContractAddress,
-        groups.address,
-        cycles.address,
-        treasury.address,
-        savingsConfig.address,
-        rewardConfig.address,
-        xendToken.address,
-        yDaiContractAddress
-  
-      );
+      contractInstance = await XendFinanceGroup_Yearn_V1.new();
   
       await groups.activateStorageOracle(instance.address);
   
@@ -425,41 +367,6 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
       //should throw error cause cycle member does not exist
        await utils.shouldThrow(instance.getCycleMember(1));
 
-      await cycles.activateStorageOracle(accounts[3], {from : accounts[0]});
-
-      let numberOfCycleStakes = 3;
-
-      await cycles.createCycleMember(1, 1, accounts[1], 0, numberOfCycleStakes, 0, false, {from : accounts[3]});
-
-      let stakesClaimedBeforeMaturity = numberOfCycleStakes;
-      
-      //increase cycle stake claimed
-
-      let stakesClaimed = 3;
-
-      const result = await cycles.updateCycle(1, 0, startTimeStamp, duration, 10, true, 100, 0, stakesClaimed, 0, stakesClaimedBeforeMaturity, {from: accounts[3]});
-
-      assert(result.receipt.status == true, "tx reciept is true");
-
-      // increase underlying total withdrawn
-      let totalDerivativeBalance = 1000;
-
-      let numberOfStakes = 10;
-
-      let numberOfDepositorStakes = 3;
-
-      let derivativeBalanceClaimedBeforeMaturity = (totalDerivativeBalance / numberOfStakes ) * numberOfDepositorStakes;
-      
-      let underlyingBalance = totalDerivativeBalance;
-
-      let underlyingTotalWithdrawn = underlyingBalance;
-
-      const updateCycleFinancialsResult = await cycles.updateCycleFinancials(1, 0, underlyingTotalWithdrawn, underlyingBalance, totalDerivativeBalance, 0, derivativeBalanceClaimedBeforeMaturity, {from : accounts[3]});
-
-      assert(updateCycleFinancialsResult.receipt.status == true, 'tx receipt status is true')
-
-      
-
       await cycles.activateStorageOracle(instance.address);
 
       // should Throw An Error If Cycle Duration Has Not Elapsed And Cycle Is Ongoing
@@ -467,22 +374,22 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
 
       // withdraw from cycle
 
-      //should throw error because msg.send is not a member of the cycle
-      await utils.shouldThrow(instance.withdrawFromCycle(1));
+      // //should throw error because msg.send is not a member of the cycle
+      // await utils.shouldThrow(instance.withdrawFromCycle(1));
       
       await instance.joinCycle(1, numberOfStakes);
 
       //should throw error because no rule definitions found for rule key;
       await utils.shouldThrow(instance.withdrawFromCycle(1));
 
-      let exact = 10/100;
+      // let exact = 10/100;
 
-      let exactPenalty = 5/100;
+      // let exactPenalty = 5/100;
 
-      //create savings rule config
-      await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 5, 1);
+      // //create savings rule config
+      // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 5, 1);
 
-      await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 10, 1);
+      // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 10, 1);
 
       const withdrawFromCycleResult  = await instance.withdrawFromCycle(1);
 

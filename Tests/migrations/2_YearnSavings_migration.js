@@ -98,20 +98,20 @@ module.exports = function (deployer) {
       "Xend finance individual",
       XendFinanceIndividual_Yearn_V1Contract.address
     );
-    // await deployer.deploy(
-    //   XendFinanceGroup_Yearn_V1Contract,
-    //   DaiLendingServiceContract.address,
-    //   YDerivativeContract,
-    //   GroupsContract.address,
-    //   CyclesContract.address,
-    //   TreasuryContract.address,
-    //   SavingsConfigContract.address,
-    //   RewardConfigContract.address,
-    //   XendTokenContract.address,
-    //   derivativeContract
-    // );
+    await deployer.deploy(
+      XendFinanceGroup_Yearn_V1Contract,
+      DaiLendingServiceContract.address,
+    derivativeContract,
+      GroupsContract.address,
+      CyclesContract.address,
+      TreasuryContract.address,
+      SavingsConfigContract.address,
+      RewardConfigContract.address,
+      XendTokenContract.address,
+      YDerivativeContract
+    );
 
-   // console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
+   console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
 
    
     let savingsConfigContract = null
@@ -131,21 +131,21 @@ module.exports = function (deployer) {
     daiLendingService = await DaiLendingServiceContract.deployed();
     clientRecordContract = await ClientRecordContract.deployed();
     rewardConfigContract = await RewardConfigContract.deployed();
-   // xendGroupContract = await XendFinanceGroup_Yearn_V1Contract.deployed();
+   xendGroupContract = await XendFinanceGroup_Yearn_V1Contract.deployed();
     cycleContract = await CyclesContract.deployed();
   
 
     await xendTokenContract.grantAccess(XendFinanceIndividual_Yearn_V1Contract.address);
     console.log("11->Xend Token Has Given access To Xend individual contract to transfer tokens ...");
 
-   // await xendTokenContract.grantAccess(XendFinanceGroup_Yearn_V1Contract.address);
+    await xendTokenContract.grantAccess(XendFinanceGroup_Yearn_V1Contract.address);
     //console.log("11->Xend Token Has Given access To Xend group contract to transfer tokens ...");
 
     await clientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
 
-    // await groupsContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
+    await groupsContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
 
-    // await cycleContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
+    await cycleContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
      
     await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
 
@@ -155,6 +155,7 @@ module.exports = function (deployer) {
 
     await savingsConfigContract.createRule("PERCENTAGE_AS_PENALTY", 0, 0, 1, 1);
 
+    await xendGroupContract.setGroupCreatorRewardPercent(10);
     //0. update fortube adapter
     await daiLendingService.updateAdapter(DaiLendingAdapterContract.address)
 
