@@ -61,6 +61,8 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     bool isDeprecated;
 
+    uint256 minLockPeriod = 7890000; //minimum lock period is three months by default
+
     mapping(address => uint256) MemberToXendTokenRewardMapping; //  This tracks the total amount of xend token rewards a member has received
 
       uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
@@ -96,6 +98,10 @@ contract XendFinanceIndividual_Yearn_V1 is
 
     function setAdapterAddress() external onlyOwner {
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
+    }
+
+    function setMinimumLockPeriod (uint256 minimumLockPeriod) external onlyNonDeprecatedCalls onlyOwner {
+        minLockPeriod = minimumLockPeriod;
     }
 
      function GetTotalTokenRewardDistributed() external view returns(uint256){
@@ -506,6 +512,8 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 amountTransferrable =
             daiToken.allowance(depositorAddress, recipient);
+
+            require(lockPeriodInSeconds >= minLockPeriod, "Minimum lock period must be 3 months");
 
         require(
             amountTransferrable > 0,
