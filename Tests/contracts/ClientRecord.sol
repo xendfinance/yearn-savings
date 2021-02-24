@@ -161,7 +161,7 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
       return depositorCreatedRecordIndexToRecordId[recordIndex];
     }
     
-     function CreateDepositRecordMapping(uint256 amount, uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
+     function CreateDepositRecordMapping(uint256 amount, uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle returns(uint)   {
           
           DepositRecordId += 1;
 
@@ -176,7 +176,7 @@ clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
         
         fixedDepositRecords.push(_fixedDeposit);
 
-
+    return DepositRecordId;
     }
 
      function UpdateDepositRecordMapping(uint256 depositRecordId, uint256 amount, uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
