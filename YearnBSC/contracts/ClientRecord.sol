@@ -10,7 +10,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     
     using SafeMath for uint256;
     
-    uint DepositRecordId = 0;
+    uint DepositRecordId;
     
     FixedDepositRecord[] fixedDepositRecords;
     
@@ -185,6 +185,23 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
 
     }
     
+      function UpdateDepositRecordMapping(uint depositorRecordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
+         
+         
+         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[depositorRecordId];
+
+        _fixedDeposit.recordId = depositorRecordId;
+        _fixedDeposit.amount = amount;
+        _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
+        _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
+        _fixedDeposit.depositorId = depositor;
+        _fixedDeposit.hasWithdrawn = hasWithdrawn;
+        
+        fixedDepositRecords.push(_fixedDeposit);
+
+
+    }
+    
     // function _UpdateDepositRecordAfterWithdrawal(uint recordId, uint amount, uint lockPeriodInSeconds, uint depositDateInSeconds, address depositor, bool hasWithdrawn) internal returns(FixedDepositRecord memory) {
     //     FixedDepositRecord storage record = DepositRecordMapping[recordId];
     //     record.recordId = recordId;
@@ -208,6 +225,10 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     }
     
     function GetRecordId() external view returns (uint){
+        return DepositRecordId;
+    }
+    
+    function _getRecordId() internal view returns (uint) {
         return DepositRecordId;
     }
     

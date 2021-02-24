@@ -49,6 +49,11 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256 balance
     );
     
+    event DerivativeAssetWithdrawnFromFixed(
+          address payable user,
+        uint256 underlyingAmount,
+        uint256 derivativeAmount        );
+    
       event XendTokenReward (
         uint date,
         address payable indexed member,
@@ -85,6 +90,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     mapping(address=>uint) MemberToXendTokenRewardMapping;  //  This tracks the total amount of xend token rewards a member has received
     
     uint256 lastRecordId;
+    
+     uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
 
     constructor(
         //address fortubeBankAdapterAddress,
@@ -120,7 +127,11 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
         fBusdToken.transfer(newServiceAddress, derivativeTokenBalance);
     }
-    
+   
+
+       function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
       function _UpdateMemberToXendTokeRewardMapping(address member, uint rewardAmount) internal onlyNonDeprecatedCalls {
         MemberToXendTokenRewardMapping[member] = MemberToXendTokenRewardMapping[member].add(rewardAmount);
     }
@@ -379,7 +390,9 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
     }
     
-    function _validateLockTimeHasElapsedAndHasNotWithdrawn (uint256 recordId) internal {
+  
+    
+    function _validateLockTimeHasElapsedAndHasNotWithdrawn (uint256 recordId, uint256 derivativeAmount) internal {
         
       FixedDepositRecord memory depositRecord = _getFixedDepositRecordById(recordId);
         
@@ -387,6 +400,11 @@ contract XendFinanceIndividual_Yearn_V1 is
     
         
         bool hasWithdrawn = depositRecord.hasWithdrawn;
+        
+        
+        uint256 derivativeBalance = depositRecord.amount;
+
+       
           
          require(hasWithdrawn == false, 'Individual has already withdrawn');
         
@@ -526,23 +544,19 @@ contract XendFinanceIndividual_Yearn_V1 is
         
     }
     
-    function WithdrawFromFixedDeposit (uint recordId, uint amount) external onlyNonDeprecatedCalls {
+    function WithdrawFromFixedDeposit (uint recordId, uint amount, uint256 depositDateInSeconds, uint256 lockPeriodInSeconds) external onlyNonDeprecatedCalls {
         
         address payable recipient = msg.sender;
         
          FixedDepositRecord memory depositRecord = _getFixedDepositRecordById(recordId);
           
-          uint256 derivativeAmount = amount;
+         
           
-          uint256 depositDate = depositRecord.depositDateInSeconds;
+          uint256 depositDate = depositDateInSeconds;
           
-          uint256 lockPeriod = depositRecord.lockPeriodInSeconds;
+          uint256 lockPeriod = lockPeriodInSeconds;
           
-          
-        
-           _validateUserBalanceIsSufficient(recipient, derivativeAmount);
-           
-           _validateLockTimeHasElapsedAndHasNotWithdrawn(recordId);
+           _validateLockTimeHasElapsedAndHasNotWithdrawn(recordId, amount);
            
            
 
@@ -550,11 +564,11 @@ contract XendFinanceIndividual_Yearn_V1 is
         
         FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
 
-         bool isApprovalSuccessful = fBusdToken.approve(FortubeBankAdapter,derivativeAmount);
+         bool isApprovalSuccessful = fBusdToken.approve(FortubeBankAdapter,amount);
          
          require(isApprovalSuccessful == true, 'could not approve fbusd token for adapter contract');
         
-         fortubeService.WithdrawBySharesOnly(derivativeAmount);
+         fortubeService.WithdrawBySharesOnly(amount);
 
         uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance(address(this));
 
@@ -578,33 +592,30 @@ contract XendFinanceIndividual_Yearn_V1 is
             
         //busdToken.approve(recipient, amountToSendToDepositor);
 
-        bool isSuccessful = busdToken.transfer(
+       busdToken.transfer(
             recipient,
             amountToSendToDepositor
         );
-
-        require(isSuccessful == true, "Could not complete withdrawal");
 
         if (commissionFees > 0) {
             busdToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(busdToken));
         }
-        clientRecordStorage.CreateDepositRecordMapping( derivativeAmount, lockPeriod, depositDate, msg.sender, true);
+       clientRecordStorage.UpdateDepositRecordMapping(recordId, amount, lockPeriod, depositDate, msg.sender, true);
        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(recipient, depositRecord.recordId, depositRecord.amount, lockPeriod, depositDate, true);
     
         
         _rewardUserWithTokens(
         lockPeriod,
-        derivativeAmount,
+        amount,
         recipient
         );
 
 
-        emit DerivativeAssetWithdrawn(
+        emit DerivativeAssetWithdrawnFromFixed(
             recipient,
             amountOfUnderlyingAssetWithdrawn,
-            derivativeAmount,
-            derivativeAmount
+            amount
         );
     }
     
@@ -750,6 +761,8 @@ function _rewardUserWithTokens(
     if (numberOfRewardTokens > 0) {
         xendToken.mint(recipient, numberOfRewardTokens);
         _UpdateMemberToXendTokeRewardMapping(recipient,numberOfRewardTokens);
+         //  increase the total number of xend token rewards distributed
+            _totalTokenReward = _totalTokenReward.add(numberOfRewardTokens);
           _emitXendTokenReward(recipient, numberOfRewardTokens);
 
     }

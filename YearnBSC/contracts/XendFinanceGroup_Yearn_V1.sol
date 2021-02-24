@@ -61,13 +61,7 @@
                 uint amount
             );
         
-        event DerivativeAssetWithdrawn(
-            uint256 indexed cycleId,
-            address payable indexed memberAddress,
-            uint256 underlyingAmount,
-            address tokenAddress
-        );
-        
+      
         
         
         
@@ -93,7 +87,11 @@
         
         bool isDeprecated = false;
         
-        uint groupCreatorRewardPercent;
+        uint256 _groupCreatorRewardPercent;
+        
+        uint256 _totalTokenReward;      //  This tracks the total number of token rewards distributed on the individual savings
+        
+        uint256 _feePrecision = 10;
         
         modifier onlyNonDeprecatedCalls() {
             require(isDeprecated == false, "Service contract has been deprecated");
@@ -1040,9 +1038,19 @@
             TreasuryAddress = treasuryAddress;
         }
         
+         
+
+       function GetTotalTokenRewardDistributed() external view returns(uint256){
+            return _totalTokenReward;
+        }
+        
         function setGroupCreatorRewardPercent (uint percent) external onlyOwner {
-            groupCreatorRewardPercent = percent;
+            _groupCreatorRewardPercent = percent;
             
+        }
+        
+            function UpdateFeePrecision(uint256 feePrecision) onlyOwner external{
+            _feePrecision = feePrecision;
         }
         
         function setAdapterAddress() onlyOwner external {
@@ -1134,9 +1142,8 @@
             //     underlyingAmountThatMemberDepositIsWorth
             // );
         
-            uint256 totalDeductible = amountToChargeAsPenalites;
-        
-            underlyingAmountThatMemberDepositIsWorth -= totalDeductible;
+           
+            underlyingAmountThatMemberDepositIsWorth -= amountToChargeAsPenalites;
         
         
                 WithdrawalResolution memory withdrawalResolution
@@ -1147,7 +1154,7 @@
         
             withdrawalResolution.amountToSendToTreasury = withdrawalResolution
                 .amountToSendToTreasury
-                .add(totalDeductible);
+                .add(amountToChargeAsPenalites);
         
             if (withdrawalResolution.amountToSendToTreasury > 0) {
                 busdToken.approve(
@@ -1230,12 +1237,7 @@
                 cycleId,
                 memberAddress
             );
-            emit DerivativeAssetWithdrawn(
-                cycleId,
-                memberAddress,
-                amountToSendToMember,
-                TokenAddress
-            );
+          
         }
         
         function withdrawFromCycle(uint256 cycleId, address payable memberAddress, uint256 groupId)
@@ -1247,13 +1249,11 @@
                 memberAddress
             );
         
-            emit DerivativeAssetWithdrawn(
-                cycleId,
-                memberAddress,
-                amountToSendToMember,
-                TokenAddress
-            );
+          
         }
+        
+        
+    
         
         function _withdrawFromCycle(uint256 cycleId, address payable memberAddress)
             internal
@@ -1269,7 +1269,7 @@
                 cycleFinancial = _getCycleFinancialByCycleId(cycleId);
             }
         
-            bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
+          bool memberExistInCycle = cycleStorage.doesCycleMemberExist(
                 cycleId,
                 memberAddress
             );
@@ -1307,13 +1307,18 @@
                 cycle.cycleStakeAmount
             );
         
+           
+        
             //deduct xend finance fees
             uint256 amountToChargeAsFees = _computeXendFinanceCommisions(
                 underlyingAmountThatMemberDepositIsWorth
             );
-        
+         uint256 creatorReward =  amountToChargeAsFees.mul(_groupCreatorRewardPercent).div(_feePrecision.mul(100));
+         
+         uint256 finalAmountToChargeAsPenalties = amountToChargeAsFees.sub(creatorReward);
+         
             underlyingAmountThatMemberDepositIsWorth = underlyingAmountThatMemberDepositIsWorth
-                .sub(amountToChargeAsFees);
+                .sub(finalAmountToChargeAsPenalties.add(creatorReward));
         
         
                 WithdrawalResolution memory withdrawalResolution
@@ -1324,7 +1329,7 @@
         
             withdrawalResolution.amountToSendToTreasury = withdrawalResolution
                 .amountToSendToTreasury
-                .add(amountToChargeAsFees);
+                .add(finalAmountToChargeAsPenalties);
         
             if (withdrawalResolution.amountToSendToTreasury > 0) {
                 busdToken.approve(
@@ -1332,6 +1337,8 @@
                     withdrawalResolution.amountToSendToTreasury
                 );
                 treasury.depositToken(TokenAddress);
+                
+                 busdToken.transfer(_getGroupCreator(cycleMember.groupId), creatorReward);
             }
         
             if (withdrawalResolution.amountToSendToMember > 0) {
@@ -1349,14 +1356,11 @@
         
             cycleMember.hasWithdrawn = true;
             cycleMember.stakesClaimed += stakesHoldings;
-            uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
-            
-            Group memory group = _getGroup(cycle.groupId);
+          //  uint256 amountDeposited = cycle.cycleStakeAmount.mul(stakesHoldings);
             
             _rewardUserWithTokens(
                 cycle.cycleDuration,
-                amountDeposited,
-                group.creatorAddress,
+                initialUnderlyingDepositByMember,
                 cycleMember._address
             );
         
@@ -1366,7 +1370,13 @@
         
             return withdrawalResolution.amountToSendToMember;
         }
-        
+          function _getGroupCreator(uint256 groupId) internal returns (address) {
+          Group memory group = _getGroup(groupId);
+
+        address groupCreator = group.creatorAddress;
+
+        return groupCreator;
+    }
         function deprecateContract(address newServiceAddress)
             external
             onlyOwner
@@ -1388,7 +1398,6 @@
         function _rewardUserWithTokens(
             uint256 totalCycleTimeInSeconds,
             uint256 amountDeposited,
-            address payable groupCreatorAddress,
             address payable cycleMemberAddress
         ) internal {
             uint256 numberOfRewardTokens = rewardConfig
@@ -1400,13 +1409,10 @@
            
         
             if (numberOfRewardTokens > 0) {
-                 uint creatorReward = (groupCreatorRewardPercent.div(100)).mul(numberOfRewardTokens);
                  
                 xendToken.mint(cycleMemberAddress, numberOfRewardTokens);
                 
-                xendToken.mint(groupCreatorAddress, creatorReward);
-                 
-                groupStorage.setXendTokensReward(cycleMemberAddress, numberOfRewardTokens);
+                 groupStorage.setXendTokensReward(cycleMemberAddress, numberOfRewardTokens);
                  
                   _emitXendTokenReward(cycleMemberAddress, numberOfRewardTokens);
         
