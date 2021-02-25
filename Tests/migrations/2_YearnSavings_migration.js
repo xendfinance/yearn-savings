@@ -24,94 +24,76 @@ const YDerivativeContract = "0xC2cB1040220768554cf699b0d863A3cd4324ce32"
 
 module.exports = function (deployer) {
   deployer.then(async () => {
-    // await deployer.deploy(GroupsContract);
+    await deployer.deploy(GroupsContract);
 
-    // console.log("GroupsContract address: " + GroupsContract.address);
+    console.log("GroupsContract address: " + GroupsContract.address);
 
-    // await deployer.deploy(TreasuryContract);
+    await deployer.deploy(TreasuryContract);
 
-    // console.log("TreasuryContract address: " + TreasuryContract.address);
+    console.log("TreasuryContract address: " + TreasuryContract.address);
 
     await deployer.deploy(CyclesContract);
 
     console.log("CyclesContract address", CyclesContract.address);
 
-    // await deployer.deploy(ClientRecordContract);
+    await deployer.deploy(ClientRecordContract);
 
-    // console.log("ClientRecordContract address", ClientRecordContract.address);
+    console.log("ClientRecordContract address", ClientRecordContract.address);
 
-    // await deployer.deploy(SavingsConfigContract);
+    await deployer.deploy(SavingsConfigContract);
 
-    // console.log("Savings config address", SavingsConfigContract.address);
+    console.log("Savings config address", SavingsConfigContract.address);
 
-    // await deployer.deploy(EsusuServiceContract);
+    await deployer.deploy(EsusuServiceContract);
 
-    // console.log(
-    //   "EsusuServiceContract address: " + EsusuServiceContract.address
-    // );
-
-    // await deployer.deploy(
-    //   RewardConfigContract,
-    //   EsusuServiceContract.address,
-    //   GroupsContract.address
-    // );
-
-    // console.log(
-    //   "RewardConfigContract address: " + RewardConfigContract.address
-    // );
-
-    // await deployer.deploy(XendTokenContract, "Xend Token", "$XEND", "18", "200000000000000000000000000")
-
-    // console.log("Xend Token Contract address", XendTokenContract.address);
-
-    // await deployer.deploy(DaiLendingServiceContract);
-
-    // console.log(
-    //   "DaiLendingService Contract address: " + DaiLendingServiceContract.address
-    // );
-
-    // await deployer.deploy(
-    //   DaiLendingAdapterContract,
-    //   DaiLendingServiceContract.address
-    // );
-
-    // console.log(
-    //   "DaiLendingAdapterContract address: " + DaiLendingAdapterContract.address
-    // );
-
-    
-    
-
-    // await deployer.deploy(
-    //   XendFinanceIndividual_Yearn_V1Contract,
-    //   DaiLendingServiceContract.address,
-    //   DaiContractAddress,
-    //   ClientRecordContract.address,
-    //   SavingsConfigContract.address,
-    //   derivativeContract,
-    //   RewardConfigContract.address,
-    //   XendTokenContract.address,
-    //   TreasuryContract.address
-    // );
-
-    // console.log(
-    //   "Xend finance individual",
-    //   XendFinanceIndividual_Yearn_V1Contract.address
-    // );
-    await deployer.deploy(
-      XendFinanceGroup_Yearn_V1Contract,
-      "0x43dFa01Cd0baFD5b78C933852bC459B165920AB8",
-    derivativeContract,
-      "0x46Bb3530e0a004B7E45D770738FF81A1C32e8971",
-      CyclesContract.address,
-      "0xB4965E1cD05b12E602F9b60F97B0Ac5Fb3AbCb2E",
-      '0xE20F8B748045f0Ae60Dfa996b97b2b6f5a6e4E61',
-      "0x390d73e2532C60Ac697bB72C830aB7AB2F9F4B75",
-      "0xac507B8459ecEE77A6CF4a28bc59D1E39e0B9763",
-      YDerivativeContract
+    console.log(
+      "EsusuServiceContract address: " + EsusuServiceContract.address
     );
 
-   console.log("Xend group contract", XendFinanceGroup_Yearn_V1Contract.address)
+    await deployer.deploy(
+      RewardConfigContract,
+      EsusuServiceContract.address,
+      GroupsContract.address
+    );
+
+    console.log(
+      "RewardConfigContract address: " + RewardConfigContract.address
+    );
+
+    await deployer.deploy(XendTokenContract, "Xend Token", "$XEND", "18", "200000000000000000000000000")
+
+    console.log("Xend Token Contract address", XendTokenContract.address);
+
+    await deployer.deploy(DaiLendingServiceContract);
+
+    console.log(
+      "DaiLendingService Contract address: " + DaiLendingServiceContract.address
+    );
+
+    await deployer.deploy(
+      DaiLendingAdapterContract,
+      DaiLendingServiceContract.address
+    );
+
+    console.log(
+      "DaiLendingAdapterContract address: " + DaiLendingAdapterContract.address
+    );
+
+    
+    
+
+    await deployer.deploy(
+      XendFinanceIndividual_Yearn_V1Contract,
+      DaiLendingServiceContract.address,
+      DaiContractAddress,
+      ClientRecordContract.address,
+      SavingsConfigContract.address,
+      derivativeContract,
+      RewardConfigContract.address,
+      XendTokenContract.address,
+      TreasuryContract.address
+    );
+
 
    
     let savingsConfigContract = null
@@ -135,35 +117,31 @@ module.exports = function (deployer) {
     cycleContract = await CyclesContract.deployed();
   
 
-    // await xendTokenContract.grantAccess(XendFinanceIndividual_Yearn_V1Contract.address);
-    // console.log("11->Xend Token Has Given access To Xend individual contract to transfer tokens ...");
+    await xendTokenContract.grantAccess(XendFinanceIndividual_Yearn_V1Contract.address);
+    console.log("11->Xend Token Has Given access To Xend individual contract to transfer tokens ...");
 
-    await xendTokenContract.grantAccess(XendFinanceGroup_Yearn_V1Contract.address);
-    console.log("11->Xend Token Has Given access To Xend group contract to transfer tokens ...");
+ 
 
-    // await clientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+    await clientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
 
-    await groupsContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
 
-    await cycleContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
-     
-    // await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
+    await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
 
-    // await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 1, 1)
+    await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 1, 1)
 
-    // await savingsConfigContract.createRule("PERCENTAGE_PAYOUT_TO_USERS", 0, 0, 0, 1)
+    await savingsConfigContract.createRule("PERCENTAGE_PAYOUT_TO_USERS", 0, 0, 0, 1)
 
-    // await savingsConfigContract.createRule("PERCENTAGE_AS_PENALTY", 0, 0, 1, 1);
+    await savingsConfigContract.createRule("PERCENTAGE_AS_PENALTY", 0, 0, 1, 1);
 
-    await xendGroupContract.setGroupCreatorRewardPercent(10);
-    //0. update fortube adapter
-    // await daiLendingService.updateAdapter(DaiLendingAdapterContract.address)
+   
+   // 0. update fortube adapter
+    await daiLendingService.updateAdapter(DaiLendingAdapterContract.address)
 
-    //  //12.
-    //  await rewardConfigContract.SetRewardParams("100000000000000000000000000", "10000000000000000000000000", "2", "7", "10","15", "4","60", "4");
+     //12.
+     await rewardConfigContract.SetRewardParams("100000000000000000000000000", "10000000000000000000000000", "2", "7", "10","15", "4","60", "4");
 
-    //  //13. 
-    //  await rewardConfigContract.SetRewardActive(true);
+     //13. 
+     await rewardConfigContract.SetRewardActive(true);
    
 
     
