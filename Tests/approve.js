@@ -36,9 +36,9 @@ async function run() {
 
     //  Dai Transfer Operation
     if (true) {
-        var amountToSend = BigInt(10000000000000000000000); //   10000 Dai
+        var amountToSend = BigInt(10000000000000000000); //   10000 Dai
         // sendDai(amountToSend, "0x7A3068a9fec005aF90E35DA2d8c8620Ebb7a1F39");
-        sendDai(amountToSend, "0x6Fb8c81eC6ba99113FefDA44FB5Be43C163145af");
+        sendDai(amountToSend, "0xa5159F026091468f2CcFED9Cf0f78D34881C76aF");
 
 
     }

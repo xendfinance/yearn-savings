@@ -113,7 +113,6 @@ module.exports = function (deployer) {
     daiLendingService = await DaiLendingServiceContract.deployed();
     clientRecordContract = await ClientRecordContract.deployed();
     rewardConfigContract = await RewardConfigContract.deployed();
-   xendGroupContract = await XendFinanceGroup_Yearn_V1Contract.deployed();
     cycleContract = await CyclesContract.deployed();
   
 
