@@ -88,11 +88,15 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             derivativeTotalDeposits,
             derivativeTotalWithdrawn
         );
-clientRecord.underlyingTotalDeposits = underlyingTotalDeposits;
-clientRecord.underlyingTotalWithdrawn = underlyingTotalWithdrawn;
-clientRecord.derivativeBalance = derivativeBalance;
-clientRecord.derivativeTotalDeposits = derivativeTotalDeposits;
-clientRecord.derivativeTotalWithdrawn = derivativeTotalWithdrawn;
+            uint256 index = recordIndex.index;
+
+        ClientRecords[index].underlyingTotalDeposits = underlyingTotalDeposits;
+        ClientRecords[index]
+            .underlyingTotalWithdrawn = underlyingTotalWithdrawn;
+        ClientRecords[index].derivativeBalance = derivativeBalance;
+        ClientRecords[index].derivativeTotalDeposits = derivativeTotalDeposits;
+        ClientRecords[index]
+            .derivativeTotalWithdrawn = derivativeTotalWithdrawn;
     }
 
     function getLengthOfClientRecords() external returns (uint256) {
