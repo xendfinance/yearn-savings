@@ -302,6 +302,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         uint256  derivativeAmount = depositRecord.derivativeBalance;
         
         require(derivativeAmount>0, "Cannot withdraw 0 shares");
+        require(depositRecord.depositorId==recipient,"Withdraw can only be called by depositor");
 
         uint256 depositDate = depositRecord.depositDateInSeconds;
 
@@ -333,7 +334,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         clientRecordStorage.UpdateDepositRecordMapping(
             recordId,
-            derivativeAmount,
+            depositRecord.amount,
             0,
             lockPeriod,
             depositDate,
@@ -344,12 +345,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             recipient,
             depositRecord.recordId,
             depositRecord.amount,
+            derivativeAmount,
             lockPeriod,
             depositDate,
             true
         );
 
-        _rewardUserWithTokens(lockPeriod, derivativeAmount, recipient);
+        _rewardUserWithTokens(lockPeriod, depositRecord.amount, recipient);
 
         emit DerivativeAssetWithdrawn(
             recipient,
@@ -501,10 +503,13 @@ contract XendFinanceIndividual_Yearn_V1 is
         _deposit(depositorAddress);
     }
 
-    function _getFixedDepositRecordById(uint256 recordId)
+ function _getFixedDepositRecordById(uint256 recordId)
         internal
+        view
         returns (FixedDepositRecord memory)
+
     {
+       
         (
             uint256 recordId,
             address payable depositorId,
@@ -514,20 +519,30 @@ contract XendFinanceIndividual_Yearn_V1 is
             uint256 lockPeriodInSeconds,
             bool hasWithdrawn
         ) = clientRecordStorage.GetRecordById(recordId);
+        FixedDepositRecord memory fixedDepositRecord =
+            FixedDepositRecord(
+                recordId,
+                depositorId,
+                hasWithdrawn,
+                amount,
+                depositDateInSeconds,
+                lockPeriodInSeconds,
+                amountOfyDai
+            );
+        return fixedDepositRecord;
     }
 
     function FixedDeposit(
-        uint256 depositDateInSeconds,
         uint256 lockPeriodInSeconds
     ) external onlyNonDeprecatedCalls {
-        address payable depositorAddress = msg.sender;
 
         address recipient = address(this);
 
-        uint256 amountTransferrable =
-            daiToken.allowance(depositorAddress, recipient);
+        uint256 depositDateInSeconds = now;
 
-            require(lockPeriodInSeconds >= minLockPeriod, "Minimum lock period must be 3 months");
+        uint256 amountTransferrable = daiToken.allowance(msg.sender, recipient);
+
+        require(lockPeriodInSeconds >= minLockPeriod, "Minimum lock period must be 3 months");
 
         require(
             amountTransferrable > 0,
@@ -535,7 +550,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
         bool isSuccessful =
             daiToken.transferFrom(
-                depositorAddress,
+                msg.sender,
                 recipient,
                 amountTransferrable
             );
@@ -561,28 +576,32 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountOfyDai,
             lockPeriodInSeconds,
             depositDateInSeconds,
-            depositorAddress,
+            msg.sender,
             false
         );
 
 
         clientRecordStorage
             .CreateDepositorToDepositRecordIndexToRecordIDMapping(
-            depositorAddress,
+            msg.sender,
             recordId
         );
 
         clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(
-            depositorAddress,
+            msg.sender,
             recordId,
             amountTransferrable,
+            amountOfyDai,
             lockPeriodInSeconds,
             depositDateInSeconds,
             false
         );
+        
+        _updateTotalTokenDepositAmount(amountTransferrable);
+
 
         emit UnderlyingAssetDeposited(
-            depositorAddress,
+            msg.sender,
             amountTransferrable,
             amountOfyDai,
             amountTransferrable
