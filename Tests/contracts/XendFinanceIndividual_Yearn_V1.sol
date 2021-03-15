@@ -503,13 +503,10 @@ contract XendFinanceIndividual_Yearn_V1 is
         _deposit(depositorAddress);
     }
 
- function _getFixedDepositRecordById(uint256 recordId)
+    function _getFixedDepositRecordById(uint256 recordId)
         internal
-        view
         returns (FixedDepositRecord memory)
-
     {
-       
         (
             uint256 recordId,
             address payable depositorId,
@@ -519,26 +516,14 @@ contract XendFinanceIndividual_Yearn_V1 is
             uint256 lockPeriodInSeconds,
             bool hasWithdrawn
         ) = clientRecordStorage.GetRecordById(recordId);
-        FixedDepositRecord memory fixedDepositRecord =
-            FixedDepositRecord(
-                recordId,
-                depositorId,
-                hasWithdrawn,
-                amount,
-                depositDateInSeconds,
-                lockPeriodInSeconds,
-                amountOfyDai
-            );
-        return fixedDepositRecord;
     }
 
     function FixedDeposit(
+        uint256 depositDateInSeconds,
         uint256 lockPeriodInSeconds
     ) external onlyNonDeprecatedCalls {
 
         address recipient = address(this);
-
-        uint256 depositDateInSeconds = now;
 
         uint256 amountTransferrable = daiToken.allowance(msg.sender, recipient);
 

@@ -13,12 +13,12 @@ contract("Cycles", async (accounts) => {
 
  
 
-    it("Should deploy the cycles smart contracts", async () => {
+    it.skip("Should deploy the cycles smart contracts", async () => {
         
         assert(contractInstance.address !== "");
     });
 
-    it("should create a cycle", async () => {
+    it.skip("should create a cycle", async () => {
 
           //arrange
           const instance = await Cycles.new();
@@ -47,7 +47,7 @@ contract("Cycles", async (accounts) => {
 
     })
 
-    it("should create cycle financials", async () => {
+    it.skip("should create cycle financials", async () => {
         //arrange
         const instance = await Cycles.new();
 
@@ -77,7 +77,7 @@ contract("Cycles", async (accounts) => {
 
     })
 
-    it("should update a cycle", async () => {
+    it.skip("should update a cycle", async () => {
 
         //arrange
         const instance = await Cycles.new();
@@ -97,7 +97,7 @@ contract("Cycles", async (accounts) => {
   })
 
 
-    it("should update cycle financials", async () => {
+    it.skip("should update cycle financials", async () => {
         //arrange
         const instance = await Cycles.new();
 
@@ -117,7 +117,7 @@ contract("Cycles", async (accounts) => {
 
     })    
 
-    it("should create a cycle member", async () => {
+    it.skip("should create a cycle member", async () => {
         
         const instance = await Cycles.new();
 
@@ -140,7 +140,7 @@ contract("Cycles", async (accounts) => {
         assert(getCycleMemberResult.length !== null, "cycle member result is null");
     })
 
-    it("should update a cycle member", async () => {
+    it.skip("should update a cycle member", async () => {
         
         const instance = await Cycles.new();
 
