@@ -609,8 +609,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         Cycle memory cycle,
         bool didCycleMemberExistBeforeNow
     ) internal view {
-        bool hasMaximumSlots = cycle.hasMaximumSlots;
-        if (hasMaximumSlots && !didCycleMemberExistBeforeNow) {
+        if (cycle.hasMaximumSlots && !didCycleMemberExistBeforeNow) {
             require(
                 cycle.numberOfDepositors < cycle.maximumSlots,
                 "Maximum slot for depositors has been reached"
@@ -1051,11 +1050,18 @@ contract XendFinanceGroup_Yearn_V1 is
         CycleFinancial memory cycleFinancial;
 
        
+        if(_isCycleReadyToBeEnded(cycleId))
+        {
             (cycle, cycleFinancial) = _endCycle(cycleId);
+        }
+        else{
+            cycle = _getCycleById(cycleId);
+            cycleFinancial = _getCycleFinancialByCycleId(cycleId);
+        }
        
 
             
-    CycleMember memory cycleMember = _getCycleMemberInfo(cycleId, memberAddress);
+        CycleMember memory cycleMember = _getCycleMemberInfo(cycleId, memberAddress);
 
         //how many stakes a cycle member has
         uint256 stakesHoldings = cycleMember.numberOfCycleStakes;
