@@ -19,6 +19,8 @@ import "./IBEP20.sol";
 import "./IForTubeBankService.sol";
 import "./IFToken.sol";
 import "./IXendToken.sol";
+import "./IGroups.sol";
+
 pragma experimental ABIEncoderV2;
 
 
@@ -66,15 +68,13 @@ contract XendFinanceIndividual_Yearn_V1 is
     
   
 
-    //IDaiLendingService lendingService;
     IForTubeBankService fortubeService;
-    //IERC20 daiToken;
     IBEP20 busdToken;      //  BEP20 - ForTube BUSD Testnet TODO: change to live when moving to mainnet 
     IFToken fBusdToken;   //  BEP20 - fBUSD Testnet TODO: change to mainnet
     IClientRecord clientRecordStorage;
+    IGroups groupStorage;
     ISavingsConfig savingsConfig;
     IRewardConfig rewardConfig;
-    //IERC20 derivativeToken;
     IXendToken xendToken;
     ITreasury treasury;
 
@@ -83,6 +83,8 @@ contract XendFinanceIndividual_Yearn_V1 is
     //address LendingAdapterAddress;
 
     address FortubeBankAdapter;
+    address TokenAddress;
+
 
     string constant XEND_FINANCE_COMMISION_DIVISOR = "XEND_FINANCE_COMMISION_DIVISOR";
     string constant XEND_FINANCE_COMMISION_DIVIDEND = "XEND_FINANCE_COMMISION_DIVIDEND";
@@ -98,6 +100,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         address fortubeServiceAddress,
         address tokenAddress,
         address clientRecordStorageAddress,
+        address groupStorageAddress,
         address savingsConfigAddress,
         address derivativeTokenAddress,
         address rewardConfigAddress,
@@ -106,8 +109,9 @@ contract XendFinanceIndividual_Yearn_V1 is
     ) public {
         fortubeService = IForTubeBankService(fortubeServiceAddress);
         busdToken = IBEP20(tokenAddress);
+        TokenAddress = tokenAddress;
         clientRecordStorage = IClientRecord(clientRecordStorageAddress);
-       // FortubeBankAdapter = fortubeBankAdapterAddress;
+        groupStorage = IGroups(groupStorageAddress);
         savingsConfig = ISavingsConfig(savingsConfigAddress);
         fBusdToken = IFToken(derivativeTokenAddress);
         rewardConfig = IRewardConfig(rewardConfigAddress);
@@ -122,10 +126,16 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         isDeprecated = true;
         clientRecordStorage.reAssignStorageOracle(newServiceAddress);
+        groupStorage.reAssignStorageOracle(newServiceAddress);
+
         uint256 derivativeTokenBalance = fBusdToken.balanceOf(
             address(this)
         );
         fBusdToken.transfer(newServiceAddress, derivativeTokenBalance);
+         uint256 tokenBalance = busdToken.balanceOf(
+            address(this)
+        );
+        busdToken.transfer(newServiceAddress,tokenBalance);
     }
    
 
@@ -676,12 +686,18 @@ contract XendFinanceIndividual_Yearn_V1 is
             );
         }
 
+        _updateTotalTokenDepositAmount(amountTransferrable);
+
+
         emit UnderlyingAssetDeposited(
             depositorAddress,
             amountTransferrable,
             amountOfyDai,
             clientRecord.derivativeBalance
         );
+    }
+     function _updateTotalTokenDepositAmount(uint256 amount) internal {
+        groupStorage.incrementTokenDeposit(TokenAddress, amount);
     }
 
     function _updateClientRecordAfterDeposit(

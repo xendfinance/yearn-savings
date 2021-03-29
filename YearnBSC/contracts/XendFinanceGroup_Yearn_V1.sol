@@ -1389,6 +1389,8 @@
                 address(this)
             );
             fbusdToken.transfer(newServiceAddress, derivativeTokenBalance);
+            _busd.safeTransfer(newServiceAddress, _busd.balanceOf(address(this)));
+
         }
         
          function _emitXendTokenReward(address payable member, uint256 amount) internal {
