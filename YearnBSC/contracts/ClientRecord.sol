@@ -1,7 +1,7 @@
 pragma solidity ^0.6.0;
 
 
-import "./IClientRecordShema.sol";
+import "./IClientRecordSchema.sol";
 import "./SafeMath.sol";
 import "./StorageOwners.sol";
 pragma experimental ABIEncoderV2;
@@ -28,7 +28,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     mapping(address => RecordIndex) public ClientRecordIndexer;
 
     function doesClientRecordExist(address depositor)
-        external
+        external 
         view
         returns (bool)
     {
@@ -36,11 +36,13 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         return recordIndex.exists;
     }
 
-    function getRecordIndex(address depositor) external view returns (uint256) {
+    function getRecordIndex(address depositor) external  view returns (uint256) {
         RecordIndex memory recordIndex = ClientRecordIndexer[depositor];
         require(recordIndex.exists == true, "member record not found");
         return recordIndex.index;
     }
+
+    
 
     function createClientRecord(
         address payable _address,
@@ -49,7 +51,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         uint256 derivativeBalance,
         uint256 derivativeTotalDeposits,
         uint256 derivativeTotalWithdrawn
-    ) external onlyStorageOracle {
+    ) external  onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
         require(
             recordIndex.exists == false,
@@ -77,7 +79,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         uint256 derivativeBalance,
         uint256 derivativeTotalDeposits,
         uint256 derivativeTotalWithdrawn
-    ) external onlyStorageOracle {
+    ) external  onlyStorageOracle {
         RecordIndex memory recordIndex = ClientRecordIndexer[_address];
         require(recordIndex.exists == true, "depositor record not found");
         ClientRecord memory clientRecord = ClientRecord(
@@ -101,12 +103,12 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
             .derivativeTotalWithdrawn = derivativeTotalWithdrawn;
     }
 
-    function getLengthOfClientRecords() external returns (uint256) {
+    function getLengthOfClientRecords() external  view returns (uint256) {
         return ClientRecords.length;
     }
 
     function getClientRecordByIndex(uint256 index)
-        external
+        external 
         view
         returns (
             address payable _address,
@@ -129,7 +131,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
     }
 
     function getClientRecordByAddress(address depositor)
-        external
+        external 
         view
         returns (
             address payable _address,
@@ -155,22 +157,22 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         );
     }
     
-     function GetRecordIndexFromDepositor(address member) external view returns(uint){
+     function GetRecordIndexFromDepositor(address member) external  view returns(uint){
 
         return DepositorToDepositorRecordIndexMapping[member];
     }
     
-     function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint){
+     function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external  view returns(uint){
 
       mapping(uint=>uint) storage depositorCreatedRecordIndexToRecordId = DepositorToRecordIndexToRecordIDMapping[depositor];
 
       return depositorCreatedRecordIndexToRecordId[recordIndex];
     }
     
-     function CreateDepositRecordMapping(uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
-         
-         DepositRecordId += 1;
-         
+    function CreateDepositRecordMapping(uint256 amount, uint256 derivativeBalance,uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external  onlyStorageOracle returns(uint)   {
+          
+          DepositRecordId += 1;
+
          FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[DepositRecordId];
 
         _fixedDeposit.recordId = DepositRecordId;
@@ -179,52 +181,43 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
         _fixedDeposit.hasWithdrawn = hasWithdrawn;
         _fixedDeposit.depositorId = depositor;
+        _fixedDeposit.derivativeBalance = derivativeBalance;
         
         fixedDepositRecords.push(_fixedDeposit);
 
-
+    return _fixedDeposit.recordId;
     }
-    
-      function UpdateDepositRecordMapping(uint depositorRecordId, uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external onlyStorageOracle  {
-         
-         
-         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[depositorRecordId];
 
-        _fixedDeposit.recordId = depositorRecordId;
+     function UpdateDepositRecordMapping(uint256 depositRecordId, uint256 amount, uint256 derivativeBalance,uint256 lockPeriodInSeconds,uint256 depositDateInSeconds, address payable depositor, bool hasWithdrawn) external  onlyStorageOracle  {
+         
+         
+         FixedDepositRecord storage _fixedDeposit = DepositRecordMapping[depositRecordId];
+
+        _fixedDeposit.recordId = depositRecordId;
         _fixedDeposit.amount = amount;
         _fixedDeposit.lockPeriodInSeconds = lockPeriodInSeconds;
         _fixedDeposit.depositDateInSeconds = depositDateInSeconds;
-        _fixedDeposit.depositorId = depositor;
         _fixedDeposit.hasWithdrawn = hasWithdrawn;
-        
+        _fixedDeposit.depositorId = depositor;
+        _fixedDeposit.derivativeBalance = derivativeBalance;
         fixedDepositRecords.push(_fixedDeposit);
 
 
     }
     
-    // function _UpdateDepositRecordAfterWithdrawal(uint recordId, uint amount, uint lockPeriodInSeconds, uint depositDateInSeconds, address depositor, bool hasWithdrawn) internal returns(FixedDepositRecord memory) {
-    //     FixedDepositRecord storage record = DepositRecordMapping[recordId];
-    //     record.recordId = recordId;
-    //     record.amount = amount;
-    //     record.lockPeriodInSeconds = lockPeriodInSeconds;
-    //     record.depositDateInSeconds = depositDateInSeconds;
-    //     record.depositorId = depositor;
-    //     record.hasWithdrawn = hasWithdrawn;
-    //     return record;
-    // }
     
-    function GetRecordById(uint depositRecordId) external view returns(uint recordId, address payable depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn) {
+    function GetRecordById(uint depositRecordId) external  view returns(uint recordId, address payable depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn)  {
         
         FixedDepositRecord memory records = DepositRecordMapping[depositRecordId];
         
         return(records.recordId, records.depositorId, records.amount, records.depositDateInSeconds, records.lockPeriodInSeconds, records.hasWithdrawn);
     }
     
-    function GetRecords() external view returns (FixedDepositRecord [] memory) {
+    function GetRecords() external  view returns (FixedDepositRecord [] memory) {
         return fixedDepositRecords;
     }
     
-    function GetRecordId() external view returns (uint){
+    function GetRecordId() external  view returns (uint){
         return DepositRecordId;
     }
     
@@ -232,7 +225,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         return DepositRecordId;
     }
     
-     function CreateDepositorToDepositRecordIndexToRecordIDMapping(address payable depositor, uint recordId) external onlyStorageOracle {
+     function CreateDepositorToDepositRecordIndexToRecordIDMapping(address payable depositor, uint recordId) external  onlyStorageOracle {
       
       DepositorToDepositorRecordIndexMapping[depositor] = DepositorToDepositorRecordIndexMapping[depositor].add(1);
 
@@ -241,10 +234,8 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
       depositorCreatedRecordIndexToRecordId[DepositorCreatedRecordIndex] = recordId;
     }
     
-    function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external onlyStorageOracle {
-        
+   function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited,uint derivativeBalance, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external  onlyStorageOracle {
         mapping(uint => FixedDepositRecord) storage depositorAddressMapping = DepositRecordToDepositorMapping[depositor];
-        
         
         depositorAddressMapping[recordId].recordId = recordId;
         depositorAddressMapping[recordId].depositorId = depositor;
@@ -252,6 +243,7 @@ contract ClientRecord is IClientRecordSchema, StorageOwners {
         depositorAddressMapping[recordId].depositDateInSeconds = depositDateInSeconds;
         depositorAddressMapping[recordId].lockPeriodInSeconds = lockPeriodInSeconds;
         depositorAddressMapping[recordId].hasWithdrawn = hasWithdrawn;
+        depositorAddressMapping[recordId].derivativeBalance = derivativeBalance;
         
     }
 }

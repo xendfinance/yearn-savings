@@ -2,7 +2,7 @@
 
 pragma solidity ^0.6.0;
 
-import "./IClientRecordShema.sol";
+import "./IClientRecordSchema.sol";
 import "./IGroupSchema.sol";
 import "./SafeMath.sol";
 import "./Ownable.sol";
@@ -394,25 +394,23 @@ contract XendFinanceIndividual_Yearn_V1 is
     
     function _validateLockTimeHasElapsedAndHasNotWithdrawn (uint256 recordId, uint256 derivativeAmount) internal {
         
-      FixedDepositRecord memory depositRecord = _getFixedDepositRecordById(recordId);
-        
-       uint256 lockPeriod = depositRecord.lockPeriodInSeconds;
-    
-        
-        bool hasWithdrawn = depositRecord.hasWithdrawn;
-        
-        
-        uint256 derivativeBalance = depositRecord.amount;
+     FixedDepositRecord memory depositRecord =
+            _getFixedDepositRecordById(recordId);
 
-       
-          
-         require(hasWithdrawn == false, 'Individual has already withdrawn');
-        
+        uint256 lockPeriod = depositRecord.lockPeriodInSeconds;
+        uint256 maturityDate =
+            depositRecord.depositDateInSeconds.add(lockPeriod);
+
+        bool hasWithdrawn = depositRecord.hasWithdrawn;
+
+        require(!hasWithdrawn, "Individual has already withdrawn");
+
         uint256 currentTimeStamp = now;
-        
-        
-        
-        require(currentTimeStamp >= lockPeriod, "Funds are still locked, wait until lock period expires");
+
+        require(
+            currentTimeStamp >= maturityDate,
+            "Funds are still locked, wait until lock period expires"
+        );
     
     }
 
@@ -513,7 +511,7 @@ contract XendFinanceIndividual_Yearn_V1 is
         );
        
 
-        uint256 balanceBeforeDeposit = fBusdToken.balanceOf(address(this));
+        uint256 balanceBeforeDeposit = fortubeService.UserShares(address(this));
         
         FortubeBankAdapter = fortubeService.GetForTubeAdapterAddress();
 
@@ -521,17 +519,17 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         fortubeService.Save(amountTransferrable);
 
-        uint256 balanceAfterDeposit = fBusdToken.balanceOf(address(this));
+        uint256 balanceAfterDeposit = fortubeService.UserShares(address(this));
 
         uint256 amountOfyDai = balanceAfterDeposit.sub(balanceBeforeDeposit);
         
         
     
-        clientRecordStorage.CreateDepositRecordMapping(amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
+        clientRecordStorage.CreateDepositRecordMapping(amountTransferrable,amountOfyDai, lockPeriodInSeconds, depositDateInSeconds, depositorAddress, false);
         
         clientRecordStorage.CreateDepositorToDepositRecordIndexToRecordIDMapping(depositorAddress, clientRecordStorage.GetRecordId());
         
-        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(depositorAddress, clientRecordStorage.GetRecordId(), amountTransferrable, lockPeriodInSeconds, depositDateInSeconds, false);
+        clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(depositorAddress, clientRecordStorage.GetRecordId(), amountTransferrable,amountOfyDai, lockPeriodInSeconds, depositDateInSeconds, false);
             
 
       
@@ -572,7 +570,7 @@ contract XendFinanceIndividual_Yearn_V1 is
 
         uint256 balanceAfterWithdraw = fortubeService.UserBUSDBalance(address(this));
 
-        require(balanceAfterWithdraw>balanceBeforeWithdraw, "Balance before needs to be greater than balance after");
+        require(balanceAfterWithdraw>balanceBeforeWithdraw, "Balance after needs to be greater than balance before");
 
         uint256 amountOfUnderlyingAssetWithdrawn =  balanceAfterWithdraw.sub(
             balanceBeforeWithdraw
@@ -601,8 +599,8 @@ contract XendFinanceIndividual_Yearn_V1 is
             busdToken.approve(address(treasury), commissionFees);
             treasury.depositToken(address(busdToken));
         }
-       clientRecordStorage.UpdateDepositRecordMapping(recordId, amount, lockPeriod, depositDate, msg.sender, true);
-       clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(recipient, depositRecord.recordId, depositRecord.amount, lockPeriod, depositDate, true);
+       clientRecordStorage.UpdateDepositRecordMapping(recordId, amount,0, lockPeriod, depositDate, msg.sender, true);
+       clientRecordStorage.CreateDepositorAddressToDepositRecordMapping(recipient, depositRecord.recordId, depositRecord.amount, 0,lockPeriod, depositDate, true);
     
         
         _rewardUserWithTokens(

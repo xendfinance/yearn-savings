@@ -1,5 +1,5 @@
 pragma solidity ^0.6.6;
-import "./IClientRecordShema.sol";
+import "./IClientRecordSchema.sol";
 pragma experimental ABIEncoderV2;
 
 interface IClientRecord is IClientRecordSchema {
@@ -54,18 +54,21 @@ interface IClientRecord is IClientRecordSchema {
             uint256 derivativeTotalWithdrawn
         );
 
-    function activateStorageOracle(address oracle) external;
+  function activateStorageOracle(address oracle) external;
 
     function deactivateStorageOracle(address oracle) external;
 
     function reAssignStorageOracle(address newOracle) external;
+
+  
     
      function GetRecordIndexFromDepositor(address member) external view returns(uint);
      
      function GetRecordIdFromRecordIndexAndDepositorRecord(uint recordIndex, address depositor) external view returns(uint);
       
-     function CreateDepositRecordMapping( uint amount, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;
-      
+function CreateDepositRecordMapping(uint amount, uint derivativeBalance,uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external returns (uint);
+    
+     function UpdateDepositRecordMapping(uint DepositRecordId, uint amount,uint derivativeBalance, uint lockPeriodInSeconds,uint depositDateInSeconds, address payable depositor, bool hasWithdrawn) external;      
      function GetRecordById(uint depositRecordId) external view returns(uint recordId, address payable depositorId, uint amount, uint depositDateInSeconds, uint lockPeriodInSeconds, bool hasWithdrawn);
      
      function GetRecords() external view returns (FixedDepositRecord [] memory);
@@ -74,5 +77,5 @@ interface IClientRecord is IClientRecordSchema {
      
      function CreateDepositorToDepositRecordIndexToRecordIDMapping(address payable depositor, uint recordId) external;
      
-     function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited, uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external;
+     function CreateDepositorAddressToDepositRecordMapping (address payable depositor, uint recordId, uint amountDeposited, uint derivativeBalance,uint lockPeriodInSeconds, uint depositDateInSeconds, bool hasWithdrawn) external;
 }
