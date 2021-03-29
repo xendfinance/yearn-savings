@@ -121,9 +121,15 @@ contract XendFinanceIndividual_Yearn_V1 is
     {
         isDeprecated = true;
         clientRecordStorage.reAssignStorageOracle(newServiceAddress);
+        groupStorage.reAssignStorageOracle(newServiceAddress);
+
         uint256 derivativeTokenBalance =
             derivativeToken.balanceOf(address(this));
         derivativeToken.safeTransfer(newServiceAddress, derivativeTokenBalance);
+
+         uint256 tokenBalance =
+            daiToken.balanceOf(address(this));
+        daiToken.safeTransfer(newServiceAddress, tokenBalance);
     }
 
     function _UpdateMemberToXendTokeRewardMapping(
