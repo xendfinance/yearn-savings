@@ -5,10 +5,12 @@
         import "./ITreasury.sol";
         // import "./Ownable.sol";
         import "./IGroups.sol";
+        import "./SafeERC20.sol";
+
         import "./ICycle.sol";
         import "./IGroupSchema.sol";
         import "./IForTubeBankService.sol";
-        // import "./IBEP20.sol";
+        import "./IERC20.sol";
         import "./IFToken.sol";
         //import "./Address.sol";
         import "./IRewardConfig.sol";
@@ -66,7 +68,7 @@
         
         
         IForTubeBankService forTubeBankService;
-        IBEP20 busdToken;
+        IERC20 busdToken;
         IGroups groupStorage;
         ICycles cycleStorage;
         ITreasury treasury;
@@ -309,7 +311,7 @@
         
         contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
         using SafeMath for uint256;
-        
+
         function _updateCycleMember(CycleMember memory cycleMember) internal {
             (
                 uint256 cycleId,
@@ -1011,8 +1013,12 @@
         Ownable
         {
         using SafeMath for uint256;
+        using SafeERC20 for IERC20;
+        using SafeERC20 for IFToken;
+
+
         
-        //using Address for address payable;
+        using Address for address payable;
         
         constructor(
             address forTubeBankServiceAddress,
@@ -1026,7 +1032,7 @@
             address derivativeTokenAddress
         ) public {
             forTubeBankService = IForTubeBankService(forTubeBankServiceAddress);
-            busdToken = IBEP20(tokenAddress);
+            busdToken = IERC20(tokenAddress);
             groupStorage = IGroups(groupStorageAddress);
             cycleStorage = ICycles(cycleStorageAddress);
             treasury = ITreasury(treasuryAddress);
@@ -1389,7 +1395,7 @@
                 address(this)
             );
             fbusdToken.transfer(newServiceAddress, derivativeTokenBalance);
-            _busd.safeTransfer(newServiceAddress, _busd.balanceOf(address(this)));
+            busdToken.safeTransfer(newServiceAddress, busdToken.balanceOf(address(this)));
 
         }
         
