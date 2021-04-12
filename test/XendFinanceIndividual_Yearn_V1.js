@@ -43,7 +43,7 @@ const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
     
 const yDaiContract = new web3.eth.Contract(YDaiContractABI,yDaiContractAddress);
 
-const unlockedAddress = "0xdcd024536877075bfb2ffb1db9655ae331045b4e";
+const unlockedAddress = "0xB4176cF4F50e7BeF7183459582E235FA47DCc24A";
 
 
 //  Approve a smart contract address or normal address to spend on behalf of the owner
@@ -59,7 +59,8 @@ async function approveDai(spender,  owner,  amount){
    
 //  Send Dai from our constant unlocked address to any recipient
 async function sendDai(amount, recipient){
-    
+  let senderTokenBalance = await daiContract.methods.balanceOf(unlockedAddress).call();
+  console.log({senderTokenBalance});
   var amountToSend = BigInt(amount); //  1000 Dai
 
   console.log(`Sending  ${ amountToSend } x 10^-18 Dai to  ${recipient}`);
@@ -179,16 +180,24 @@ contract("XendFinanceIndividual_Yearn_V1", () => {
         var approvedAmountToSpend = BigInt(1000000000000000000000); //   1,000 Dai
 
         let amountToWithdraw = BigInt(1000000000000000000000);
-      
-        await approveDai(contractInstance.address, account1, approvedAmountToSpend);
 
-        //await clientRecord.createClientRecord(accounts[2], 0, 0, 0, 0, 0, {from : accounts[3]})
+        let depositorTokenBalance = await daiContract.methods.balanceOf(account1).call();
+        console.log({depositorTokenBalance});
 
-       await contractInstance.deposit({from : account1});
+      //   await approveDai(contractInstance.address, account1, approvedAmountToSpend);
 
+      //  console.log("Approval Successful");
+
+       const depositResult = await contractInstance.deposit({from : account1});
+        console.log({depositResult});
   
+        console.log("Deposit Successful");
 
         const withdrawResult = await contractInstance.withdraw(amountToWithdraw);
+        console.log({withdrawResult});
+
+        console.log("Withdrawal Successful");
+
 
         assert(withdrawResult.receipt.status == true, "tx receipt status is true")
 

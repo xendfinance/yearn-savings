@@ -32,7 +32,7 @@ const yDaiContractAddress = "0xC2cB1040220768554cf699b0d863A3cd4324ce32";
 
 const DaiContractABI = require('../abi/DaiContract.json');
 
-const unlockedAddress = "0x1eC32Bfdbdbd40C0D3ec0fe420EBCfEEb2D56917";
+const unlockedAddress = "0xB4176cF4F50e7BeF7183459582E235FA47DCc24A";
 
 const daiContract = new web3.eth.Contract(DaiContractABI,DaiContractAddress);
 
@@ -102,7 +102,7 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
     );
   });
 
-  it("Should deploy the XendFinanceIndividual_Yearn_V1 smart contracts", async () => {
+  it("Should deploy the XendFinanceGroup_Yearn_V1 smart contracts", async () => {
     assert(contractInstance.address !== "");
   });
 

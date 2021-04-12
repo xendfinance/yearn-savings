@@ -195,10 +195,10 @@ contract Cycles is IGroupSchema, StorageOwners {
     function createCycleMember(
         uint256 cycleId,
         uint256 groupId,
+        address payable depositor,
         uint256 totalLiquidityAsPenalty,
         uint256 numberOfCycleStakes,
         uint256 stakesClaimed,
-        address payable depositor,
         bool hasWithdrawn
     ) external onlyStorageOracle {
         bool exist = _doesCycleMemberExist(cycleId, depositor);
