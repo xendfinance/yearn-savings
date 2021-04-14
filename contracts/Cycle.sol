@@ -319,10 +319,10 @@ contract Cycles is IGroupSchema, StorageOwners {
         uint256 startTimeStamp,
         uint256 duration,
         uint256 maximumSlots,
-        bool hasMaximumSlots,
         uint256 cycleStakeAmount,
         uint256 totalStakes,
         uint256 stakesClaimed,
+        bool hasMaximumSlots,
         CycleStatus cycleStatus,
         uint256 stakesClaimedBeforeMaturity
     ) external onlyStorageOracle {

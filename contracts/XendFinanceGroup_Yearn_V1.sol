@@ -713,7 +713,7 @@ contract XendFinanceCycleHelpers is XendFinanceGroupHelpers {
             "Token allowance does not cover stake claim"
         );
 
-            daiToken.safeTransferFrom(depositorAddress, recipient, expectedAmount);
+        daiToken.safeTransferFrom(depositorAddress, recipient, expectedAmount);
        
 
         return expectedAmount;
@@ -876,7 +876,6 @@ contract XendFinanceGroup_Yearn_V1 is
         CycleFinancial memory cycleFinancial =
             _getCycleFinancialByCycleId(cycleId);
         
-
         require(cycleStorage.doesCycleMemberExist(cycleId, memberAddress), "You are not a member of this cycle");
 
        
@@ -1592,7 +1591,7 @@ contract XendFinanceGroup_Yearn_V1 is
         require(symbolInBytes.length > 0, "Group sysmbol cannot be empty");
 
         require(
-            groupStorage.doesGroupExist(name),
+            groupStorage.doesGroupExist(name)==false,
             "Group name has already been used"
         );
     }

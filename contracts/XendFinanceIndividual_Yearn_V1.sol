@@ -623,16 +623,13 @@ contract XendFinanceIndividual_Yearn_V1 is
             amountTransferrable > 0,
             "Approve an amount > 0 for token before proceeding"
         );
-        bool isSuccessful =
-            daiToken.transferFrom(
-                depositorAddress,
-                recipient,
-                amountTransferrable
-            );
-        require(
-            isSuccessful,
-            "Could not complete deposit process from token contract"
+       
+        daiToken.safeTransferFrom(
+            depositorAddress,
+            recipient,
+            amountTransferrable
         );
+       
 
         LendingAdapterAddress = lendingService.GetDaiLendingAdapterAddress();
 

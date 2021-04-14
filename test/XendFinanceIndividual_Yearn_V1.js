@@ -184,16 +184,21 @@ contract("XendFinanceIndividual_Yearn_V1", () => {
         let depositorTokenBalance = await daiContract.methods.balanceOf(account1).call();
         console.log({depositorTokenBalance});
 
-      //   await approveDai(contractInstance.address, account1, approvedAmountToSpend);
+        await approveDai(contractInstance.address, account1, approvedAmountToSpend);
 
-      //  console.log("Approval Successful");
+       console.log("Approval Successful");
 
        const depositResult = await contractInstance.deposit({from : account1});
         console.log({depositResult});
   
         console.log("Deposit Successful");
 
-        const withdrawResult = await contractInstance.withdraw(amountToWithdraw);
+        console.log(clientRecordContract.methods,"Client Rec")
+
+        let clintRecord =  await clientRecordContract.getClientRecordByAddress(account1);
+        console.log({clintRecord});
+
+        const withdrawResult = await contractInstance.withdraw(BigInt(clintRecord.derivativeBalance));
         console.log({withdrawResult});
 
         console.log("Withdrawal Successful");

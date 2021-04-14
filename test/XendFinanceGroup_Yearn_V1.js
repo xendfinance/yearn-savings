@@ -55,51 +55,25 @@ async function sendDai(amount, recipient) {
 //  Approve a smart contract address or normal address to spend on behalf of the owner
 async function approveDai(spender,  owner,  amount){
 
-  await daiContract.methods.approve(spender,amount).send({from: owner});
-
+  const approvalResult = await daiContract.methods.approve(spender,amount).send({from: owner});
+ console.log({approvalResult});
   console.log(`Address ${spender}  has been approved to spend ${ amount } x 10^-18 Dai by Owner:  ${owner}`);
 
 };
 
 contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
   let contractInstance;
+  let cyclesContract;
  
+  it("Dummy Test", async () => {
+    assert(true);
+  });
 
   beforeEach(async () => {
 
-  let treasury = await TreasuryContract.deployed();
-
-  let cycles = await CyclesContract.deployed();
-
-  let savingsConfig =  await SavingsConfigContract.deployed();
-
-  let groups = await GroupsContract.deployed();
-
-  let esusuService = await EsusuServiceContract.deployed();
-
-  let rewardConfig = await RewardConfigContract.deployed(
-    esusuService.address,
-    groups.address
-  );
-
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-  let daiLendingService = await DaiLendingServiceContract.deployed();
-
-  let daiLendingAdapter = await DaiLendingAdapterContract.deployed(daiLendingService.address);
-
-    contractInstance = await XendFinanceGroup_Yearn_V1.new(
-      daiLendingService.address,
-      DaiContractAddress,
-      groups.address,
-      cycles.address,
-      treasury.address,
-      savingsConfig.address,
-      rewardConfig.address,
-      xendToken.address,
-      yDaiContractAddress
-
-    );
+  contractInstance = await XendFinanceGroup_Yearn_V1.deployed();
+  cyclesContract = await CyclesContract.deployed();
+   
   });
 
   it("Should deploy the XendFinanceGroup_Yearn_V1 smart contracts", async () => {
@@ -109,45 +83,7 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
   it("should join a cycle", async () => {
 
 
-    let treasury = await TreasuryContract.new();
-
-  let cycles = await CyclesContract.new();
-
-  let savingsConfig =  await SavingsConfigContract.new();
-
-  let groups = await GroupsContract.new();
-
-  let esusuService = await EsusuServiceContract.new();
-
-  let rewardConfig = await RewardConfigContract.new(
-    esusuService.address,
-    groups.address
-  );
-
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-  let daiLendingService = await DaiLendingServiceContract.deployed();
-
-  let daiLendingAdapter = await DaiLendingAdapterContract.deployed(daiLendingService.address);
-
-    contractInstance = await XendFinanceGroup_Yearn_V1.new(
-      daiLendingService.address,
-      DaiContractAddress,
-      groups.address,
-      cycles.address,
-      treasury.address,
-      savingsConfig.address,
-      rewardConfig.address,
-      xendToken.address,
-      yDaiContractAddress
-
-    );
-
-    await groups.activateStorageOracle(instance.address);
-
-    await cycles.activateStorageOracle(instance.address)
-
-    await instance.createGroup("njokuAkawo", "N9");
+    await contractInstance.createGroup("njokuAkawo", "N9");
     
     let startTimeStamp = 4 * 86400;
 
@@ -159,154 +95,42 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
 
     await sendDai(amountToSend, accounts[0]);
 
-   const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
+    let memberBalance = await daiContract.methods.balanceOf( accounts[0]).call();
+    console.log({memberBalance})
 
-   console.log(approveResult)
+
+   await approveDai(contractInstance.address, accounts[0], amountToApprove);
     
-    await instance.createCycle(1, startTimeStamp, duration, 10, true, 100)
+   let cycleCreationResult =  await contractInstance.createCycle(1, startTimeStamp, duration, 10, true, 100)
+   console.log({cycleCreationResult})
 
-    const joinCycleResult = await instance.joinCycle(1, 2, {from: accounts[0]});
+    const joinCycleResult = await contractInstance.joinCycle(1, 2, {from: accounts[0]});
+    console.log({joinCycleResult})
 
-    assert(joinCycleResult.logs[0].logIndex === 1);
+    let index = await cyclesContract.getCycleMemberIndex(1,accounts[0]);
+    let cycleMember = await cyclesContract.getCycleMember(index);
+    console.log({cycleMember})
+
+    let cycle  = await cyclesContract.getCycleInfoById(1);
+    console.log({cycle});
+
+    let cycleFinancials  = await cyclesContract.getCycleFinancialsByCycleId(1);
+    console.log({cycleFinancials});
+
+
+    assert(joinCycleResult.receipt.status==true);
   });
 
 
   it("should activate a cycle ", async () => {
 
-    let treasury = await TreasuryContract.new();
-
-  let cycles = await CyclesContract.new();
-
-  let savingsConfig =  await SavingsConfigContract.new();
-
-  let groups = await GroupsContract.new();
-
-  let esusuService = await EsusuServiceContract.new();
-
-  let rewardConfig = await RewardConfigContract.new(
-    esusuService.address,
-    groups.address
-  );
-
-  let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-  let daiLendingService = await DaiLendingServiceContract.deployed();
-
-  let daiLendingAdapter = await DaiLendingAdapterContract.deployed(daiLendingService.address);
-
-    contractInstance = await XendFinanceGroup_Yearn_V1.new(
-      daiLendingService.address,
-      DaiContractAddress,
-      groups.address,
-      cycles.address,
-      treasury.address,
-      savingsConfig.address,
-      rewardConfig.address,
-      xendToken.address,
-      yDaiContractAddress
-
-    );
-
-    await groups.activateStorageOracle(instance.address);
-
-    await cycles.activateStorageOracle(instance.address)
-
-    await instance.createGroup("njokuAkawo", "N9");
-    
-    let startTimeStamp = 4 * 86400;
-
-    let duration = 100 * 86400;
-
-    let amountToApprove = BigInt(100000000000000000000000);
-
-    let amountToSend = BigInt(100000000000000000000000);
-
-    await sendDai(amountToSend, accounts[0]);
-
-   const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
-
-   console.log(approveResult)
-    
-    await instance.createCycle(1, startTimeStamp, duration, 10, true, 100)
-
-    await instance.joinCycle(1, 2, {from: accounts[0]});
-
-    await utils.shouldThrow(instance.activateCycle(1, {from: accounts[0]}));
+    await utils.shouldThrow(contractInstance.activateCycle(1, {from: accounts[0]}));
 
   });
 
   it("should withdraw from a cycle while it's ongoing", async () => {
-    let treasury = await TreasuryContract.new();
-
-    let cycles = await CyclesContract.new();
-  
-    let savingsConfig =  await SavingsConfigContract.new();
-  
-    let groups = await GroupsContract.new();
-  
-    let esusuService = await EsusuServiceContract.new();
-  
-    let rewardConfig = await RewardConfigContract.new(
-      esusuService.address,
-      groups.address
-    );
-    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-    let daiLendingService = await DaiLendingServiceContract.deployed();
-  
-    let daiLendingAdapter = await DaiLendingAdapterContract.deployed(daiLendingService.address);
-  
-      contractInstance = await XendFinanceGroup_Yearn_V1.new(
-        daiLendingService.address,
-        DaiContractAddress,
-        groups.address,
-        cycles.address,
-        treasury.address,
-        savingsConfig.address,
-        rewardConfig.address,
-        xendToken.address,
-        yDaiContractAddress
-  
-      );
-  
-      await groups.activateStorageOracle(instance.address);
-  
-      await cycles.activateStorageOracle(instance.address);
-  
-      await instance.createGroup("njokuAkawo", "N9");
-      
-      let startTimeStamp = 4 * 86400;
-  
-      let duration = 100 * 86400;
-  
-      let amountToApprove = BigInt(100000000000000000000000);
-  
-      let amountToSend = BigInt(100000000000000000000000);
-  
-      await sendDai(amountToSend, accounts[0]);
-  
-     const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
-  
-     console.log(approveResult)
-      
-      await instance.createCycle(1, startTimeStamp, duration, 10, true, 100);
-
-      //should throw error cause cycle member does not exist
-       await utils.shouldThrow(instance.getCycleMember(1));
-
-     
-
-      // should Throw An Error If Cycle Duration Has Not Elapsed And Cycle Is Ongoing
-      await utils.shouldThrow(instance.endCycle(1));
-
-      // withdraw from cycle
-
-      //should throw error because msg.send is not a member of the cycle
-      await utils.shouldThrow(instance.withdrawFromCycle(1));
-      
-      await instance.joinCycle(1, numberOfStakes);
-
-      const withdrawFromCycleWhileItIsOngoingResult  = await instance.withdrawFromCycleWhileItIsOngoing(1);
+   
+      const withdrawFromCycleWhileItIsOngoingResult  = await contractInstance.withdrawFromCycleWhileItIsOngoing(1);
 
       assert(withdrawFromCycleWhileItIsOngoingResult.receipt.status == true, "tx receipt is true")
 
@@ -314,80 +138,55 @@ contract("XendFinanceGroup_Yearn_V1", async (accounts) => {
   })
 
   it("should withdraw from a cycle", async () => {
+        
+ 
+  
+    //   await contractInstance.createGroup("njokuAkawo", "N9");
       
-    let treasury = await TreasuryContract.new();
-
-    let cycles = await CyclesContract.new();
+    //   let startTimeStamp = 60;
   
-    let savingsConfig =  await SavingsConfigContract.new();
+    //   let duration = 100 * 86400;
   
-    let groups = await GroupsContract.new();
+    //   let amountToApprove = BigInt(100000000000000000000000);
   
-    let esusuService = await EsusuServiceContract.new();
+    //   let amountToSend = BigInt(100000000000000000000000);
   
-    let rewardConfig = await RewardConfigContract.new(
-      esusuService.address,
-      groups.address
-    );
+    //   await sendDai(amountToSend, accounts[0]);
   
-    let xendToken = await xendTokenContract.deployed("Xend Token", "XTK", 18, 200000000000000000000000000);
-
-    let daiLendingService = await DaiLendingServiceContract.deployed();
+    //  const approveResult = await approveDai(contractInstance.address, accounts[0], amountToApprove);
   
-    let daiLendingAdapter = await DaiLendingAdapterContract.deployed();
-  
-      contractInstance = await XendFinanceGroup_Yearn_V1.new();
-  
-      await groups.activateStorageOracle(instance.address);
-  
-      await cycles.activateStorageOracle(instance.address);
-  
-      await instance.createGroup("njokuAkawo", "N9");
+    //  console.log(approveResult)
       
-      let startTimeStamp = 60;
-  
-      let duration = 100 * 86400;
-  
-      let amountToApprove = BigInt(100000000000000000000000);
-  
-      let amountToSend = BigInt(100000000000000000000000);
-  
-      await sendDai(amountToSend, accounts[0]);
-  
-     const approveResult = await approveDai(instance.address, accounts[0], amountToApprove);
-  
-     console.log(approveResult)
+    //   await contractInstance.createCycle(1, startTimeStamp, duration, 10, true, 100);
+
+    //   //should throw error cause cycle member does not exist
+    //    await utils.shouldThrow(contractInstance.getCycleMember(1));
+
+    //   await cycles.activateStorageOracle(contractInstance.address);
+
+    //   // should Throw An Error If Cycle Duration Has Not Elapsed And Cycle Is Ongoing
+    //   await utils.shouldThrow(contractInstance.endCycle(1));
+
+    //   // withdraw from cycle
+
+    //   // //should throw error because msg.send is not a member of the cycle
+    //   // await utils.shouldThrow(contractInstance.withdrawFromCycle(1));
       
-      await instance.createCycle(1, startTimeStamp, duration, 10, true, 100);
+    //   await instance.joinCycle(1, numberOfStakes);
 
-      //should throw error cause cycle member does not exist
-       await utils.shouldThrow(instance.getCycleMember(1));
+    //   //should throw error because no rule definitions found for rule key;
+    //   await utils.shouldThrow(contractInstance.withdrawFromCycle(1));
 
-      await cycles.activateStorageOracle(instance.address);
+    //   // let exact = 10/100;
 
-      // should Throw An Error If Cycle Duration Has Not Elapsed And Cycle Is Ongoing
-      await utils.shouldThrow(instance.endCycle(1));
+    //   // let exactPenalty = 5/100;
 
-      // withdraw from cycle
+    //   // //create savings rule config
+    //   // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 5, 1);
 
-      // //should throw error because msg.send is not a member of the cycle
-      // await utils.shouldThrow(instance.withdrawFromCycle(1));
-      
-      await instance.joinCycle(1, numberOfStakes);
+    //   // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 10, 1);
 
-      //should throw error because no rule definitions found for rule key;
-      await utils.shouldThrow(instance.withdrawFromCycle(1));
-
-      // let exact = 10/100;
-
-      // let exactPenalty = 5/100;
-
-      // //create savings rule config
-      // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 5, 1);
-
-      // await savingsConfig.createRule("XEND_FINANCE_COMMISION_DIVIDEND", 0, 0, 10, 1);
-
-      const withdrawFromCycleResult  = await instance.withdrawFromCycle(1);
+      const withdrawFromCycleResult  = await contractInstance.withdrawFromCycle(1);
 
       assert(withdrawFromCycleResult.receipt.status == true, 'tx receipt status is true')
 

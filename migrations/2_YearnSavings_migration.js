@@ -1,5 +1,5 @@
 const Web3 = require("web3");
-const DaiContractAddress = "0x95b58a6bff3d14b7db2f5cb5f0ad413dc2940658";
+const DaiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F";
 const GroupsContract = artifacts.require("Groups");
 const TreasuryContract = artifacts.require("Treasury");
 const CyclesContract = artifacts.require("Cycles");
@@ -95,6 +95,19 @@ module.exports = function (deployer) {
       TreasuryContract.address
     );
 
+    await deployer.deploy(
+      XendFinanceGroup_Yearn_V1Contract,
+      DaiLendingServiceContract.address,
+      DaiContractAddress,
+      GroupsContract.address,
+      CyclesContract.address,
+      TreasuryContract.address,
+      SavingsConfigContract.address,
+      RewardConfigContract.address,
+      XendTokenContract.address,
+      derivativeContract
+    );
+
 
    
     let savingsConfigContract = null
@@ -123,6 +136,10 @@ module.exports = function (deployer) {
  
 
     await clientRecordContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+    await groupsContract.activateStorageOracle(XendFinanceIndividual_Yearn_V1Contract.address);
+
+    await cycleContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
+    await groupsContract.activateStorageOracle(XendFinanceGroup_Yearn_V1Contract.address);
 
 
     await savingsConfigContract.createRule("XEND_FINANCE_COMMISION_DIVISOR", 0, 0, 100, 1)
